@@ -1,0 +1,5 @@
+!.gitignore
+.DS_Store
+macosx64.zip
+windows32.zip
+windows64.zip

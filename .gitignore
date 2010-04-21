@@ -1,0 +1,6 @@
+!.gitignore
+.DS_Store
+hs_err_*
+build/**/*
+./build
+bin/**/*
