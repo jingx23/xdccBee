@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<project name="xdccFetcher" basedir=".">
+	<property name="src.dir"     value="src"/>
+	<property name="src.ui.dir"     value="${src.dir}/de/snertlab/xdccFetcher/ui"/>
+	<property name="versionPropertiesFilename"     value="${src.ui.dir}/version.properties"/>
+	
+	<target name="compile">
+	   <antcall target="revision"></antcall>
+	</target>
+
+	<target name="dist">
+	  <antcall target="minor"></antcall>
+	</target>
+
+	<target name="revision">
+	    <propertyfile  file="${versionPropertiesFilename}">
+	            <entry key="build.revision.number" type="int" operation="+" value="1" pattern="0"/>
+	    </propertyfile>
+	</target>
+	
+	<target name="patch">
+		    <propertyfile  file="${versionPropertiesFilename}">
+		            <entry key="build.patch.number" type="int" operation="+" value="1" pattern="0"/>
+		    		<entry key="build.revision.number" type="int" value="0" pattern="0"/>
+		    </propertyfile>
+		</target>
+
+	<target name="minor">
+	    <propertyfile  file="${versionPropertiesFilename}">
+	            <entry key="build.minor.number" type="int" operation="+" value="1" pattern="0"/>
+	            <entry key="build.patch.number" type="int" value="0" pattern="0"/>
+	    </propertyfile>
+	</target>
+
+	<target name="major">
+	    <propertyfile  file="${versionPropertiesFilename}">
+	            <entry key="build.major.number" type="int" operation="+" value="1" pattern="0"/>
+	            <entry key="build.minor.number" type="int" value="0" pattern="0"/>
+	    		<entry key="build.patch.number" type="int" value="0" pattern="0"/>
+	            <entry key="build.revision.number" type="int" value="0" pattern="0"/>
+	    </propertyfile>
+	</target>
+
+	<target name="all">
+	    <propertyfile  file="${versionPropertiesFilename}">
+	            <entry key="build.major.number" type="int" operation="+" value="1" pattern="0"/>
+	            <entry key="build.minor.number" type="int" operation="+" value="1" pattern="0"/>
+	    		<entry key="build.patch.number" type="int" operation="+" value="1" pattern="0"/>
+	            <entry key="build.revision.number" type="int" operation="+" value="1" pattern="0"/>
+	    </propertyfile>
+	</target>
+
+</project>
