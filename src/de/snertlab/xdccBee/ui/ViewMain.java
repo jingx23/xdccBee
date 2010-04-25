@@ -158,7 +158,7 @@ public class ViewMain implements INotifyIrcServerEditNew, INotifyDccDownload {
 		column1.setText(XdccBeeMessages.getString("ViewMain_TABLE_DOWNLOADS_COL_PACKET")); //$NON-NLS-1$
 		column2.setText(XdccBeeMessages.getString("ViewMain_TABLE_DOWNLOADS_COL_PROGRESS")); //$NON-NLS-1$
 		column3.setText("Rate");
-		column4.setText("Zeit");
+		column4.setText("Dauer");
 		column5.setText("Status");
 		tblDownloadQueue.setLayoutData( new GridData(SWT.FILL, SWT.FILL, true, true) );
 		tblDownloadQueue.setHeaderVisible(true);

@@ -91,10 +91,14 @@ public class TableItemDownloadThread extends Thread{
 	}
 	
 	public String getEstimateTime(){
+		if(dccFileTransfer.getTransferRate()==0) return "~";
     	long a = (dccFileTransfer.getSize() - dccFileTransfer.getProgress()) / dccFileTransfer.getTransferRate();
-    	Calendar cal = Calendar.getInstance();
-    	cal.add(Calendar.SECOND, (int)(a) );
     	SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
-    	return df.format(cal.getTime());
+    	Calendar calCurrent = Calendar.getInstance();
+    	Calendar cal = Calendar.getInstance();    	
+    	cal.add(Calendar.SECOND, (int)(a) );
+    	long diff = cal.getTimeInMillis() - calCurrent.getTimeInMillis();
+    	String s1 = df.format(diff); 
+    	return s1;
     }
 }
