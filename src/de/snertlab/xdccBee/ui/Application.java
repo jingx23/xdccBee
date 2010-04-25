@@ -155,7 +155,7 @@ public class Application extends ApplicationWindow {
 		newShell.addDisposeListener( new DisposeListener() {
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
-				new ActionQuit(true).run();
+				new ActionQuit(false).run();
 			}
 		});
 	}
