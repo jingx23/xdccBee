@@ -97,7 +97,7 @@ public class TableItemDownloadThread extends Thread{
     	Calendar calCurrent = Calendar.getInstance();
     	Calendar cal = Calendar.getInstance();    	
     	cal.add(Calendar.SECOND, (int)(a) );
-    	long diff = cal.getTimeInMillis() - calCurrent.getTimeInMillis();
+    	long diff = cal.getTimeInMillis() - calCurrent.getTimeInMillis(); //FIXME: Duration is wrong
     	String s1 = df.format(diff); 
     	return s1;
     }
