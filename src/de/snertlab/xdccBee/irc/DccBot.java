@@ -76,8 +76,7 @@ public class DccBot extends PircBot{
 	}
 	
 	private void log(LogMessage message) {
-        //if (isVerbose()) { //TODO: nicht mehr in Version pircbot 1.5 vorhanden wird das ueberhaupt noch gebraucht?
-            NotifyManagerDccBotLogging.getNotifyManager().notify(ircServer, message);
+		NotifyManagerDccBotLogging.getNotifyManager().notify(ircServer, message);
 	}
 	
 	@Override
@@ -130,7 +129,6 @@ public class DccBot extends PircBot{
 		transfer.receive(dccDownload.getDestinationFile(), true);
 		dccDownload.setDccFileTransfer(transfer);
 		NotifyManagerDccDownload.getNotifyManager().notifyNewDccDownload(dccDownload);
-		//TODO: add to dccdownloadqueue, call notify um tabellen mit progressbar
 	}
 	
 	private String getLogTime(){
@@ -146,13 +144,6 @@ public class DccBot extends PircBot{
 	}
 	public IrcServer getIrcServer() {
 		return ircServer;
-	}
-	/* (non-Javadoc)
-	 * @see org.jibble.pircbot.PircBot#onFileTransferFinished(org.jibble.pircbot.DccFileTransfer, java.lang.Exception)
-	 */
-	@Override
-	protected void onFileTransferFinished(DccFileTransfer transfer, Exception e) {
-		//remove download queue notify tabelle und setz progress auf 100%
 	}
 
 }

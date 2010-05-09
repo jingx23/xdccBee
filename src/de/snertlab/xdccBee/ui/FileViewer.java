@@ -56,7 +56,6 @@ public class FileViewer extends TableViewer implements INotifyDccPacket {
 		setInput(new ArrayList<DccPacket>());
 		new FileViewerMenu(this);
 		addFilter(fileFilter);
-		// TODO Direkte Verwendung Action mit DoubleClickListener möglich?
 		addDoubleClickListener( new IDoubleClickListener() {			
 			@Override
 			public void doubleClick(DoubleClickEvent arg0) {

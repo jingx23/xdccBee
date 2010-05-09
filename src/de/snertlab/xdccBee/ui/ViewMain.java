@@ -125,7 +125,6 @@ public class ViewMain implements INotifyIrcServerEditNew, INotifyDccDownload {
 		data3b.right = new FormAttachment(100, 0);
 		data3b.bottom = new FormAttachment(packetViewer.getTable(), 5);
 
-		//TODO Sollte ohne Übergabe von PacketViewwer funktionieren
 		new FileFilterComposite(comp, data3b, packetViewer);
 		
 		FormData data4 = new FormData();
@@ -169,23 +168,6 @@ public class ViewMain implements INotifyIrcServerEditNew, INotifyDccDownload {
 		if(infoTabFolder.getItemCount()!=0) infoTabFolder.setSelection(0);
 		
 	}
-	
-//	private class IrcTreeViewerSelectionChangedListener implements ISelectionChangedListener{
-//		@Override
-//		public void selectionChanged(SelectionChangedEvent arg0) {			
-//			TreeSelection selection = (TreeSelection) arg0.getSelection();
-//			if(selection.getFirstElement() instanceof IrcServer) {
-//				//TODO Über ContenLabelProvider realisieren
-//				selectedIrcServer = (IrcServer) selection.getFirstElement();
-//				packetViewer.setInput(selectedIrcServer.getListDccPackets());
-//				// TODO Logic Channelfilter stimmt noch nicht
-//				packetViewer.disableChannelFilter();
-//			} else if(selection.getFirstElement() instanceof IrcChannel) {
-//				packetViewer.enableChannelFilter();
-//			}
-//		}
-//	}
-
 	
 	public Object getSelectedTreeItem() {
 		IStructuredSelection selectedItem = (IStructuredSelection) ircTreeViewer.getSelection();
