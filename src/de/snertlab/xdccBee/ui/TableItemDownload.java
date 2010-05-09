@@ -86,17 +86,22 @@ public class TableItemDownload {
 	
 	public String getEstimateTime(DccFileTransfer dccFileTransfer){
 		if(dccFileTransfer.getTransferRate()==0) return "~";
-    	long a = (dccFileTransfer.getSize() - dccFileTransfer.getProgress()) / dccFileTransfer.getTransferRate();
-    	SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
-    	Calendar calCurrent = Calendar.getInstance();
+		SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+    	long secondsTillDownloadFinished = (dccFileTransfer.getSize() - dccFileTransfer.getProgress()) / dccFileTransfer.getTransferRate();
     	Calendar cal = Calendar.getInstance();    	
-    	cal.add(Calendar.SECOND, (int)(a) );
-    	long diff = cal.getTimeInMillis() - calCurrent.getTimeInMillis(); //FIXME: Duration is wrong
-    	String s1 = df.format(diff); 
+    	cal.add(Calendar.SECOND, (int)secondsTillDownloadFinished);
+    	long diff = (cal.getTimeInMillis()-System.currentTimeMillis());
+    	cal.setTimeInMillis(diff);
+    	cal.add(Calendar.HOUR_OF_DAY, -1); //i don´t now why but duration seems to be correct if 1 hour is substracted
+    	String s1 = df.format(cal.getTime()); 
     	return s1;
     }
 
 	public void setState(String state_download) {
+		if(STATE_DOWNLOAD_FINISHED.equals(state_download)){
+			itemDownload.setText(2, "-");
+			itemDownload.setText(3, "-");
+		}
 		itemDownload.setText(4, state_download); //TODO: Translations of the different states from xdccBeeMessages
 	}
 
