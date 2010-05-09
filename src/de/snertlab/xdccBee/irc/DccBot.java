@@ -128,7 +128,7 @@ public class DccBot extends PircBot{
 		DccDownload dccDownload = DccDownloadQueue.getInstance().getDccDownload(transfer);
 		transfer.receive(dccDownload.getDestinationFile(), true);
 		dccDownload.setDccFileTransfer(transfer);
-		NotifyManagerDccDownload.getNotifyManager().notifyNewDccDownload(dccDownload);
+		dccDownload.start();
 	}
 	
 	private String getLogTime(){
@@ -141,6 +141,7 @@ public class DccBot extends PircBot{
 		DccDownload dccDownload = new DccDownload(dccPacket, target);
 		DccDownloadQueue.getInstance().addToQueue(dccDownload);
 		sendCTCPCommand(dccPacket.getSender(), "xdcc send #" + dccPacket.getPacketNr());		 //$NON-NLS-1$
+		NotifyManagerDccDownload.getNotifyManager().notifyNewDccDownload(dccDownload);
 	}
 	public IrcServer getIrcServer() {
 		return ircServer;

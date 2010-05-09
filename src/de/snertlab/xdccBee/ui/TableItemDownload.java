@@ -22,6 +22,7 @@ import java.util.Calendar;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
@@ -33,64 +34,57 @@ import de.snertlab.xdccBee.irc.DccDownload;
  * @author snert
  *
  */
-public class TableItemDownloadThread extends Thread{
+public class TableItemDownload {
 	
 	private static final long KILOBYTES = 1024L;
+
+	public static String STATE_DOWNLOAD_FINISHED = "finished";
+	public static String STATE_DOWNLOAD_WAITING  = "waiting";
+	public static String STATE_DOWNLOAD_DOWNLOAD = "downloading";
 	
 	private Table downloadTable;
 	private DccDownload dccDownload;
-	private DccFileTransfer dccFileTransfer;
 	private TableItem itemDownload;
 	private ProgressBar bar;
 	
-	public TableItemDownloadThread(Table downloadTable, DccDownload dccDownload){
+	public TableItemDownload(Table downloadTable, DccDownload dccDownload){
+		dccDownload.setTableItemDownload(this);
 		this.downloadTable = downloadTable;
 		this.dccDownload = dccDownload;
-		this.dccFileTransfer = dccDownload.getDccFileTransfer();
+		makeTableItem();
 	}
 	
-	@Override
-	public void run() {
+	private void makeTableItem() {
 		downloadTable.getDisplay().asyncExec( new Runnable() {
 			public void run() {
 				itemDownload = new TableItem(downloadTable, SWT.NONE);
 				itemDownload.setText(dccDownload.getDccPacket().getName());
 				bar = new ProgressBar(downloadTable, SWT.NONE);
-				bar.setMaximum((int)dccDownload.getDccFileTransfer().getSize());
 		        TableEditor editor = new TableEditor(downloadTable);
 		        editor.grabHorizontal = true;
 		        editor.grabVertical = true;
 		        editor.setEditor(bar, itemDownload, 1);
+		        setState(STATE_DOWNLOAD_WAITING);
 			}
 		});
-		while((int)dccDownload.getDccFileTransfer().getProgress()<dccDownload.getDccFileTransfer().getSize()){
-			downloadTable.getDisplay().asyncExec( new Runnable() {
-				public void run() {
-					itemDownload.setText(2, " " + bytesToKb(dccDownload.getDccFileTransfer().getTransferRate())+" KB/s");
-					bar.setSelection((int)dccDownload.getDccFileTransfer().getProgress());
-					itemDownload.setText(3, getEstimateTime());
-				}
-			});						
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		downloadTable.getDisplay().asyncExec( new Runnable() {
-			@Override
-			public void run() {
-				itemDownload.setText(4, "fertig");
-				
-			}
-		});
+	}
+		
+	public Display getDisplay(){
+		return downloadTable.getDisplay();
+	}
+
+	public void updateFileTransferDisplay(DccFileTransfer dccFileTransfer) {
+		bar.setMaximum((int)dccFileTransfer.getSize());
+		itemDownload.setText(2, " " + bytesToKb(dccFileTransfer.getTransferRate())+" KB/s");
+		bar.setSelection((int)dccFileTransfer.getProgress());
+		itemDownload.setText(3, getEstimateTime(dccFileTransfer));
 	}
 	
 	private long bytesToKb(long bytes){
 		return bytes / KILOBYTES;
 	}
 	
-	public String getEstimateTime(){
+	public String getEstimateTime(DccFileTransfer dccFileTransfer){
 		if(dccFileTransfer.getTransferRate()==0) return "~";
     	long a = (dccFileTransfer.getSize() - dccFileTransfer.getProgress()) / dccFileTransfer.getTransferRate();
     	SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
@@ -101,4 +95,9 @@ public class TableItemDownloadThread extends Thread{
     	String s1 = df.format(diff); 
     	return s1;
     }
+
+	public void setState(String state_download) {
+		itemDownload.setText(4, state_download); //TODO: Translations of the different states from xdccBeeMessages
+	}
+
 }

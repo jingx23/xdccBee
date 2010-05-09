@@ -417,7 +417,6 @@ public class ViewMain implements INotifyIrcServerEditNew, INotifyDccDownload {
 
 	@Override
 	public void notifyNewDccDownload(final DccDownload dccDownload) {
-		TableItemDownloadThread tableItemDownloadThread = new TableItemDownloadThread(tblViewerDownloadQueue.getTable(), dccDownload);
-		tableItemDownloadThread.start();
+		new TableItemDownload(tblViewerDownloadQueue.getTable(), dccDownload);
 	}
 }

@@ -21,6 +21,8 @@ import java.io.File;
 
 import org.jibble.pircbot.DccFileTransfer;
 
+import de.snertlab.xdccBee.ui.TableItemDownload;
+
 
 /**
  * @author holgi
@@ -32,6 +34,7 @@ public class DccDownload {
 	private DccPacket dccPacket;
 	private DccFileTransfer dccFileTransfer;
 	private File destinationFile;
+	private TableItemDownload tableItemDownload;
 	
 	public DccDownload(DccPacket dccPacket, File destination){
 		this.dccPacket = dccPacket;
@@ -65,6 +68,36 @@ public class DccDownload {
 	public DccPacket getDccPacket() {
 		return dccPacket;
 	}
+
+	public void setTableItemDownload(TableItemDownload tableItemDownload) {
+		this.tableItemDownload = tableItemDownload;
+	}
 	
+	public void start(){
+		Thread downloadThread = new Thread(){
+			public void run() {
+				while((int)dccFileTransfer.getProgress()<dccFileTransfer.getSize()){
+					tableItemDownload.getDisplay().asyncExec( new Runnable() {
+						public void run() {
+							tableItemDownload.updateFileTransferDisplay(dccFileTransfer);
+							tableItemDownload.setState(TableItemDownload.STATE_DOWNLOAD_DOWNLOAD);
+						}
+					});						
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				tableItemDownload.getDisplay().asyncExec( new Runnable() {
+					@Override
+					public void run() {
+						tableItemDownload.setState(TableItemDownload.STATE_DOWNLOAD_FINISHED);
+					}
+				});				
+			};
+		};
+		downloadThread.start();
+	}
 
 }
