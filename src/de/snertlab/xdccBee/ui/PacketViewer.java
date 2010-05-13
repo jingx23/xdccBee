@@ -39,11 +39,11 @@ import de.snertlab.xdccBee.ui.provider.ContenLabelProviderTablePackets;
  * @author holgi
  *
  */
-public class FileViewer extends TableViewer implements INotifyDccPacket {
+public class PacketViewer extends TableViewer implements INotifyDccPacket {
 
 	private FileFilter fileFilter = new FileFilter();
 	
-	public FileViewer(Composite parent, int style) {
+	public PacketViewer(Composite parent, int style) {
 		super(parent, style);
 		NotifyManagerDccPacket.getNotifyManager().register(this);
 		Table tblPackets = getTable();
@@ -54,7 +54,7 @@ public class FileViewer extends TableViewer implements INotifyDccPacket {
 		tblPackets.setLinesVisible(true);
 		contenLabelProviderTablePackets.makeColumns();
 		setInput(new ArrayList<DccPacket>());
-		new FileViewerMenu(this);
+		new PacketViewerMenu(this);
 		addFilter(fileFilter);
 		addDoubleClickListener( new IDoubleClickListener() {			
 			@Override

@@ -40,11 +40,11 @@ import de.snertlab.xdccBee.tools.swt.filtertext.FilterTextComposite;
  * @author holgi
  *
  */
-public class FileFilterComposite extends Composite {
+public class PacketFilterComposite extends Composite {
 	
 	private Text txtFilter;
 
-	public FileFilterComposite(Composite parent, FormData formData, final FileViewer packetViewer) {
+	public PacketFilterComposite(Composite parent, FormData formData, final PacketViewer packetViewer) {
 		super(parent, SWT.NONE);
 		setLayoutData(formData);
 		Layout layout = new GridLayout(4, false);

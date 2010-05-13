@@ -71,7 +71,7 @@ import de.snertlab.xdccBee.ui.actions.ActionRemoveIrcServerContextMenu;
 public class ViewMain implements INotifyIrcServerEditNew, INotifyDccDownload {
 	
 	private IrcTreeViewer ircTreeViewer;
-	private FileViewer packetViewer;
+	private PacketViewer packetViewer;
 	private InfoTabFolder infoTabFolder;
 	private TableViewer tblViewerDownloadQueue;
 		
@@ -116,7 +116,7 @@ public class ViewMain implements INotifyIrcServerEditNew, INotifyDccDownload {
 		data3.right = new FormAttachment(100, 0);
 		data3.bottom = new FormAttachment(60, 0);
 
-		packetViewer = new FileViewer(comp, SWT.BORDER | SWT.FULL_SELECTION);
+		packetViewer = new PacketViewer(comp, SWT.BORDER | SWT.FULL_SELECTION);
 		packetViewer.getTable().setLayoutData(data3);
 		
 		FormData data3b = new FormData();
@@ -125,7 +125,7 @@ public class ViewMain implements INotifyIrcServerEditNew, INotifyDccDownload {
 		data3b.right = new FormAttachment(100, 0);
 		data3b.bottom = new FormAttachment(packetViewer.getTable(), 5);
 
-		new FileFilterComposite(comp, data3b, packetViewer);
+		new PacketFilterComposite(comp, data3b, packetViewer);
 		
 		FormData data4 = new FormData();
 		data4.top = new FormAttachment(treeIrcServer,5);
