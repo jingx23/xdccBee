@@ -19,6 +19,7 @@ package de.snertlab.xdccBee.ui.filter;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
@@ -39,7 +40,9 @@ public class FileFilter extends ViewerFilter{
 	private String mode;
 	private String hostname;
 	private String channelName;
-	private Pattern fileNamePattern;
+	private String fileName;
+	private boolean ignoreCase;
+	private boolean regExp;
 	
 	public FileFilter(){
 		this.mode = MODE_ALL;
@@ -59,11 +62,27 @@ public class FileFilter extends ViewerFilter{
 				return true;
 			}
 		}else if( MODE_FILENAME.equals(mode) ){
-			if(fileNamePattern == null) return false;
-			Matcher m = fileNamePattern.matcher(dccPacket.getName());
-			if (m.find()) {
-				return true;
+			String fileNameToSearch = fileName;
+			String dccPacketName    = dccPacket.getName();
+			if(ignoreCase){
+				fileNameToSearch = fileName.toLowerCase();
+				dccPacketName = dccPacketName.toLowerCase();
 			}
+			if(regExp){
+				try{
+					Pattern fileNamePattern = Pattern.compile(fileName);
+					Matcher m = fileNamePattern.matcher(dccPacket.getName());
+					if (m.find()) {
+						return true;
+					}
+				}catch (PatternSyntaxException e) {
+					//ignore
+					return false;
+				}
+			}else{
+				return dccPacketName.contains(fileNameToSearch);
+			}
+			
 		}else{
 			throw new RuntimeException("Unknown Mode " + mode); //$NON-NLS-1$
 		}
@@ -82,15 +101,19 @@ public class FileFilter extends ViewerFilter{
 
 	public void setFileName(String fileName) {
 		this.mode = MODE_FILENAME;
-		try {
-			this.fileNamePattern = Pattern.compile(fileName);
-		} catch (Exception e) {
-			fileNamePattern = null;
-		}
+		this.fileName = fileName;
 	}
 	
 	public void setAll(){
 		this.mode = MODE_ALL;
+	}
+
+	public void setFilterIgnoreCase(boolean ignoreCase) {
+		this.ignoreCase = ignoreCase;
+	}
+
+	public void setFilterRegExp(boolean regExp) {
+		this.regExp = regExp;
 	}
 
 }

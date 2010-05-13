@@ -20,9 +20,12 @@ package de.snertlab.xdccBee.ui;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
@@ -44,7 +47,7 @@ public class FileFilterComposite extends Composite {
 	public FileFilterComposite(Composite parent, FormData formData, final FileViewer packetViewer) {
 		super(parent, SWT.NONE);
 		setLayoutData(formData);
-		Layout layout = new GridLayout(2, true);
+		Layout layout = new GridLayout(4, false);
 		setLayout(layout);
 		GridData gridDataCompControls = new GridData(SWT.FILL, SWT.FILL, true, false);
 		gridDataCompControls.verticalIndent = -5;
@@ -77,7 +80,32 @@ public class FileFilterComposite extends Composite {
 			}
 		});
 		
-		new Label(this, SWT.NONE); //Spacer
+		final Button checkIgnoreCase = new Button(this, SWT.CHECK);
+		checkIgnoreCase.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
+		checkIgnoreCase.setText("Ignore case");
+		checkIgnoreCase.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				packetViewer.setFilterIgnoreCase(checkIgnoreCase.getSelection());
+			}
+		});
+
+		
+		final Button checkRegExp = new Button(this, SWT.CHECK);
+		checkRegExp.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
+		checkRegExp.setText("Regular expression");
+		checkRegExp.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				packetViewer.setFilterRegExp(checkRegExp.getSelection());
+			}
+		});
+		
+		Label lblSpacer = new Label(this, SWT.NONE); //Spacer
+		GridData gridDataSpacer = new GridData(SWT.FILL, SWT.CENTER, false, false);
+		gridDataSpacer.widthHint = 300;
+		lblSpacer.setLayoutData(gridDataSpacer);
+		
 	}
 	
 }

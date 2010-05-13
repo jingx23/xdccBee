@@ -104,4 +104,12 @@ public class FileViewer extends TableViewer implements INotifyDccPacket {
 	public void add(Object element) {
 		((ContenLabelProviderTablePackets) getContentProvider()).add((DccPacket)element);
 	}
+
+	public void setFilterIgnoreCase(boolean ignoreCase) {
+		fileFilter.setFilterIgnoreCase(ignoreCase);
+	}
+
+	public void setFilterRegExp(boolean regExp) {
+		fileFilter.setFilterRegExp(regExp);
+	}
 }
