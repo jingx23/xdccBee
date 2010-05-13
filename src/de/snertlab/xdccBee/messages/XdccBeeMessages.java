@@ -17,16 +17,15 @@
  */
 package de.snertlab.xdccBee.messages;
 
-import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 public class XdccBeeMessages {
 
-	private static final String BUNDLE_NAME = "de.snertlab.xdccBee.messages.messages_de"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME_DE = "de.snertlab.xdccBee.messages.messages_de"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME_EN = "de.snertlab.xdccBee.messages.messages_en"; //$NON-NLS-1$
 	
 	private static ResourceBundle loadedResourceBundle;
-	private static Locale useLocale;
 
 	private XdccBeeMessages() {
 	}
@@ -41,18 +40,16 @@ public class XdccBeeMessages {
 	
 	private static ResourceBundle getResourceBundle() {
 		if (loadedResourceBundle==null) {
-			if (useLocale==null) {
-				loadedResourceBundle = ResourceBundle.getBundle(BUNDLE_NAME);
-			} else {
-				loadedResourceBundle = ResourceBundle.getBundle(BUNDLE_NAME,useLocale);
+			String language = System.getProperty("user.language");
+			String bundleToLoad = null;
+			if(language.equals("de")){
+				bundleToLoad = BUNDLE_NAME_DE;
+			}else{
+				bundleToLoad = BUNDLE_NAME_EN;
 			}
+			loadedResourceBundle = ResourceBundle.getBundle(bundleToLoad);
 		}
 		return loadedResourceBundle;
-	}
-
-	public static void setLocale(Locale locale) {
-		useLocale = locale;
-		loadedResourceBundle = null;
 	}
 	
 }
