@@ -81,7 +81,7 @@ public class PacketFilterComposite extends Composite {
 		});
 		
 		final Button checkIgnoreCase = new Button(this, SWT.CHECK);
-		checkIgnoreCase.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
+		checkIgnoreCase.setLayoutData(makeGridDataCheckboxes());
 		checkIgnoreCase.setText("Ignore case");
 		checkIgnoreCase.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -92,7 +92,7 @@ public class PacketFilterComposite extends Composite {
 
 		
 		final Button checkRegExp = new Button(this, SWT.CHECK);
-		checkRegExp.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
+		checkRegExp.setLayoutData(makeGridDataCheckboxes());
 		checkRegExp.setText("Regular expression");
 		checkRegExp.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -102,10 +102,15 @@ public class PacketFilterComposite extends Composite {
 		});
 		
 		Label lblSpacer = new Label(this, SWT.NONE); //Spacer
-		GridData gridDataSpacer = new GridData(SWT.FILL, SWT.CENTER, false, false);
-		gridDataSpacer.widthHint = 300;
+		GridData gridDataSpacer = new GridData(SWT.FILL, SWT.CENTER, true, false);
 		lblSpacer.setLayoutData(gridDataSpacer);
 		
+	}
+	
+	private GridData makeGridDataCheckboxes(){
+		GridData gridDataCheckbox = new GridData(SWT.LEFT, SWT.CENTER, false, false);
+		gridDataCheckbox.verticalIndent = -5;
+		return gridDataCheckbox;
 	}
 	
 }
