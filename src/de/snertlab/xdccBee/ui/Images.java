@@ -28,6 +28,10 @@ public class Images {
 	
 	public static final Image TREE_CONNECTED 	= getImage("bullet_green.png"); //$NON-NLS-1$
 	public static final Image TREE_DISCONNECTED = getImage("bullet_red.png"); //$NON-NLS-1$
+	public static final Image WINDOW_ICON_SMALL = getImage("window_16.gif"); //$NON-NLS-1$
+	public static final Image WINDOW_ICON_LARGE = getImage("window_32.gif"); //$NON-NLS-1$
+	public static final Image WINDOW_ICON_XLARGE = getImage("window_48.gif"); //$NON-NLS-1$
+	public static final Image WINDOW_ICON_XXLARGE = getImage("window_256.gif"); //$NON-NLS-1$
 
 	private Images(){
 		//instanzierung nicht erlaubt

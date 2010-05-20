@@ -27,6 +27,7 @@ import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormLayout;
@@ -145,6 +146,13 @@ public class Application extends ApplicationWindow {
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
+		/*
+		 * Provide different resolutions for icons to get high quality rendering
+		 * wherever the OS needs large icons. For example, the ALT+TAB window on
+		 * certain systems uses a larger icon.
+		 */
+		newShell.setImages(new Image[] { Images.WINDOW_ICON_SMALL, Images.WINDOW_ICON_LARGE, Images.WINDOW_ICON_XLARGE, Images.WINDOW_ICON_XXLARGE});
+
 		newShell.setText(XdccBeeMessages.getString("Application_TITLE")); //$NON-NLS-1$
 		newShell.setSize(getSettings().getMainWindowSize());
 		if(getSettings().getMainWindowPosition().x !=0 || getSettings().getMainWindowPosition().y !=0 ){
