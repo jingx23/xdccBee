@@ -58,8 +58,8 @@ public class DccDownload {
 	}
 
 	public boolean matchDccFileTransfer(DccFileTransfer dccFileTransfer) {
-		//FIXME: Filename kann unterschiedlich Packet Name sein
-		if( dccPacket.getSender().equals(dccFileTransfer.getNick()) && dccPacket.getName().equals(dccFileTransfer.getFile().getName())){
+		//FIXME: Filename kann unterschiedlich Packet Name sein => einfach nick und contains irgendwas vom filename???
+		if( dccPacket.getSender().equals(dccFileTransfer.getNick()) ){
 			return true;
 		}
 		return false;
