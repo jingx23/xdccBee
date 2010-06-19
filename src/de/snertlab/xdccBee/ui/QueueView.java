@@ -63,11 +63,11 @@ public class QueueView extends Composite implements INotifyDccDownload {
 		TableColumn column3 = new TableColumn(tblDownloadQueue, SWT.NONE);
 		TableColumn column4 = new TableColumn(tblDownloadQueue, SWT.NONE);
 		TableColumn column5 = new TableColumn(tblDownloadQueue, SWT.NONE);
-		column1.setText(XdccBeeMessages.getString("ViewMain_TABLE_DOWNLOADS_COL_PACKET")); //$NON-NLS-1$
-		column2.setText(XdccBeeMessages.getString("ViewMain_TABLE_DOWNLOADS_COL_PROGRESS")); //$NON-NLS-1$
-		column3.setText("Rate");
-		column4.setText("Dauer");
-		column5.setText("Status");
+		column1.setText(XdccBeeMessages.getString("TABLE_DOWNLOADS_COL_PACKET")); //$NON-NLS-1$
+		column2.setText(XdccBeeMessages.getString("TABLE_DOWNLOADS_COL_PROGRESS")); //$NON-NLS-1$
+		column3.setText(XdccBeeMessages.getString("TABLE_DOWNLOADS_COL_DOWNLOADRATE"));//$NON-NLS-1$
+		column4.setText(XdccBeeMessages.getString("TABLE_DOWNLOADS_COL_DURATION"));//$NON-NLS-1$
+		column5.setText(XdccBeeMessages.getString("TABLE_DOWNLOADS_COL_STATE"));//$NON-NLS-1$
 		tblDownloadQueue.setLayoutData( new GridData(SWT.FILL, SWT.FILL, true, true) );
 		tblDownloadQueue.setHeaderVisible(true);
 		tblDownloadQueue.setLinesVisible(true);
