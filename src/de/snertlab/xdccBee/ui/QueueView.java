@@ -18,11 +18,16 @@
 package de.snertlab.xdccBee.ui;
 
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
@@ -44,6 +49,7 @@ public class QueueView extends Composite implements INotifyDccDownload {
 		super(parent, SWT.NONE);
 		NotifyManagerDccDownload.getNotifyManager().register(this);
 		createContentView();
+		makeTableMenu();
 	}
 	
 	private void createContentView(){
@@ -76,6 +82,26 @@ public class QueueView extends Composite implements INotifyDccDownload {
 	@Override
 	public void notifyNewDccDownload(final DccDownload dccDownload) {
 		new TableItemDownload(tblViewerDownloadQueue.getTable(), dccDownload);
+	}
+	
+	private void makeTableMenu(){
+		Menu mnuIrcServer = new Menu(tblViewerDownloadQueue.getTable());
+		tblViewerDownloadQueue.getTable().setMenu(mnuIrcServer);
+
+		final MenuItem mntmAbortDownload = new MenuItem(mnuIrcServer, SWT.CASCADE);
+		mntmAbortDownload.setText(XdccBeeMessages.getString("TABLE_DOWNLOADS_MNTM_ABORT_DOWNLOAD")); //$NON-NLS-1$
+		mntmAbortDownload.addSelectionListener( new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				getSelectedDccDownload().stop();
+			}
+		});
+
+	}
+	
+	private DccDownload getSelectedDccDownload(){
+		IStructuredSelection sel = (IStructuredSelection) tblViewerDownloadQueue.getSelection();
+		return (DccDownload) sel.getFirstElement();
 	}
 
 }

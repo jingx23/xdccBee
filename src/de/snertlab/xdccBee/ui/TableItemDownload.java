@@ -41,6 +41,7 @@ public class TableItemDownload {
 	public static String STATE_DOWNLOAD_FINISHED = "finished";
 	public static String STATE_DOWNLOAD_WAITING  = "waiting";
 	public static String STATE_DOWNLOAD_DOWNLOAD = "downloading";
+	public static String STATE_DOWNLOAD_ABORT    = "abort";
 	
 	private Table downloadTable;
 	private DccDownload dccDownload;
@@ -65,6 +66,7 @@ public class TableItemDownload {
 		        editor.grabVertical = true;
 		        editor.setEditor(bar, itemDownload, 1);
 		        setState(STATE_DOWNLOAD_WAITING);
+		        itemDownload.setData(dccDownload);
 			}
 		});
 	}

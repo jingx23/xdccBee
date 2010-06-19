@@ -35,6 +35,7 @@ public class DccDownload {
 	private DccFileTransfer dccFileTransfer;
 	private File destinationFile;
 	private TableItemDownload tableItemDownload;
+	private MyTableItemDownloadThread downloadThread;
 	
 	public DccDownload(DccPacket dccPacket, File destination){
 		this.dccPacket = dccPacket;
@@ -74,30 +75,56 @@ public class DccDownload {
 	}
 	
 	public void start(){
-		Thread downloadThread = new Thread(){
-			public void run() {
-				while((int)dccFileTransfer.getProgress()<dccFileTransfer.getSize()){
-					tableItemDownload.getDisplay().asyncExec( new Runnable() {
-						public void run() {
-							tableItemDownload.updateFileTransferDisplay(dccFileTransfer);
-							tableItemDownload.setState(TableItemDownload.STATE_DOWNLOAD_DOWNLOAD);
-						}
-					});						
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
+		downloadThread = new MyTableItemDownloadThread();
+	}
+
+	/**
+	 * 
+	 */
+	public void stop() {
+		if(downloadThread==null){
+			tableItemDownload.setState(TableItemDownload.STATE_DOWNLOAD_ABORT);
+		}else{
+			downloadThread.stopMe();
+		}
+	}
+	
+	private class MyTableItemDownloadThread extends Thread {
+		
+		private boolean stop;
+		private String state;
+		
+		@Override
+		public void run() {
+			while((int)dccFileTransfer.getProgress()<dccFileTransfer.getSize() || ! stop){
 				tableItemDownload.getDisplay().asyncExec( new Runnable() {
-					@Override
 					public void run() {
-						tableItemDownload.setState(TableItemDownload.STATE_DOWNLOAD_FINISHED);
+						tableItemDownload.updateFileTransferDisplay(dccFileTransfer);
+						tableItemDownload.setState(TableItemDownload.STATE_DOWNLOAD_DOWNLOAD);
 					}
-				});				
-			};
-		};
-		downloadThread.start();
+				});						
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			state = TableItemDownload.STATE_DOWNLOAD_FINISHED;
+			if(stop){
+				state = TableItemDownload.STATE_DOWNLOAD_ABORT;
+			}
+			tableItemDownload.getDisplay().asyncExec( new Runnable() {
+				@Override
+				public void run() {
+					tableItemDownload.setState(state);
+					dccFileTransfer.close();
+				}
+			});
+		}
+		
+		public void stopMe(){
+			stop = true;
+		}
 	}
 
 }
