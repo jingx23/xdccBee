@@ -27,10 +27,14 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Widget;
 
 import de.snertlab.xdccBee.irc.IrcServer;
@@ -61,6 +65,7 @@ public class InfoTabFolder extends CTabFolder implements INotifyDccBotLogging {
 				StyledText txtDebug = new StyledText(compDebug, SWT.BORDER | SWT.MULTI | SWT.READ_ONLY | SWT.V_SCROLL | SWT.H_SCROLL);
 				txtDebug.setLayoutData( new GridData(SWT.FILL, SWT.FILL, true, true) );
 				tabItemDebugWindow.setControl(compDebug);
+				makeTxtDebugContextMenu(txtDebug);
 				mapDebuggingTabs.put(ircServer, txtDebug);
 			}
 		}
@@ -84,6 +89,20 @@ public class InfoTabFolder extends CTabFolder implements INotifyDccBotLogging {
 	@Override
 	public void notifyDccBotLogging(final IrcServer ircServer, final LogMessage log) {
 		writeLog(ircServer, log);
+	}
+	
+	public void makeTxtDebugContextMenu(final StyledText txtDebug){
+		Menu mnuDebugTxt = new Menu(txtDebug);
+		txtDebug.setMenu(mnuDebugTxt);
+
+		final MenuItem mntmClearText = new MenuItem(mnuDebugTxt, SWT.CASCADE);
+		mntmClearText.setText(XdccBeeMessages.getString("DEBUG_CLEAR_TEXT")); //$NON-NLS-1$
+		mntmClearText.addSelectionListener( new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				txtDebug.setText("");
+			}
+		});
 	}
 	
 }
