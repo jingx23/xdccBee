@@ -20,9 +20,7 @@ package de.snertlab.xdccBee.ui;
 import java.text.MessageFormat;
 import java.util.List;
 
-import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -30,29 +28,21 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Tree;
 
-import de.snertlab.xdccBee.irc.DccDownload;
 import de.snertlab.xdccBee.irc.DccPacket;
 import de.snertlab.xdccBee.irc.IrcChannel;
 import de.snertlab.xdccBee.irc.IrcServer;
 import de.snertlab.xdccBee.irc.ServerList;
-import de.snertlab.xdccBee.irc.listener.INotifyDccDownload;
 import de.snertlab.xdccBee.irc.listener.INotifyIrcServerEditNew;
-import de.snertlab.xdccBee.irc.listener.NotifyManagerDccDownload;
 import de.snertlab.xdccBee.irc.listener.NotifyManagerIrcServerEditNew;
 import de.snertlab.xdccBee.messages.XdccBeeMessages;
-import de.snertlab.xdccBee.tools.AutoResizeTableLayout;
 import de.snertlab.xdccBee.tools.MyMessageDialog;
 import de.snertlab.xdccBee.ui.actions.ActionConnectIrcServer;
 import de.snertlab.xdccBee.ui.actions.ActionDisconnectIrcServer;
@@ -68,18 +58,16 @@ import de.snertlab.xdccBee.ui.actions.ActionRemoveIrcServerContextMenu;
  * @author snert
  *
  */
-public class ViewMain implements INotifyIrcServerEditNew, INotifyDccDownload {
+public class ViewMain implements INotifyIrcServerEditNew {
 	
 	private IrcTreeViewer ircTreeViewer;
 	private PacketViewer packetViewer;
 	private InfoTabFolder infoTabFolder;
-	private TableViewer tblViewerDownloadQueue;
 		
 	public void createContents(Composite parent){
 		createContentsView(parent);
 		makeTreeMenu();
 		NotifyManagerIrcServerEditNew.getNotifyManager().register(this);
-		NotifyManagerDccDownload.getNotifyManager().register(this);
 		connectAllAutoconnectServer();
 	}
 
@@ -138,33 +126,8 @@ public class ViewMain implements INotifyIrcServerEditNew, INotifyDccDownload {
 		
 		CTabItem tabItemQueue = new CTabItem(infoTabFolder, SWT.NONE);
 		tabItemQueue.setText(XdccBeeMessages.getString("ViewMain_TAB_DOWNLOADS")); //$NON-NLS-1$
-		Composite compQueue = new Composite(infoTabFolder, SWT.NONE);
-		compQueue.setLayout(new GridLayout());
-		compQueue.setLayoutData( new GridData(SWT.FILL, SWT.FILL, true, true) );
-		tblViewerDownloadQueue = new TableViewer(compQueue, SWT.BORDER);
-		Table tblDownloadQueue = tblViewerDownloadQueue.getTable();
-		AutoResizeTableLayout autoTableLayout = new AutoResizeTableLayout(tblDownloadQueue);
-		autoTableLayout.addColumnData(new ColumnWeightData(30));
-		autoTableLayout.addColumnData(new ColumnWeightData(20));
-		autoTableLayout.addColumnData(new ColumnWeightData(30));
-		autoTableLayout.addColumnData(new ColumnWeightData(10));
-		autoTableLayout.addColumnData(new ColumnWeightData(10));
-		TableColumn column1 = new TableColumn(tblDownloadQueue, SWT.NONE);
-		TableColumn column2 = new TableColumn(tblDownloadQueue, SWT.NONE);
-		TableColumn column3 = new TableColumn(tblDownloadQueue, SWT.NONE);
-		TableColumn column4 = new TableColumn(tblDownloadQueue, SWT.NONE);
-		TableColumn column5 = new TableColumn(tblDownloadQueue, SWT.NONE);
-		column1.setText(XdccBeeMessages.getString("ViewMain_TABLE_DOWNLOADS_COL_PACKET")); //$NON-NLS-1$
-		column2.setText(XdccBeeMessages.getString("ViewMain_TABLE_DOWNLOADS_COL_PROGRESS")); //$NON-NLS-1$
-		column3.setText("Rate");
-		column4.setText("Dauer");
-		column5.setText("Status");
-		tblDownloadQueue.setLayoutData( new GridData(SWT.FILL, SWT.FILL, true, true) );
-		tblDownloadQueue.setHeaderVisible(true);
-		tblDownloadQueue.setLinesVisible(true);
-
-		
-		tabItemQueue.setControl(compQueue);
+		Composite compQueueView = new QueueView(infoTabFolder);
+		tabItemQueue.setControl(compQueueView);
 		if(infoTabFolder.getItemCount()!=0) infoTabFolder.setSelection(0);
 		
 	}
@@ -414,9 +377,5 @@ public class ViewMain implements INotifyIrcServerEditNew, INotifyDccDownload {
 		ircTreeViewer.setInput(Application.getServerSettings().getListServer());
 		ircTreeViewer.setExpandedElements(expandedElements);
 	}
-
-	@Override
-	public void notifyNewDccDownload(final DccDownload dccDownload) {
-		new TableItemDownload(tblViewerDownloadQueue.getTable(), dccDownload);
-	}
+	
 }
