@@ -59,7 +59,7 @@ public class DccDownload {
 	}
 
 	public boolean matchDccFileTransfer(DccFileTransfer dccFileTransfer) {
-		//FIXME: Filename kann unterschiedlich Packet Name sein => einfach nick und contains irgendwas vom filename???
+		//FIXME: Filename kann unterschiedlich Packet Name sein => einfach nick und download Status??
 		if( dccPacket.getSender().equals(dccFileTransfer.getNick()) ){
 			return true;
 		}
@@ -76,6 +76,7 @@ public class DccDownload {
 	
 	public void start(){
 		downloadThread = new MyTableItemDownloadThread();
+		downloadThread.start();
 	}
 
 	/**
