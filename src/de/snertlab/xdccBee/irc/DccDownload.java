@@ -97,9 +97,10 @@ public class DccDownload {
 		
 		@Override
 		public void run() {
-			while((int)dccFileTransfer.getProgress()<dccFileTransfer.getSize() || ! stop){
+			while((int)dccFileTransfer.getProgress()<dccFileTransfer.getSize() && ! stop){
 				tableItemDownload.getDisplay().asyncExec( new Runnable() {
 					public void run() {
+						if(stop) return;
 						tableItemDownload.updateFileTransferDisplay(dccFileTransfer);
 						tableItemDownload.setState(TableItemDownload.STATE_DOWNLOAD_DOWNLOAD);
 					}
