@@ -100,7 +100,7 @@ public class TableItemDownload {
     }
 
 	public void setState(String state_download) {
-		if(STATE_DOWNLOAD_FINISHED.equals(state_download)){
+		if(STATE_DOWNLOAD_FINISHED.equals(state_download) || STATE_DOWNLOAD_ABORT.equals(state_download)){
 			itemDownload.setText(2, "-");
 			itemDownload.setText(3, "-");
 		}
