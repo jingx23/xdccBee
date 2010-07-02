@@ -62,4 +62,12 @@ public class DccDownloadQueue {
 		}
 		return null;
 	}
+	
+	public boolean containsDccDownload(DccDownload dccDownload){
+		return mapDownloadQueue.containsKey(dccDownload.getKey());
+	}
+
+	public DccDownload getDccDownload(String key) {
+		return mapDownloadQueue.get(key);
+	}
 }

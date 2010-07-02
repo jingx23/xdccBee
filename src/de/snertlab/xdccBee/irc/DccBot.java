@@ -138,11 +138,18 @@ public class DccBot extends PircBot{
 	}
 
 	public void xdccSend(DccPacket dccPacket, File target) {
+		DccDownloadQueue downloadQueue = DccDownloadQueue.getInstance();
 		DccDownload dccDownload = new DccDownload(dccPacket, target);
-		DccDownloadQueue.getInstance().addToQueue(dccDownload);
-		sendCTCPCommand(dccPacket.getSender(), "xdcc send #" + dccPacket.getPacketNr());		 //$NON-NLS-1$
-		NotifyManagerDccDownload.getNotifyManager().notifyNewDccDownload(dccDownload);
+		if( downloadQueue.getDccDownload(dccDownload.getKey()) != null ){
+			sendCTCPCommand(dccPacket.getSender(), "xdcc send #" + dccPacket.getPacketNr());		 //$NON-NLS-1$
+			dccDownload = downloadQueue.getDccDownload(dccDownload.getKey());
+		}else{
+			downloadQueue.addToQueue(dccDownload);
+			sendCTCPCommand(dccPacket.getSender(), "xdcc send #" + dccPacket.getPacketNr());		 //$NON-NLS-1$
+			NotifyManagerDccDownload.getNotifyManager().notifyNewDccDownload(dccDownload);
+		}
 	}
+	
 	public IrcServer getIrcServer() {
 		return ircServer;
 	}
