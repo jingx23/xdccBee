@@ -31,15 +31,22 @@ import de.snertlab.xdccBee.ui.TableItemDownload;
 
 public class DccDownload {
 	
+	public static String STATE_DOWNLOAD_FINISHED = "finished";
+	public static String STATE_DOWNLOAD_WAITING  = "waiting";
+	public static String STATE_DOWNLOAD_DOWNLOAD = "downloading";
+	public static String STATE_DOWNLOAD_ABORT    = "abort";
+	
 	private DccPacket dccPacket;
 	private DccFileTransfer dccFileTransfer;
 	private File destinationFile;
 	private TableItemDownload tableItemDownload;
 	private MyTableItemDownloadThread downloadThread;
+	private String state;
 	
 	public DccDownload(DccPacket dccPacket, File destination){
 		this.dccPacket = dccPacket;
 		this.destinationFile = destination;
+		setState(STATE_DOWNLOAD_WAITING);
 	}
 
 	public String getKey() {
@@ -60,7 +67,7 @@ public class DccDownload {
 
 	public boolean matchDccFileTransfer(DccFileTransfer dccFileTransfer) {
 		//assumes that package comes from sender in order, so when you request 2 packages 1 comes first and 2 comes second else packages will be saved under wrong name
-		if( dccPacket.getSender().equals(dccFileTransfer.getNick()) && tableItemDownload.getState().equals(TableItemDownload.STATE_DOWNLOAD_WAITING) ){
+		if( dccPacket.getSender().equals(dccFileTransfer.getNick()) && state.equals(STATE_DOWNLOAD_WAITING) ){
 			return true;
 		}
 		return false;
@@ -75,7 +82,7 @@ public class DccDownload {
 	}
 	
 	public void start(){
-		downloadThread = new MyTableItemDownloadThread();
+		downloadThread = new MyTableItemDownloadThread(this);
 		downloadThread.start();
 	}
 
@@ -84,7 +91,7 @@ public class DccDownload {
 	 */
 	public void stop() {
 		if(downloadThread==null){
-			tableItemDownload.setState(TableItemDownload.STATE_DOWNLOAD_ABORT);
+			setState(STATE_DOWNLOAD_ABORT);
 		}else{
 			downloadThread.stopMe();
 		}
@@ -94,6 +101,11 @@ public class DccDownload {
 		
 		private boolean stop;
 		private String state;
+		private DccDownload dccDownload;
+		
+		public MyTableItemDownloadThread(DccDownload dccDownload){
+			this.dccDownload = dccDownload;
+		}
 		
 		@Override
 		public void run() {
@@ -102,8 +114,8 @@ public class DccDownload {
 				tableItemDownload.getDisplay().asyncExec( new Runnable() {
 					public void run() {
 						if(stop) return;
+						dccDownload.setState(STATE_DOWNLOAD_DOWNLOAD);
 						tableItemDownload.updateFileTransferDisplay(dccFileTransfer);
-						tableItemDownload.setState(TableItemDownload.STATE_DOWNLOAD_DOWNLOAD);
 					}
 				});						
 				try {
@@ -112,14 +124,14 @@ public class DccDownload {
 					e.printStackTrace();
 				}
 			}
-			state = TableItemDownload.STATE_DOWNLOAD_FINISHED;
+			state = STATE_DOWNLOAD_FINISHED;
 			if(stop){
-				state = TableItemDownload.STATE_DOWNLOAD_ABORT;
+				state = STATE_DOWNLOAD_ABORT;
 			}
 			tableItemDownload.getDisplay().asyncExec( new Runnable() {
 				@Override
 				public void run() {
-					tableItemDownload.setState(state);
+					dccDownload.setState(state);
 					dccFileTransfer.close();
 				}
 			});
@@ -127,6 +139,17 @@ public class DccDownload {
 		
 		public void stopMe(){
 			stop = true;
+		}
+	}
+	
+	public String getState(){
+		return state;
+	}
+	
+	public void setState(String state){
+		this.state = state;
+		if(tableItemDownload != null) {
+			tableItemDownload.refreshState();
 		}
 	}
 

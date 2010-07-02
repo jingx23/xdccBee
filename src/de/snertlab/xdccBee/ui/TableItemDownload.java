@@ -38,16 +38,10 @@ public class TableItemDownload {
 	
 	private static final long KILOBYTES = 1024L;
 	
-	public static String STATE_DOWNLOAD_FINISHED = "finished";
-	public static String STATE_DOWNLOAD_WAITING  = "waiting";
-	public static String STATE_DOWNLOAD_DOWNLOAD = "downloading";
-	public static String STATE_DOWNLOAD_ABORT    = "abort";
-	
 	private Table downloadTable;
 	private DccDownload dccDownload;
 	private TableItem itemDownload;
 	private ProgressBar bar;
-	private String state;
 	
 	public TableItemDownload(Table downloadTable, DccDownload dccDownload){
 		dccDownload.setTableItemDownload(this);
@@ -66,7 +60,7 @@ public class TableItemDownload {
 		        editor.grabHorizontal = true;
 		        editor.grabVertical = true;
 		        editor.setEditor(bar, itemDownload, 1);
-		        setState(STATE_DOWNLOAD_WAITING);
+		        setDisplayState(dccDownload.getState());
 		        itemDownload.setData(dccDownload);
 			}
 		});
@@ -81,6 +75,7 @@ public class TableItemDownload {
 		itemDownload.setText(2, " " + bytesToKb(dccFileTransfer.getTransferRate())+" KB/s");
 		bar.setSelection((int)dccFileTransfer.getProgress());
 		itemDownload.setText(3, getEstimateTime(dccFileTransfer));
+		refreshState();
 	}
 	
 	private long bytesToKb(long bytes){
@@ -100,17 +95,17 @@ public class TableItemDownload {
     	return s1;
     }
 
-	public void setState(String state_download) {
-		state = state_download;
-		if(STATE_DOWNLOAD_FINISHED.equals(state_download) || STATE_DOWNLOAD_ABORT.equals(state_download)){
+	private void setDisplayState(String state_download) {
+		if(DccDownload.STATE_DOWNLOAD_FINISHED.equals(state_download) || DccDownload.STATE_DOWNLOAD_ABORT.equals(state_download)){
 			itemDownload.setText(2, "-");
 			itemDownload.setText(3, "-");
 		}
 		itemDownload.setText(4, state_download); //TODO: Translations of the different states from xdccBeeMessages
 	}
 
-	public String getState() {
-		return state;
+	public void refreshState() {
+		setDisplayState(dccDownload.getState());
+		
 	}
 
 }

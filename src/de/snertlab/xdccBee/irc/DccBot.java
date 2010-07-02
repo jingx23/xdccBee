@@ -143,6 +143,7 @@ public class DccBot extends PircBot{
 		if( downloadQueue.getDccDownload(dccDownload.getKey()) != null ){
 			sendCTCPCommand(dccPacket.getSender(), "xdcc send #" + dccPacket.getPacketNr());		 //$NON-NLS-1$
 			dccDownload = downloadQueue.getDccDownload(dccDownload.getKey());
+			dccDownload.setState(DccDownload.STATE_DOWNLOAD_WAITING);
 		}else{
 			downloadQueue.addToQueue(dccDownload);
 			sendCTCPCommand(dccPacket.getSender(), "xdcc send #" + dccPacket.getPacketNr());		 //$NON-NLS-1$
