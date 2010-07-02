@@ -37,7 +37,7 @@ import de.snertlab.xdccBee.irc.DccDownload;
 public class TableItemDownload {
 	
 	private static final long KILOBYTES = 1024L;
-
+	
 	public static String STATE_DOWNLOAD_FINISHED = "finished";
 	public static String STATE_DOWNLOAD_WAITING  = "waiting";
 	public static String STATE_DOWNLOAD_DOWNLOAD = "downloading";
@@ -47,6 +47,7 @@ public class TableItemDownload {
 	private DccDownload dccDownload;
 	private TableItem itemDownload;
 	private ProgressBar bar;
+	private String state;
 	
 	public TableItemDownload(Table downloadTable, DccDownload dccDownload){
 		dccDownload.setTableItemDownload(this);
@@ -100,11 +101,16 @@ public class TableItemDownload {
     }
 
 	public void setState(String state_download) {
+		state = state_download;
 		if(STATE_DOWNLOAD_FINISHED.equals(state_download) || STATE_DOWNLOAD_ABORT.equals(state_download)){
 			itemDownload.setText(2, "-");
 			itemDownload.setText(3, "-");
 		}
 		itemDownload.setText(4, state_download); //TODO: Translations of the different states from xdccBeeMessages
+	}
+
+	public String getState() {
+		return state;
 	}
 
 }

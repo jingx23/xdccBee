@@ -30,7 +30,7 @@ import de.snertlab.xdccBee.ui.TableItemDownload;
  */
 
 public class DccDownload {
-
+	
 	private DccPacket dccPacket;
 	private DccFileTransfer dccFileTransfer;
 	private File destinationFile;
@@ -59,8 +59,8 @@ public class DccDownload {
 	}
 
 	public boolean matchDccFileTransfer(DccFileTransfer dccFileTransfer) {
-		//FIXME: Filename kann unterschiedlich Packet Name sein => einfach nick und download Status??
-		if( dccPacket.getSender().equals(dccFileTransfer.getNick()) ){
+		//assumes that package comes from sender in order, so when you request 2 packages 1 comes first and 2 comes second else packages will be saved under wrong name
+		if( dccPacket.getSender().equals(dccFileTransfer.getNick()) && tableItemDownload.getState().equals(TableItemDownload.STATE_DOWNLOAD_WAITING) ){
 			return true;
 		}
 		return false;
