@@ -17,6 +17,7 @@
  */
 package de.snertlab.xdccBee.irc;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.snertlab.xdccBee.ui.Application;
@@ -27,13 +28,19 @@ import de.snertlab.xdccBee.ui.Application;
  */
 public class ServerList {
 	public static boolean isAnyServerConnected(){
+		return ! getListConnectedServer().isEmpty();
+	}
+
+	public static List<IrcServer> getListConnectedServer() {
+		List<IrcServer> listConnectedServer = new ArrayList<IrcServer>();
 		List<IrcServer> listAlleServer = Application.getServerSettings().getListServer();
 		for (IrcServer ircServer : listAlleServer) {
 			if(ircServer.isConnected()){
-				return true;
+				listConnectedServer.add(ircServer);
 			}
 		}
-		return false;
+
+		return listConnectedServer;
 	}
 
 }

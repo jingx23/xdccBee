@@ -147,6 +147,7 @@ public class IrcServer implements IConnectedState{
 			}
 		}
 		dccBot.disconnect();
+		dccBot.dispose();
 	}
 	
 	public void addDccPacket(DccPacket dccPacket){

@@ -18,6 +18,7 @@
 package de.snertlab.xdccBee.ui;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 
 import org.eclipse.jface.action.MenuManager;
@@ -38,6 +39,8 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
+import de.snertlab.xdccBee.irc.IrcServer;
+import de.snertlab.xdccBee.irc.ServerList;
 import de.snertlab.xdccBee.messages.XdccBeeMessages;
 import de.snertlab.xdccBee.settings.ServerSettings;
 import de.snertlab.xdccBee.settings.Settings;
@@ -222,6 +225,18 @@ public class Application extends ApplicationWindow {
 	    } catch (IOException e) {
 	    	throw new RuntimeException(e);
 	    }
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.window.ApplicationWindow#close()
+	 */
+	@Override
+	public boolean close() {
+		List<IrcServer> listIrcServer = ServerList.getListConnectedServer();
+		for (IrcServer ircServer : listIrcServer) {
+			ircServer.disconnect();
+		}
+		return super.close();
 	}
 
 }
