@@ -55,8 +55,6 @@ import de.snertlab.xdccBee.ui.actions.ActionQuit;
  */
 public class Application extends ApplicationWindow {
 	
-	//FIXME: On windows: when you quit the program and you are connected to server and channels exe is still running
-	
 	public static final String VERSION_STRING = readVersionNrFromProperties();
 	private static Application window;
 	private ViewMain viewMain;
