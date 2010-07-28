@@ -73,6 +73,7 @@ public class InfoTabFolder extends CTabFolder implements INotifyDccBotLogging {
 
 	public void writeLog(IrcServer ircServer, final LogMessage log) {
 		final StyledText txtDebug2 = (StyledText)mapDebuggingTabs.get(ircServer);
+		if(txtDebug2==null) return;
 		if(txtDebug2.isDisposed()) return;
 		txtDebug2.getDisplay().asyncExec( new Runnable() {
 			@Override
