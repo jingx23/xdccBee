@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Text;
 
 import de.snertlab.xdccBee.messages.XdccBeeMessages;
 import de.snertlab.xdccBee.tools.swt.filtertext.FilterTextComposite;
+import de.snertlab.xdccBee.tools.swt.filtertext.IFilterTextClearTextListener;
 
 /**
  * @author holgi
@@ -67,6 +68,11 @@ public class PacketFilterComposite extends Composite {
 			FilterTextComposite filterTextComposite = new FilterTextComposite(this);
 			filterTextComposite.setLayoutData(gridDataCompControls);
 			txtFilter = filterTextComposite.getFilterControl();
+			filterTextComposite.addFilterTextClearTextListener( new IFilterTextClearTextListener() {
+				@Override
+				public void clearText() {
+					packetViewer.setFileNameFilterText("");				}
+			});
 		}
 		txtFilter.setMessage(XdccBeeMessages.getString("FileFilterComposite_FILTER_DUMMY_TEXT")); //$NON-NLS-1$
 		txtFilter.addKeyListener(new KeyListener() {		

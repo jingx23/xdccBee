@@ -17,6 +17,9 @@
  */
 package de.snertlab.xdccBee.tools.swt.filtertext;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -50,6 +53,7 @@ public class FilterTextComposite extends Composite {
     
     protected String initialText = ""; //$NON-NLS-1$ 
     protected Composite parent;
+    private List<IFilterTextClearTextListener> listClearTextListener;
  
     private static final String CLEAR_ICON = "icons/cross.png"; //$NON-NLS-1$ 
     private static final String DISABLED_CLEAR_ICON = "icons/cross.png"; //$NON-NLS-1$
@@ -58,6 +62,7 @@ public class FilterTextComposite extends Composite {
     public FilterTextComposite(Composite parent) {
         super(parent, SWT.NONE);
         this.parent = parent;
+        this.listClearTextListener = new ArrayList<IFilterTextClearTextListener>();
         init();
     }
  
@@ -264,6 +269,7 @@ public class FilterTextComposite extends Composite {
  
     protected void clearText() {
         setFilterText(""); //$NON-NLS-1$
+        callFilterTextClearTextListener();
     }
  
     protected void setFilterText(String string) {
@@ -313,4 +319,17 @@ public class FilterTextComposite extends Composite {
         return initialText;
     }
  
+    public void addFilterTextClearTextListener(IFilterTextClearTextListener filterTextClearTextListener){
+    	listClearTextListener.add(filterTextClearTextListener);
+    }
+    
+    public void removeFilterTextClearTextListener(IFilterTextClearTextListener filterTextClearTextListener){
+    	listClearTextListener.remove(filterTextClearTextListener);
+    }
+    
+    private void callFilterTextClearTextListener(){
+    	for (IFilterTextClearTextListener filterTextClearTextListener : listClearTextListener) {
+			filterTextClearTextListener.clearText();
+		}
+    }
 }
