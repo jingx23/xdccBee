@@ -28,6 +28,8 @@ import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.ShellAdapter;
+import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -37,7 +39,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Tray;
+import org.eclipse.swt.widgets.TrayItem;
 
 import de.snertlab.xdccBee.irc.IrcServer;
 import de.snertlab.xdccBee.irc.ServerList;
@@ -95,6 +101,9 @@ public class Application extends ApplicationWindow {
 		container.setLayout(new FormLayout());
 		viewMain = new ViewMain();
 		viewMain.createContents(container);
+		if( ! isMac() ){
+			makeTray(); //TODO: Tray for mac?!	
+		}		
 		return container;
 	}
 	
@@ -169,6 +178,13 @@ public class Application extends ApplicationWindow {
 				new ActionQuit(false).run();
 			}
 		});
+		if(newShell.getDisplay().getSystemTray()!=null && ! isMac()){ //TODO: Tray for mac?! shellIconified doesn«t work under mac
+			newShell.addShellListener(new ShellAdapter() {
+			    public void shellIconified(ShellEvent e) {
+			    	window.getShell().setVisible(false);
+			    }
+			  });			
+		}
 	}
 	
 	private void centerShell(Shell newShell) {
@@ -236,5 +252,32 @@ public class Application extends ApplicationWindow {
 		}
 		return super.close();
 	}
+	
+	private static void makeTray(){
+		Display display = window.getShell().getDisplay();
+		final Tray tray = display.getSystemTray();
+		if (tray == null) {
+			//no tray
+		} else {
+			final TrayItem item = new TrayItem (tray, SWT.NONE);
+			item.setToolTipText(XdccBeeMessages.getString("Application_TITLE"));
+			final Menu menu = new Menu (window.getShell(), SWT.POP_UP);
+			MenuItem mi = new MenuItem (menu, SWT.PUSH);
+			mi.setText (XdccBeeMessages.getString("Application_TRAY_OPEN"));
+			mi.addListener (SWT.Selection, new Listener () {
+				public void handleEvent (Event event) {
+					window.getShell().setVisible(true); //FIXME: Open it with last size not minimized
+				}
+			});
+			menu.setDefaultItem(mi);
+			item.addListener (SWT.MenuDetect, new Listener () {
+				public void handleEvent (Event event) {
+					menu.setVisible (true);
+				}
+			});
+			item.setImage (Images.WINDOW_ICON_LARGE);
+		}
+	}
+	
 
 }
