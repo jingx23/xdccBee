@@ -144,13 +144,17 @@ public class IrcServer implements IConnectedState{
 	}
 	
 	public void disconnect(){
+		disconnectChannels();
+		dccBot.disconnect();
+		dccBot.dispose();
+	}
+	
+	private void disconnectChannels(){
 		for (IrcChannel ircChannel : mapIrcChannels.values()) {
 			if(ircChannel.isConnected()){
 				ircChannel.disconnect();
 			}
-		}
-		dccBot.disconnect();
-		dccBot.dispose();
+		}		
 	}
 	
 	public void addDccPacket(DccPacket dccPacket){
