@@ -276,6 +276,11 @@ public class Application extends ApplicationWindow {
 					menu.setVisible (true);
 				}
 			});
+			item.addListener (SWT.Selection, new Listener () {
+				public void handleEvent (Event event) {
+					menu.setVisible (true);
+				}
+			});
 			item.setImage (Images.WINDOW_ICON_LARGE);
 		}
 	}
