@@ -109,6 +109,7 @@ public class DccBot extends PircBot{
 	
 	@Override
 	protected void onDisconnect() {
+		ircServer.disconnect();
 		super.onDisconnect();
 		NotifyManagerConnectedState.getNotifyManager().notify(ircServer);
 	}

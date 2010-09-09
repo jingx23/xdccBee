@@ -54,12 +54,13 @@ public class TableItemDownload {
 		downloadTable.getDisplay().asyncExec( new Runnable() {
 			public void run() {
 				itemDownload = new TableItem(downloadTable, SWT.NONE);
-				itemDownload.setText(dccDownload.getDccPacket().getName());
+				itemDownload.setText(dccDownload.getDccPacket().getSender());
+				itemDownload.setText(1, dccDownload.getDccPacket().getName());
 				bar = new ProgressBar(downloadTable, SWT.NONE);
 		        TableEditor editor = new TableEditor(downloadTable);
 		        editor.grabHorizontal = true;
 		        editor.grabVertical = true;
-		        editor.setEditor(bar, itemDownload, 1);
+		        editor.setEditor(bar, itemDownload, 2);
 		        setDisplayState(dccDownload.getState());
 		        itemDownload.setData(dccDownload);
 			}
@@ -72,9 +73,9 @@ public class TableItemDownload {
 
 	public void updateFileTransferDisplay(DccFileTransfer dccFileTransfer) {
 		bar.setMaximum((int)dccFileTransfer.getSize());
-		itemDownload.setText(2, " " + bytesToKb(dccFileTransfer.getTransferRate())+" KB/s");
+		itemDownload.setText(3, " " + bytesToKb(dccFileTransfer.getTransferRate())+" KB/s");
 		bar.setSelection((int)dccFileTransfer.getProgress());
-		itemDownload.setText(3, getEstimateTime(dccFileTransfer));
+		itemDownload.setText(4, getEstimateTime(dccFileTransfer));
 		refreshState();
 	}
 	
@@ -97,10 +98,10 @@ public class TableItemDownload {
 
 	private void setDisplayState(String state_download) {
 		if(DccDownload.STATE_DOWNLOAD_FINISHED.equals(state_download) || DccDownload.STATE_DOWNLOAD_ABORT.equals(state_download)){
-			itemDownload.setText(2, "-");
 			itemDownload.setText(3, "-");
+			itemDownload.setText(4, "-");
 		}
-		itemDownload.setText(4, state_download); //TODO: Translations of the different states from xdccBeeMessages
+		itemDownload.setText(5, state_download); //TODO: Translations of the different states from xdccBeeMessages
 	}
 
 	public void refreshState() {

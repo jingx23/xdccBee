@@ -59,16 +59,19 @@ public class QueueView extends Composite implements INotifyDccDownload {
 		tblViewerDownloadQueue = new TableViewer(compQueue, SWT.BORDER);
 		Table tblDownloadQueue = tblViewerDownloadQueue.getTable();
 		AutoResizeTableLayout autoTableLayout = new AutoResizeTableLayout(tblDownloadQueue);
+		autoTableLayout.addColumnData(new ColumnWeightData(10));
 		autoTableLayout.addColumnData(new ColumnWeightData(30));
 		autoTableLayout.addColumnData(new ColumnWeightData(20));
 		autoTableLayout.addColumnData(new ColumnWeightData(30));
 		autoTableLayout.addColumnData(new ColumnWeightData(10));
 		autoTableLayout.addColumnData(new ColumnWeightData(10));
+		TableColumn column0 = new TableColumn(tblDownloadQueue, SWT.NONE);
 		TableColumn column1 = new TableColumn(tblDownloadQueue, SWT.NONE);
 		TableColumn column2 = new TableColumn(tblDownloadQueue, SWT.NONE);
 		TableColumn column3 = new TableColumn(tblDownloadQueue, SWT.NONE);
 		TableColumn column4 = new TableColumn(tblDownloadQueue, SWT.NONE);
 		TableColumn column5 = new TableColumn(tblDownloadQueue, SWT.NONE);
+		column0.setText(XdccBeeMessages.getString("TABLE_DOWNLOADS_COL_BOT")); //$NON-NLS-1$
 		column1.setText(XdccBeeMessages.getString("TABLE_DOWNLOADS_COL_PACKET")); //$NON-NLS-1$
 		column2.setText(XdccBeeMessages.getString("TABLE_DOWNLOADS_COL_PROGRESS")); //$NON-NLS-1$
 		column3.setText(XdccBeeMessages.getString("TABLE_DOWNLOADS_COL_DOWNLOADRATE"));//$NON-NLS-1$
