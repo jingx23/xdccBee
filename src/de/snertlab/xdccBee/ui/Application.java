@@ -253,7 +253,7 @@ public class Application extends ApplicationWindow {
 		return super.close();
 	}
 	
-	private static void makeTray(){
+	private void makeTray(){
 		Display display = window.getShell().getDisplay();
 		final Tray tray = display.getSystemTray();
 		if (tray == null) {
@@ -266,7 +266,8 @@ public class Application extends ApplicationWindow {
 			mi.setText (XdccBeeMessages.getString("Application_TRAY_OPEN"));
 			mi.addListener (SWT.Selection, new Listener () {
 				public void handleEvent (Event event) {
-					window.getShell().setVisible(true); //FIXME: Open it with last size not minimized
+					window.getShell().setVisible(true);
+					window.getShell().setMinimized(false);
 				}
 			});
 			menu.setDefaultItem(mi);
