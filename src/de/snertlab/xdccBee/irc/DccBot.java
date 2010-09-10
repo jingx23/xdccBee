@@ -90,7 +90,7 @@ public class DccBot extends PircBot{
 	@Override
 	protected void onPart(String channel, String sender, String login, String hostname) {
 		if( this.getName().equals(sender) ){
-			listChannelsJoined.remove(channel.toUpperCase());
+			removeChannelFromJoinedChannelList(channel);
 			NotifyManagerConnectedState.getNotifyManager().notify(ircServer.getChannelByName(channel));
 		}
 	}
@@ -154,6 +154,10 @@ public class DccBot extends PircBot{
 	
 	public IrcServer getIrcServer() {
 		return ircServer;
+	}
+
+	public void removeChannelFromJoinedChannelList(String channelName) {
+		listChannelsJoined.remove(channelName.toUpperCase());
 	}
 
 }
