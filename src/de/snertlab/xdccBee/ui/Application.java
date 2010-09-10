@@ -76,6 +76,7 @@ public class Application extends ApplicationWindow {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+		System.exit(0);
 	}
 	public static Application getWindow() {
 		return window;
