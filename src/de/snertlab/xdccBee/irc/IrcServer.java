@@ -44,8 +44,6 @@ public class IrcServer implements IConnectedState{
 	private boolean isDebug;
 	private boolean autoconnect;
 	
-	//FIXME: If Server gets disconnect then disconnect all his channels otherwise they are marked as connected in the view and you cannot
-	//reconnect them anymore only restart solves the problem
 	
 	public IrcServer(String botName, String botVersion){
 		this.mapIrcChannels = new LinkedHashMap<String, IrcChannel>();
@@ -146,7 +144,7 @@ public class IrcServer implements IConnectedState{
 	public void disconnect(){
 		disconnectChannels();
 		dccBot.disconnect();
-		dccBot.dispose();
+		//dccBot.dispose();
 	}
 	
 	private void disconnectChannels(){
