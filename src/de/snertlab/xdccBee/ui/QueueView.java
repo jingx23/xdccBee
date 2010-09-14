@@ -56,7 +56,7 @@ public class QueueView extends Composite implements INotifyDccDownload {
 		Composite compQueue = this;
 		compQueue.setLayout(new GridLayout());
 		compQueue.setLayoutData( new GridData(SWT.FILL, SWT.FILL, true, true) );
-		tblViewerDownloadQueue = new TableViewer(compQueue, SWT.BORDER);
+		tblViewerDownloadQueue = new TableViewer(compQueue, SWT.BORDER | SWT.FULL_SELECTION);
 		Table tblDownloadQueue = tblViewerDownloadQueue.getTable();
 		AutoResizeTableLayout autoTableLayout = new AutoResizeTableLayout(tblDownloadQueue);
 		autoTableLayout.addColumnData(new ColumnWeightData(10));
