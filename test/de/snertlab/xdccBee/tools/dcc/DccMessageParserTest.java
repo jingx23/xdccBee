@@ -70,7 +70,7 @@ public class DccMessageParserTest extends TestCase{
 		{
 			DccPacket dccPacket3 = DccMessageParser.buildDccPacket(DEFAULT_SENDER, "#6 1095x [696M] 11,12xxx.aus.bbb.ccc.");
 			assertEquals(6, dccPacket3.getPacketNr());
-			assertEquals("11,12xxx.aus.bbb.ccc.", dccPacket3.getName());
+			assertEquals("xxx.aus.bbb.ccc.", dccPacket3.getName());
 			assertEquals("696M", dccPacket3.getSize());
 		}
 
@@ -98,7 +98,7 @@ public class DccMessageParserTest extends TestCase{
 		{
 			DccPacket dccPacket = DccMessageParser.buildDccPacket(DEFAULT_SENDER, "11#78 4x 48.9MB 08 xxxxxx-cc_aaaaaaa-vvvvvv-df64-2008-cms");
 			assertEquals(78, dccPacket.getPacketNr());
-			assertEquals("08 xxxxxx-cc_aaaaaaa-vvvvvv-df64-2008-cms", dccPacket.getName());
+			assertEquals("xxxxxx-cc_aaaaaaa-vvvvvv-df64-2008-cms", dccPacket.getName());
 			assertEquals("48.9MB", dccPacket.getSize());
 		}
 
@@ -133,21 +133,21 @@ public class DccMessageParserTest extends TestCase{
 		{
 			DccPacket dccPacket = DccMessageParser.buildDccPacket(DEFAULT_SENDER, "#6   700x [3.1G] 11,12X-Xxx.Oragans.Walvarane-RELOADED.PART1");
 			assertEquals(6, dccPacket.getPacketNr());
-			assertEquals("11,12X-Xxx.Oragans.Walvarane-RELOADED.PART1", dccPacket.getName());
+			assertEquals("X-Xxx.Oragans.Walvarane-RELOADED.PART1", dccPacket.getName());
 			assertEquals("3.1G", dccPacket.getSize());
 		}
 		
 		{
 			DccPacket dccPacket = DccMessageParser.buildDccPacket(DEFAULT_SENDER, "#2    6x [   0] 5,1Big.Mobby.Baabs.Disk.1.XXX.GVDRid.XviS-Pr0nStorS.tar");
 			assertEquals(2, dccPacket.getPacketNr());
-			assertEquals("5,1Big.Mobby.Baabs.Disk.1.XXX.GVDRid.XviS-Pr0nStorS.tar", dccPacket.getName());
+			assertEquals("Big.Mobby.Baabs.Disk.1.XXX.GVDRid.XviS-Pr0nStorS.tar", dccPacket.getName());
 			assertEquals("0", dccPacket.getSize());
 		}
 		
 		{
 			DccPacket dccPacket = DccMessageParser.buildDccPacket(DEFAULT_SENDER, "#3   494x [3.4G] 8,1Cammond.ond.Canrubr.Aliamctude.Rat.3.GERMAN-0x0007-Part1");
 			assertEquals(3, dccPacket.getPacketNr());
-			assertEquals("8,1Cammond.ond.Canrubr.Aliamctude.Rat.3.GERMAN-0x0007-Part1", dccPacket.getName());
+			assertEquals("Cammond.ond.Canrubr.Aliamctude.Rat.3.GERMAN-0x0007-Part1", dccPacket.getName());
 			assertEquals("3.4G", dccPacket.getSize());
 		}
 		
