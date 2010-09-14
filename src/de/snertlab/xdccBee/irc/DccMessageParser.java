@@ -29,9 +29,8 @@ import org.apache.commons.lang.StringUtils;
  *
  */
 public class DccMessageParser {
-
-	//[^\w]?#([0-9]*).*?[0-9]+[xX]{1}.*?[:space:]?\[?([:space:]?[0-9]+[\.,]?[0-9]*[ ]*[a-zA-ZA-Za-z]*?)\]?[^\w]{1}(.*)
-	private static final Pattern DCC_MESSAGE_PATTER = Pattern.compile("[^\\w]?#" + //$NON-NLS-1$
+	//[^\w]?#\u0002?([0-9]*).*?[0-9]+[xX]{1}.*?[:space:]?\[?([:space:]?[0-9]+[\.,]?[0-9]*[ ]*[a-zA-ZA-Za-z]*?)\]?[^\w]{1}(.*)
+	private static final Pattern DCC_MESSAGE_PATTER = Pattern.compile("[^\\w]?#\u0002?" + //$NON-NLS-1$
 																	  "([0-9]*)" + //Packet Nummer group(1) //$NON-NLS-1$
 																	  ".*?[0-9]+[xX]{1}.*?[:space:]?\\[?" + //$NON-NLS-1$
 																	  "([:space:]?[0-9]+[\\.,]?[0-9]*[ ]*[a-zA-ZA-Za-z]*?)" + //Packet Groeße group(2) //$NON-NLS-1$

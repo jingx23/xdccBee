@@ -157,6 +157,14 @@ public class DccMessageParserTest extends TestCase{
 			assertEquals("Stawopper v5.3b Mux speed: 193.41KBs Current free space: 849.54MB", dccPacket.getName());
 			assertEquals("0 Gigs", dccPacket.getSize());
 		}
+		
+		{
+			DccPacket dccPacket = DccMessageParser.buildDccPacket(DEFAULT_SENDER, "#74 0x [188.8M] SB.908.191.avb");
+			assertEquals(74, dccPacket.getPacketNr());
+			assertEquals("SB.908.191.avb", dccPacket.getName());
+			assertEquals("188.8M", dccPacket.getSize());
+		}
+
 	}
 
 }
