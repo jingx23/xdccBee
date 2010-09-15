@@ -7,5 +7,6 @@
 <listEntry value="1"/>
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="de.snertlab.xdccBee.ui.Application"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-debug"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="xdccBee"/>
 </launchConfiguration>

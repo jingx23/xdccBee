@@ -20,7 +20,9 @@ package de.snertlab.xdccBee.ui;
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Logger;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.StatusLineManager;
 import org.eclipse.jface.action.ToolBarManager;
@@ -45,6 +47,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 
+import de.snertlab.xdccBee.controlling.BeeLogger;
 import de.snertlab.xdccBee.irc.IrcServer;
 import de.snertlab.xdccBee.irc.ServerList;
 import de.snertlab.xdccBee.messages.XdccBeeMessages;
@@ -61,12 +64,17 @@ import de.snertlab.xdccBee.ui.actions.ActionQuit;
  */
 public class Application extends ApplicationWindow {
 	
+	private static Logger logger = BeeLogger.getLogger();
 	public static final String VERSION_STRING = readVersionNrFromProperties();
 	private static Application window;
 	private ViewMain viewMain;
 	public static void main(String args[]) {
+		//INFO: Unter MacOsx muss jar wie folgt gestartet werden: java -XstartOnFirstThread -jar
 		try {
-			//INFO: Unter MacOsx muss jar wie folgt gestartet werden: java -XstartOnFirstThread -jar
+			if(! ArrayUtils.isEmpty(args) && ! args[0].equals("-debug")){
+				BeeLogger.removeConsoleHandler();
+			}
+			logger.info("xdccBee start");
 			window = new Application();
 			window.setBlockOnOpen(true);
 			window.open();
@@ -74,6 +82,7 @@ public class Application extends ApplicationWindow {
 				Display.getCurrent().dispose();
 			}
 		} catch (Exception e) {
+			BeeLogger.exception(e);
 			throw new RuntimeException(e);
 		}
 		System.exit(0);
