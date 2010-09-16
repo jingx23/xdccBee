@@ -97,6 +97,7 @@ public class DccBot extends PircBot{
 	
 	protected void onConnect() {
 		super.onConnect();
+		ircServer.setConnected(true);
 		List<IrcChannel> listIrcChannels = ircServer.getListChannels();
 		for (IrcChannel ircChannel : listIrcChannels) {
 			if(ircChannel.isAutoconnect()){

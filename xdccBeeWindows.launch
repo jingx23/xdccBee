@@ -25,5 +25,6 @@
 </listAttribute>
 <booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="de.snertlab.xdccBee.ui.Application"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-debug"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="xdccBee"/>
 </launchConfiguration>

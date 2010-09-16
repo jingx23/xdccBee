@@ -43,6 +43,7 @@ public class IrcServer implements IConnectedState{
 	private Map <String, DccPacket> mapDccPackets;
 	private boolean isDebug;
 	private boolean autoconnect;
+	private boolean connected;
 	
 	
 	public IrcServer(String botName, String botVersion){
@@ -132,18 +133,17 @@ public class IrcServer implements IConnectedState{
 	}
 
 	public boolean isConnected() {
-		if(isConnecting()) return false;
-		return dccBot.isConnected();
+		return connected;
 	}
 
-	public boolean isConnecting() {
-		if(threadBotConnect == null) return false;
-		return threadBotConnect.isAlive();
+	public void setConnected(boolean connected){
+		this.connected = connected;
 	}
 	
 	public void disconnect(){
 		disconnectChannels();
 		dccBot.disconnect();
+		connected = false;
 		//dccBot.dispose();
 	}
 	
