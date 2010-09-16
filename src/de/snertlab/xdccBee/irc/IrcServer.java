@@ -140,6 +140,11 @@ public class IrcServer implements IConnectedState{
 		this.connected = connected;
 	}
 	
+	public boolean isConnecting() {
+		if(threadBotConnect == null) return false;
+		return threadBotConnect.isAlive(); 
+	}
+	
 	public void disconnect(){
 		disconnectChannels();
 		dccBot.disconnect();
@@ -210,4 +215,5 @@ public class IrcServer implements IConnectedState{
 	public boolean containsPacket(DccPacket dccPacket) {
 		return mapDccPackets.containsKey(dccPacket.toString());
 	}
+
 }

@@ -280,7 +280,7 @@ public class ViewMain implements INotifyIrcServerEditNew {
 					mntmRemove.setEnabled(true);
 					mntmShowAllPackets.setEnabled(ServerList.isAnyServerConnected());
 					mntmShowChannelPackets.setEnabled(false);
-					if( ircServer.isConnected() ){
+					if( ircServer.isConnected() || ircServer.isConnecting()){
 						mntmVerbinden.setEnabled(false);
 					}else{
 						mntmVerbinden.setEnabled(true);
