@@ -26,6 +26,7 @@ import java.util.Map;
 import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.NickAlreadyInUseException;
 
+import de.snertlab.xdccBee.controlling.BeeLogger;
 import de.snertlab.xdccBee.ui.Application;
 
 /**
@@ -115,12 +116,15 @@ public class IrcServer implements IConnectedState{
 					throw new RuntimeException(e);
 				} catch (NickAlreadyInUseException e) {
 					//TODO: In GUI anzeigen
+					BeeLogger.exception(e);
 					throw new RuntimeException(e);
 				} catch (IOException e) {
 					//TODO: Connection refused
+					BeeLogger.exception(e);
 					throw new RuntimeException(e);
 				} catch (IrcException e) {
 					//TODO: In GUI anzeigen
+					BeeLogger.exception(e);
 					throw new RuntimeException(e);
 				}				
 			}
@@ -133,6 +137,7 @@ public class IrcServer implements IConnectedState{
 	}
 
 	public boolean isConnected() {
+		if(isConnecting()) return false;
 		return connected;
 	}
 
