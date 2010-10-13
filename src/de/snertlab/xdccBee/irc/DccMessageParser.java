@@ -17,7 +17,6 @@
  */
 package de.snertlab.xdccBee.irc;
 
-import java.io.UnsupportedEncodingException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,7 +44,8 @@ public class DccMessageParser {
 	 */
 	
 	public static boolean isDccMessage(String message){
-		Matcher m = DCC_MESSAGE_PATTER.matcher(message);
+		String s = cleanMessage(message);
+		Matcher m = DCC_MESSAGE_PATTER.matcher(s);
 		if (m.find()) {
 			return true;
 		}
@@ -53,23 +53,19 @@ public class DccMessageParser {
 	}
 
 	public static DccPacket buildDccPacket(String sender, String dccMessage){
-		try {
-			DccPacket dccPacket = new DccPacket();
-			dccPacket.setSender(sender);
-		
-			String s = new String(dccMessage.getBytes(), "UTF8"); //$NON-NLS-1$
-			Matcher m = DCC_MESSAGE_PATTER.matcher(s);
-			if(m.find()){
-				dccPacket.setPacketNr( Integer.parseInt( StringUtils.trim( m.group(1) ) ) );
-				dccPacket.setSize( StringUtils.trim( m.group(2) ) );
-				String packetName 	= m.group(3);
-				packetName 			= delete_control_codes(packetName);
-				dccPacket.setName( packetName );
-			}
-			return dccPacket;
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
+		DccPacket dccPacket = new DccPacket();
+		dccPacket.setSender(sender);
+	
+		String s = cleanMessage(dccMessage);
+		Matcher m = DCC_MESSAGE_PATTER.matcher(s);
+		if(m.find()){
+			dccPacket.setPacketNr( Integer.parseInt( StringUtils.trim( m.group(1) ) ) );
+			dccPacket.setSize( StringUtils.trim( m.group(2) ) );
+			String packetName 	= m.group(3);
+			packetName = StringUtils.trim(packetName);
+			dccPacket.setName( packetName );
 		}
+		return dccPacket;
 	}
 	
 	/* Delete any color codes, font modes from the given str
@@ -86,6 +82,13 @@ public class DccMessageParser {
 		String s = packetName;
 		s = s.replaceAll("\\002|\\003(\\d{1,2})?(,\\d{1,2})?|\\x0F|\\x16|\\x1F", "");
 		s = StringUtils.trim(s);
+		return s;
+	}
+	
+	private static String cleanMessage(String message){
+		String s = message;
+		s = delete_control_codes(message);
+		s = s.replace("•", "");
 		return s;
 	}
 	

@@ -164,6 +164,13 @@ public class DccMessageParserTest extends TestCase{
 			assertEquals("SB.908.191.avb", dccPacket.getName());
 			assertEquals("188.8M", dccPacket.getSize());
 		}
+		
+		{
+			DccPacket dccPacket = DccMessageParser.buildDccPacket(DEFAULT_SENDER, "#1 15•4[1480x4]15• 15•4[14689M4]15•  149Blaxx.Dexxx.DVARUP.MA.Germon.XVED-ABE.tar");
+			assertEquals(1, dccPacket.getPacketNr());
+			assertEquals("Blaxx.Dexxx.DVARUP.MA.Germon.XVED-ABE.tar", dccPacket.getName());
+			assertEquals("689M", dccPacket.getSize());
+		}
 
 	}
 
