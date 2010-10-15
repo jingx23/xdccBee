@@ -26,9 +26,9 @@
 	<classpathentry kind="lib" path="lib/jFace/org.eclipse.jface.text_3.5.1.r351_v20090708-0800.jar"/>
 	<classpathentry kind="lib" path="lib/jFace/org.eclipse.osgi_3.5.1.R35x_v20090827.jar"/>
 	<classpathentry kind="lib" path="lib/jFace/org.eclipse.text_3.5.0.v20090513-2000.jar"/>
-	<classpathentry kind="lib" path="lib/pircbot/pircbot.jar" sourcepath="lib/pircbot/pircbot.jar">
+	<classpathentry kind="lib" path="lib/ircLib/irclib.jar" sourcepath="lib/ircLib/src.zip">
 		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/xdccFetcher/lib/pircbot/javadocs.zip!/javadocs"/>
+			<attribute name="javadoc_location" value="jar:platform:/resource/xdccBee/lib/ircLib/doc.zip!/javadoc"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
