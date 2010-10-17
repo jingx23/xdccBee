@@ -23,9 +23,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jibble.pircbot.IrcException;
-import org.jibble.pircbot.NickAlreadyInUseException;
-
 import de.snertlab.xdccBee.controlling.BeeLogger;
 import de.snertlab.xdccBee.ui.Application;
 
@@ -47,17 +44,13 @@ public class IrcServer implements IConnectedState{
 	private boolean connected;
 	
 	
-	public IrcServer(String botName, String botVersion){
-		this.mapIrcChannels = new LinkedHashMap<String, IrcChannel>();
-		this.mapDccPackets = new LinkedHashMap<String, DccPacket>();
-		this.dccBot = new DccBot(this, Application.getSettings().getBotName(), Application.getSettings().getBotVersion());		
-	}
-
 	public IrcServer(String hostname, String nickname, String port, String botName, String botVersion){
-		this(botName, botVersion);
 		this.hostname 			= hostname;
 		this.nickname 			= nickname;
 		this.port 			 	= port;
+		this.mapIrcChannels = new LinkedHashMap<String, IrcChannel>();
+		this.mapDccPackets = new LinkedHashMap<String, DccPacket>();
+		this.dccBot = new DccBot(this, Application.getSettings().getBotName(), Application.getSettings().getBotVersion());
 	}
 		
 	public String getHostname() {
@@ -105,28 +98,18 @@ public class IrcServer implements IConnectedState{
 	}
 	
 	public void connect(){
-		dccBot.setVerbose(isDebug);
+		//FIXME: dccBot.setVerbose(isDebug);
 		threadBotConnect = new Thread( new Runnable() {
 			@Override
 			public void run() {
 				try {
 					dccBot.setNickname(nickname);
-					dccBot.connect(hostname, Integer.parseInt(port));
-				} catch (NumberFormatException e) {
-					throw new RuntimeException(e);
-				} catch (NickAlreadyInUseException e) {
-					//TODO: In GUI anzeigen
-					BeeLogger.exception(e);
-					throw new RuntimeException(e);
+					dccBot.connect();
 				} catch (IOException e) {
 					//TODO: Connection refused
 					BeeLogger.exception(e);
 					throw new RuntimeException(e);
-				} catch (IrcException e) {
-					//TODO: In GUI anzeigen
-					BeeLogger.exception(e);
-					throw new RuntimeException(e);
-				}				
+				}
 			}
 		});
 		threadBotConnect.start();
@@ -152,9 +135,9 @@ public class IrcServer implements IConnectedState{
 	
 	public void disconnect(){
 		disconnectChannels();
-		dccBot.disconnect();
+		dccBot.doQuit();
+		dccBot.close();
 		connected = false;
-		//dccBot.dispose();
 	}
 	
 	private void disconnectChannels(){

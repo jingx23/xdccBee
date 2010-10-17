@@ -46,9 +46,7 @@ public static final String ID="de.snertlab.xdccBee.ui.actions.actionNewIrcServer
 
 	@Override
 	public void run() {
-		IrcServer newIrcServer = new IrcServer(Application.getSettings().getBotName(), Application.getSettings().getBotVersion());
-		newIrcServer.setNickname(Application.getSettings().getStandardNickname());
-		newIrcServer.setPort(AppConfig.DEFAULT_IRC_PORT);
+		IrcServer newIrcServer = new IrcServer("", Application.getSettings().getStandardNickname(), AppConfig.DEFAULT_IRC_PORT, Application.getSettings().getBotName(), Application.getSettings().getBotVersion());
 		EditNewIrcServerDialog editNewIrcServerDialog = new EditNewIrcServerDialog(parentShell, newIrcServer, true);
 		int ret = editNewIrcServerDialog.open();
 		if(Window.OK == ret){

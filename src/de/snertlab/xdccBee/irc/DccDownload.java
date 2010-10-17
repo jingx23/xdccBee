@@ -19,8 +19,6 @@ package de.snertlab.xdccBee.irc;
 
 import java.io.File;
 
-import org.jibble.pircbot.DccFileTransfer;
-
 import de.snertlab.xdccBee.ui.TableItemDownload;
 
 

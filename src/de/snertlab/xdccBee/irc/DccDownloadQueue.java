@@ -22,8 +22,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import org.jibble.pircbot.DccFileTransfer;
-
 
 /**
  * @author snert

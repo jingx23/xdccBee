@@ -26,9 +26,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
-import org.jibble.pircbot.DccFileTransfer;
 
 import de.snertlab.xdccBee.irc.DccDownload;
+import de.snertlab.xdccBee.irc.DccFileTransfer;
 
 /**
  * @author snert

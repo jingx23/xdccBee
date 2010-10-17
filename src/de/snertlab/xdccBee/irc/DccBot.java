@@ -22,96 +22,65 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import org.jibble.pircbot.DccFileTransfer;
-import org.jibble.pircbot.PircBot;
+import org.schwering.irc.lib.IRCConnection;
+import org.schwering.irc.lib.IRCEventListener;
+import org.schwering.irc.lib.IRCModeParser;
+import org.schwering.irc.lib.IRCUser;
 
 import de.snertlab.xdccBee.irc.listener.LogMessage;
 import de.snertlab.xdccBee.irc.listener.NotifyManagerConnectedState;
 import de.snertlab.xdccBee.irc.listener.NotifyManagerDccBotLogging;
-import de.snertlab.xdccBee.irc.listener.NotifyManagerDccDownload;
 import de.snertlab.xdccBee.irc.listener.NotifyManagerDccPacket;
 
 /**
  * @author snert
  *
  */
-public class DccBot extends PircBot{
+public class DccBot extends IRCConnection implements IRCEventListener{
 	
 	public List<String> listChannelsJoined;
 	private IrcServer ircServer;
+	private String nickname;
 	
 	public DccBot(IrcServer ircServer, String botName, String botVersion) {
+		super(  ircServer.getHostname(), 
+				new int[]{Integer.parseInt(ircServer.getPort())}, 
+				null, 
+				ircServer.getNickname(), 
+				ircServer.getNickname(), 
+				ircServer.getNickname()
+			 );
 		this.listChannelsJoined = new ArrayList<String>();
 		this.ircServer = ircServer;
-		setVersion(botVersion);
-		setLogin(botName);
+		setEncoding("UTF-8");
+		setPong(true);
+		setColors(false);
+		this.addIRCEventListener(this);
 	}
 	
 	public void setNickname(String nickname){
-		this.setName(nickname);
+		this.nickname = nickname;
 	}
 	
-	@Override
 	public void log(String message) {
 		log( new LogMessage("[" + getLogTime() + "]" + " " + message , LogMessage.LOG_COLOR_DCCBOT_MESSAGE)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 		
-	@Override
-	protected void onMessage(String channel, String sender, String login, String hostname, String message) {
-		//TODO: Wenn sich ein bot deconnected dann dies in Tabelle anzeigen => onQuit
-		if( DccMessageParser.isDccMessage(message) ){
-			DccPacket dccPacket = DccMessageParser.buildDccPacket(sender, message);
-			dccPacket.setDccBot(this);
-			IrcChannel ircChannel = ircServer.getChannelByName(channel);
-			dccPacket.setIrcChannel(ircChannel);
-			if( ! ircServer.containsPacket(dccPacket) ){
-				ircServer.addDccPacket(dccPacket);
-				ircChannel.addDccPacket(dccPacket);
-				log(new LogMessage(dccPacket.getName(), LogMessage.LOG_COLOR_DCC_MESSAGE));
-				NotifyManagerDccPacket.getNotifyManager().notifyNewPackage(dccPacket);
-			}
-		}else{
-			log(new LogMessage("KEINE DCC MESSAGE: " + message, LogMessage.LOG_COLOR_NO_DCC_MESSAGE)); //$NON-NLS-1$
-		}
-	}
 	
 	private void log(LogMessage message) {
 		NotifyManagerDccBotLogging.getNotifyManager().notify(ircServer, message);
 	}
 	
-	@Override
-	protected void onJoin(String channel, String sender, String login, String hostname) {
-		if( this.getName().equals(sender) ){
-			listChannelsJoined.add(channel.toUpperCase());
-			NotifyManagerConnectedState.getNotifyManager().notify(ircServer.getChannelByName(channel));
-		}
-	}
-	
-	@Override
-	protected void onPart(String channel, String sender, String login, String hostname) {
-		if( this.getName().equals(sender) ){
-			removeChannelFromJoinedChannelList(channel);
-			NotifyManagerConnectedState.getNotifyManager().notify(ircServer.getChannelByName(channel));
-		}
-	}
-	
+	//FIXME
 	protected void onConnect() {
-		super.onConnect();
 		ircServer.setConnected(true);
 		List<IrcChannel> listIrcChannels = ircServer.getListChannels();
 		for (IrcChannel ircChannel : listIrcChannels) {
 			if(ircChannel.isAutoconnect()){
-				joinChannel(ircChannel.getChannelName()); //TODO: Nicht ganz sauber, aber ircChannel.connect() kann nicht aufgerufen werden
+				//FIXME: joinChannel(ircChannel.getChannelName()); //TODO: Nicht ganz sauber, aber ircChannel.connect() kann nicht aufgerufen werden
 				                                          //da IRC Server threadBotConnect noch laeuft
 			}
 		}
-		NotifyManagerConnectedState.getNotifyManager().notify(ircServer);
-	}
-	
-	@Override
-	protected void onDisconnect() {
-		ircServer.disconnect();
-		super.onDisconnect();
 		NotifyManagerConnectedState.getNotifyManager().notify(ircServer);
 	}
 	
@@ -125,13 +94,13 @@ public class DccBot extends PircBot{
 		return false;
 	}
 	
-	@Override
-	protected void onIncomingFileTransfer(DccFileTransfer transfer) {
-		DccDownload dccDownload = DccDownloadQueue.getInstance().getDccDownload(transfer);
-		transfer.receive(dccDownload.getDestinationFile(), true);
-		dccDownload.setDccFileTransfer(transfer);
-		dccDownload.start();
-	}
+//	FIXME:
+//	protected void onIncomingFileTransfer(DccFileTransfer transfer) {
+//		DccDownload dccDownload = DccDownloadQueue.getInstance().getDccDownload(transfer);
+//		transfer.receive(dccDownload.getDestinationFile(), true);
+//		dccDownload.setDccFileTransfer(transfer);
+//		dccDownload.start();
+//	}
 	
 	private String getLogTime(){
 		Calendar cal = Calendar.getInstance();
@@ -140,17 +109,18 @@ public class DccBot extends PircBot{
 	}
 
 	public void xdccSend(DccPacket dccPacket, File target) {
-		DccDownloadQueue downloadQueue = DccDownloadQueue.getInstance();
-		DccDownload dccDownload = new DccDownload(dccPacket, target);
-		if( downloadQueue.getDccDownload(dccDownload.getKey()) != null ){
-			sendCTCPCommand(dccPacket.getSender(), "xdcc send #" + dccPacket.getPacketNr());		 //$NON-NLS-1$
-			dccDownload = downloadQueue.getDccDownload(dccDownload.getKey());
-			dccDownload.setState(DccDownload.STATE_DOWNLOAD_WAITING);
-		}else{
-			downloadQueue.addToQueue(dccDownload);
-			sendCTCPCommand(dccPacket.getSender(), "xdcc send #" + dccPacket.getPacketNr());		 //$NON-NLS-1$
-			NotifyManagerDccDownload.getNotifyManager().notifyNewDccDownload(dccDownload);
-		}
+		//FIXME:
+//		DccDownloadQueue downloadQueue = DccDownloadQueue.getInstance();
+//		DccDownload dccDownload = new DccDownload(dccPacket, target);
+//		if( downloadQueue.getDccDownload(dccDownload.getKey()) != null ){
+//			sendCTCPCommand(dccPacket.getSender(), "xdcc send #" + dccPacket.getPacketNr());		 //$NON-NLS-1$
+//			dccDownload = downloadQueue.getDccDownload(dccDownload.getKey());
+//			dccDownload.setState(DccDownload.STATE_DOWNLOAD_WAITING);
+//		}else{
+//			downloadQueue.addToQueue(dccDownload);
+//			sendCTCPCommand(dccPacket.getSender(), "xdcc send #" + dccPacket.getPacketNr());		 //$NON-NLS-1$
+//			NotifyManagerDccDownload.getNotifyManager().notifyNewDccDownload(dccDownload);
+//		}
 	}
 	
 	public IrcServer getIrcServer() {
@@ -159,6 +129,126 @@ public class DccBot extends PircBot{
 
 	public void removeChannelFromJoinedChannelList(String channelName) {
 		listChannelsJoined.remove(channelName.toUpperCase());
+	}
+
+	@Override
+	public void onRegistered() {
+		log("connected");
+		onConnect();
+	}
+
+	@Override
+	public void onDisconnected() {
+		log("disconnect");
+		ircServer.disconnect();
+		NotifyManagerConnectedState.getNotifyManager().notify(ircServer);
+	}
+
+	@Override
+	public void onError(String msg) {
+		log(msg);
+	}
+
+	@Override
+	public void onError(int num, String msg) {
+		log(num + " " + msg);	
+	}
+
+	@Override
+	public void onInvite(String chan, IRCUser user, String passiveNick) {
+		log("onInvite: channel:" + chan + "nick: " + user.getNick() + "passiveNick:" + passiveNick);
+	}
+
+	@Override
+	public void onJoin(String chan, IRCUser user) {
+		log("join " + chan + " user: " + user);
+		if( nickname.equals(user.getNick()) ){
+			listChannelsJoined.add(chan.toUpperCase());
+			NotifyManagerConnectedState.getNotifyManager().notify(ircServer.getChannelByName(chan));
+		}
+	}
+
+	@Override
+	public void onKick(String chan, IRCUser user, String passiveNick, String msg) {
+		log("onKick" + user.getNick() + " " + msg);
+		
+	}
+
+	@Override
+	public void onMode(String chan, IRCUser user, IRCModeParser modeParser) {
+		//nothing		
+	}
+
+	@Override
+	public void onMode(IRCUser user, String passiveNick, String mode) {
+		log(mode);		
+	}
+
+	@Override
+	public void onNick(IRCUser user, String newNick) {
+		log(newNick);		
+	}
+
+	@Override
+	public void onNotice(String target, IRCUser user, String msg) {
+		log(msg);		
+	}
+
+	@Override
+	public void onPart(String chan, IRCUser user, String msg) {
+		log(msg);
+		if( nickname.equals(user.getNick()) ){
+			removeChannelFromJoinedChannelList(chan);
+			NotifyManagerConnectedState.getNotifyManager().notify(ircServer.getChannelByName(chan));
+		}
+	}
+
+	@Override
+	public void onPing(String ping) {
+		log(ping);
+		doPong(ping);
+		
+	}
+
+	@Override
+	public void onPrivmsg(String target, IRCUser user, String msg) {
+		log(user.getNick() + msg);
+		//TODO: Wenn sich ein bot deconnected dann dies in Tabelle anzeigen => onQuit
+		if( DccMessageParser.isDccMessage(msg) ){
+			DccPacket dccPacket = DccMessageParser.buildDccPacket(user.getNick(), msg);
+			dccPacket.setDccBot(this);
+			IrcChannel ircChannel = ircServer.getChannelByName(target);
+			dccPacket.setIrcChannel(ircChannel);
+			if( ! ircServer.containsPacket(dccPacket) ){
+				ircServer.addDccPacket(dccPacket);
+				ircChannel.addDccPacket(dccPacket);
+				log(new LogMessage(dccPacket.getName(), LogMessage.LOG_COLOR_DCC_MESSAGE));
+				NotifyManagerDccPacket.getNotifyManager().notifyNewPackage(dccPacket);
+			}
+		}else{
+			log(new LogMessage("KEINE DCC MESSAGE: " + msg, LogMessage.LOG_COLOR_NO_DCC_MESSAGE)); //$NON-NLS-1$
+		}		
+		
+	}
+
+	@Override
+	public void onQuit(IRCUser user, String msg) {
+		log("Quit " + user.getNick() + msg);
+	}
+
+	@Override
+	public void onReply(int num, String value, String msg) {
+		log(value + " " + msg);
+	}
+
+	@Override
+	public void onTopic(String chan, IRCUser user, String topic) {
+		log(user.getNick() + " " + topic);
+	}
+
+	@Override
+	public void unknown(String prefix, String command, String middle, String trailing) {
+		log("unknown");
 	}
 
 }

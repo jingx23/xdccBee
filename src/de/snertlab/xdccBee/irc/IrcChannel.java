@@ -76,14 +76,14 @@ public class IrcChannel implements IDccPacketList, IConnectedState{
 	
 	public void connect(){
 		if(ircServer.isConnected()){
-			ircServer.getDccBot().joinChannel(channelName);
+			ircServer.getDccBot().doJoin(channelName);
 		}else{
 			throw new RuntimeException("Server is not connected"); //$NON-NLS-1$
 		}
 	}
 	
 	public void disconnect(){
-		ircServer.getDccBot().partChannel(channelName);
+		ircServer.getDccBot().doPart(channelName);
 		//remove precaution also from listchoinedchannels => because if server didnt answer channel in gui is still connected
 		ircServer.getDccBot().removeChannelFromJoinedChannelList(channelName);
 	}
