@@ -100,6 +100,7 @@ public class TableItemDownload {
 		if(DccDownload.STATE_DOWNLOAD_FINISHED.equals(state_download) || DccDownload.STATE_DOWNLOAD_ABORT.equals(state_download)){
 			itemDownload.setText(3, "-");
 			itemDownload.setText(4, "-");
+			bar.setSelection(bar.getMaximum());
 		}
 		itemDownload.setText(5, state_download); //TODO: Translations of the different states from xdccBeeMessages
 	}
