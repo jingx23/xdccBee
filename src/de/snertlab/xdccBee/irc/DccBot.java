@@ -16,11 +16,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package de.snertlab.xdccBee.irc;
-import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.schwering.irc.lib.IRCConnection;
 import org.schwering.irc.lib.IRCEventListener;
@@ -30,6 +32,7 @@ import org.schwering.irc.lib.IRCUser;
 import de.snertlab.xdccBee.irc.listener.LogMessage;
 import de.snertlab.xdccBee.irc.listener.NotifyManagerConnectedState;
 import de.snertlab.xdccBee.irc.listener.NotifyManagerDccBotLogging;
+import de.snertlab.xdccBee.irc.listener.NotifyManagerDccDownload;
 import de.snertlab.xdccBee.irc.listener.NotifyManagerDccPacket;
 
 /**
@@ -37,6 +40,8 @@ import de.snertlab.xdccBee.irc.listener.NotifyManagerDccPacket;
  *
  */
 public class DccBot extends IRCConnection implements IRCEventListener{
+	
+	private static final String DCC_SEND_LEADING = "DCC SEND ";
 	
 	public List<String> listChannelsJoined;
 	private IrcServer ircServer;
@@ -52,7 +57,7 @@ public class DccBot extends IRCConnection implements IRCEventListener{
 			 );
 		this.listChannelsJoined = new ArrayList<String>();
 		this.ircServer = ircServer;
-		setEncoding("UTF-8");
+		setEncoding("ISO-8859-1");
 		setPong(true);
 		setColors(false);
 		this.addIRCEventListener(this);
@@ -71,14 +76,14 @@ public class DccBot extends IRCConnection implements IRCEventListener{
 		NotifyManagerDccBotLogging.getNotifyManager().notify(ircServer, message);
 	}
 	
-	//FIXME
 	protected void onConnect() {
 		ircServer.setConnected(true);
 		List<IrcChannel> listIrcChannels = ircServer.getListChannels();
 		for (IrcChannel ircChannel : listIrcChannels) {
 			if(ircChannel.isAutoconnect()){
-				//FIXME: joinChannel(ircChannel.getChannelName()); //TODO: Nicht ganz sauber, aber ircChannel.connect() kann nicht aufgerufen werden
-				                                          //da IRC Server threadBotConnect noch laeuft
+				doJoin(ircChannel.getChannelName());  //TODO: Nicht ganz sauber, aber ircChannel.connect() kann nicht aufgerufen werden
+                									 //da IRC Server threadBotConnect noch laeuft
+
 			}
 		}
 		NotifyManagerConnectedState.getNotifyManager().notify(ircServer);
@@ -93,34 +98,25 @@ public class DccBot extends IRCConnection implements IRCEventListener{
 		}
 		return false;
 	}
-	
-//	FIXME:
-//	protected void onIncomingFileTransfer(DccFileTransfer transfer) {
-//		DccDownload dccDownload = DccDownloadQueue.getInstance().getDccDownload(transfer);
-//		transfer.receive(dccDownload.getDestinationFile(), true);
-//		dccDownload.setDccFileTransfer(transfer);
-//		dccDownload.start();
-//	}
-	
+		
 	private String getLogTime(){
 		Calendar cal = Calendar.getInstance();
 	    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm"); //$NON-NLS-1$
 	    return sdf.format(cal.getTime());	
 	}
 
-	public void xdccSend(DccPacket dccPacket, File target) {
-		//FIXME:
-//		DccDownloadQueue downloadQueue = DccDownloadQueue.getInstance();
-//		DccDownload dccDownload = new DccDownload(dccPacket, target);
-//		if( downloadQueue.getDccDownload(dccDownload.getKey()) != null ){
-//			sendCTCPCommand(dccPacket.getSender(), "xdcc send #" + dccPacket.getPacketNr());		 //$NON-NLS-1$
-//			dccDownload = downloadQueue.getDccDownload(dccDownload.getKey());
-//			dccDownload.setState(DccDownload.STATE_DOWNLOAD_WAITING);
-//		}else{
-//			downloadQueue.addToQueue(dccDownload);
-//			sendCTCPCommand(dccPacket.getSender(), "xdcc send #" + dccPacket.getPacketNr());		 //$NON-NLS-1$
-//			NotifyManagerDccDownload.getNotifyManager().notifyNewDccDownload(dccDownload);
-//		}
+	public void xdccSend(DccPacket dccPacket, String downloadDirFilename) {
+		DccDownloadQueue downloadQueue = DccDownloadQueue.getInstance();
+		DccDownload dccDownload = new DccDownload(dccPacket, downloadDirFilename);
+		if( downloadQueue.getDccDownload(dccDownload.getKey()) != null ){
+			doPrivmsg(dccPacket.getSender(), "xdcc send #" + dccPacket.getPacketNr());
+			dccDownload = downloadQueue.getDccDownload(dccDownload.getKey());
+			dccDownload.setState(DccDownload.STATE_DOWNLOAD_WAITING);
+		}else{
+			downloadQueue.addToQueue(dccDownload);
+			doPrivmsg(dccPacket.getSender(), "xdcc send #" + dccPacket.getPacketNr());
+			NotifyManagerDccDownload.getNotifyManager().notifyNewDccDownload(dccDownload);
+		}
 	}
 	
 	public IrcServer getIrcServer() {
@@ -212,7 +208,8 @@ public class DccBot extends IRCConnection implements IRCEventListener{
 
 	@Override
 	public void onPrivmsg(String target, IRCUser user, String msg) {
-		log(user.getNick() + msg);
+		String nick = user.getNick();
+		log(nick + msg);
 		//TODO: Wenn sich ein bot deconnected dann dies in Tabelle anzeigen => onQuit
 		if( DccMessageParser.isDccMessage(msg) ){
 			DccPacket dccPacket = DccMessageParser.buildDccPacket(user.getNick(), msg);
@@ -225,6 +222,12 @@ public class DccBot extends IRCConnection implements IRCEventListener{
 				log(new LogMessage(dccPacket.getName(), LogMessage.LOG_COLOR_DCC_MESSAGE));
 				NotifyManagerDccPacket.getNotifyManager().notifyNewPackage(dccPacket);
 			}
+		}else if(validDccSendMessage(nick, msg)){
+			DccFileTransfer dccFileTransfer = parseDccFileTransfer(nick, msg);
+			DccDownload dccDownload = DccDownloadQueue.getInstance().getDccDownload(dccFileTransfer);
+			dccDownload.setDccFileTransfer(dccFileTransfer);
+			dccFileTransfer.start(dccDownload.getDownloadDirFilename());
+			dccDownload.start();
 		}else{
 			log(new LogMessage("KEINE DCC MESSAGE: " + msg, LogMessage.LOG_COLOR_NO_DCC_MESSAGE)); //$NON-NLS-1$
 		}		
@@ -251,4 +254,52 @@ public class DccBot extends IRCConnection implements IRCEventListener{
 		log("unknown");
 	}
 
+	private DccFileTransfer parseDccFileTransfer(String sender, String msg) {
+	    try {
+		    String tmpfile;
+	    	StringTokenizer st = new StringTokenizer(msg);
+	    	st.nextToken();
+	    	st.nextToken();
+	    	tmpfile = st.nextToken();
+	    	if (tmpfile.charAt(0) == '\"') {
+	    		do {
+	    			tmpfile += " "+ st.nextToken();
+		        } while (tmpfile.charAt(tmpfile.length() - 1) != '\"');
+		        tmpfile = tmpfile.substring(1, tmpfile.length() - 1);
+	    	}
+	    	String tmphost = st.nextToken();
+	    	if (tmphost.charAt(0) == '\"'){
+	    		tmphost = tmphost.substring(1);
+	    	}
+	    	if (tmphost.charAt(tmphost.length() - 1) == '\"'){
+	    		tmphost = tmphost.substring(0, tmphost.length() - 1);
+	    	}
+	    	String xhost = getInetAddress(Long.parseLong(tmphost)).getHostAddress();
+	    	int xport = Integer.parseInt(st.nextToken());
+	    	long xsize = Long.parseLong(st.nextToken());
+	    	DccFileTransfer dccFileTransfer = new DccFileTransfer(xhost, xport, xsize, sender, tmpfile);
+	    	return dccFileTransfer;
+	    } catch (Exception exc) {
+	    	throw new RuntimeException(exc);
+	    }
+	}
+	
+	private boolean validDccSendMessage(String sender, String msg){
+	    if (msg.length() <= DCC_SEND_LEADING.length()){
+	    	return false;
+	    }
+	    if (!msg.substring(0, DCC_SEND_LEADING.length()).equalsIgnoreCase(DCC_SEND_LEADING)){
+	    	return false;	
+	    }
+	    return true;
+	}
+	
+	private static InetAddress getInetAddress(long address) throws UnknownHostException {
+		byte[] addr = new byte[4];
+		addr[0] = (byte)((address >>> 24) & 0xFF);
+		addr[1] = (byte)((address >>> 16) & 0xFF);
+		addr[2] = (byte)((address >>> 8) & 0xFF);
+		addr[3] = (byte)(address & 0xFF);
+		return InetAddress.getByAddress(addr);
+	}
 }

@@ -17,7 +17,6 @@
  */
 package de.snertlab.xdccBee.irc;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -102,7 +101,7 @@ public class IrcChannel implements IDccPacketList, IConnectedState{
 	}
 
 	public void dccSendFile(String filePath, DccPacket dccPacket) {
-		ircServer.getDccBot().xdccSend(dccPacket, new File(filePath + dccPacket.getName()));
+		ircServer.getDccBot().xdccSend(dccPacket, filePath);
 	}
 
 	@Override

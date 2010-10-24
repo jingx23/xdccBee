@@ -17,8 +17,6 @@
  */
 package de.snertlab.xdccBee.irc;
 
-import java.io.File;
-
 import de.snertlab.xdccBee.ui.TableItemDownload;
 
 
@@ -36,14 +34,14 @@ public class DccDownload {
 	
 	private DccPacket dccPacket;
 	private DccFileTransfer dccFileTransfer;
-	private File destinationFile;
+	private String downloadDirFilename;
 	private TableItemDownload tableItemDownload;
 	private MyTableItemDownloadThread downloadThread;
 	private String state;
 	
-	public DccDownload(DccPacket dccPacket, File destination){
+	public DccDownload(DccPacket dccPacket, String downloadDirFilename){
 		this.dccPacket = dccPacket;
-		this.destinationFile = destination;
+		this.downloadDirFilename = downloadDirFilename;
 		setState(STATE_DOWNLOAD_WAITING);
 	}
 
@@ -59,10 +57,6 @@ public class DccDownload {
 		return dccFileTransfer;
 	}
 	
-	public File getDestinationFile(){
-		return destinationFile;
-	}
-
 	public boolean matchDccFileTransfer(DccFileTransfer dccFileTransfer) {
 		//assumes that package comes from sender in order, so when you request 2 packages 1 comes first and 2 comes second else packages will be saved under wrong name
 		if( dccPacket.getSender().equals(dccFileTransfer.getNick()) && state.equals(STATE_DOWNLOAD_WAITING) ){
@@ -73,6 +67,10 @@ public class DccDownload {
 
 	public DccPacket getDccPacket() {
 		return dccPacket;
+	}
+	
+	public String getDownloadDirFilename(){
+		return downloadDirFilename;
 	}
 
 	public void setTableItemDownload(TableItemDownload tableItemDownload) {

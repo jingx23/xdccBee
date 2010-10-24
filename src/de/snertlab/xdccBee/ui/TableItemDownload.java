@@ -73,7 +73,7 @@ public class TableItemDownload {
 
 	public void updateFileTransferDisplay(DccFileTransfer dccFileTransfer) {
 		bar.setMaximum((int)dccFileTransfer.getSize());
-		itemDownload.setText(3, " " + bytesToKb(dccFileTransfer.getTransferRate())+" KB/s");
+		itemDownload.setText(3, bytesToKb(dccFileTransfer.getTransferRate())+" KB/s");
 		bar.setSelection((int)dccFileTransfer.getProgress());
 		itemDownload.setText(4, getEstimateTime(dccFileTransfer));
 		refreshState();

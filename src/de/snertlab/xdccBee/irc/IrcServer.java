@@ -98,7 +98,6 @@ public class IrcServer implements IConnectedState{
 	}
 	
 	public void connect(){
-		//FIXME: dccBot.setVerbose(isDebug);
 		threadBotConnect = new Thread( new Runnable() {
 			@Override
 			public void run() {
