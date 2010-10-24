@@ -16,6 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package de.snertlab.xdccBee.irc;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
@@ -39,32 +40,42 @@ import de.snertlab.xdccBee.irc.listener.NotifyManagerDccPacket;
  * @author snert
  *
  */
-public class DccBot extends IRCConnection implements IRCEventListener{
+public class DccBot implements IRCEventListener{
 	
 	private static final String DCC_SEND_LEADING = "DCC SEND ";
 	
 	public List<String> listChannelsJoined;
 	private IrcServer ircServer;
 	private String nickname;
+
+	private IRCConnection ircconnection;
 	
 	public DccBot(IrcServer ircServer, String botName, String botVersion) {
-		super(  ircServer.getHostname(), 
+		//TODO: botName and botVersion???
+		this.listChannelsJoined = new ArrayList<String>();
+		this.ircServer = ircServer;
+	}
+	
+	public void setNickname(String nickname){
+		this.nickname = nickname;
+	}
+	
+
+	public void connect() throws IOException {
+		if(ircconnection!=null) ircconnection=null;
+		ircconnection = new IRCConnection(  ircServer.getHostname(), 
 				new int[]{Integer.parseInt(ircServer.getPort())}, 
 				null, 
 				ircServer.getNickname(), 
 				ircServer.getNickname(), 
 				ircServer.getNickname()
 			 );
-		this.listChannelsJoined = new ArrayList<String>();
-		this.ircServer = ircServer;
-		setEncoding("ISO-8859-1");
-		setPong(true);
-		setColors(false);
-		this.addIRCEventListener(this);
-	}
-	
-	public void setNickname(String nickname){
-		this.nickname = nickname;
+
+		ircconnection.setEncoding("ISO-8859-1");
+		ircconnection.setPong(true);
+		ircconnection.setColors(false);
+		ircconnection.addIRCEventListener(this);
+		ircconnection.connect();
 	}
 	
 	public void log(String message) {
@@ -81,7 +92,7 @@ public class DccBot extends IRCConnection implements IRCEventListener{
 		List<IrcChannel> listIrcChannels = ircServer.getListChannels();
 		for (IrcChannel ircChannel : listIrcChannels) {
 			if(ircChannel.isAutoconnect()){
-				doJoin(ircChannel.getChannelName());  //TODO: Nicht ganz sauber, aber ircChannel.connect() kann nicht aufgerufen werden
+				ircconnection.doJoin(ircChannel.getChannelName());  //TODO: Nicht ganz sauber, aber ircChannel.connect() kann nicht aufgerufen werden
                 									 //da IRC Server threadBotConnect noch laeuft
 
 			}
@@ -109,12 +120,12 @@ public class DccBot extends IRCConnection implements IRCEventListener{
 		DccDownloadQueue downloadQueue = DccDownloadQueue.getInstance();
 		DccDownload dccDownload = new DccDownload(dccPacket, downloadDirFilename);
 		if( downloadQueue.getDccDownload(dccDownload.getKey()) != null ){
-			doPrivmsg(dccPacket.getSender(), "xdcc send #" + dccPacket.getPacketNr());
+			ircconnection.doPrivmsg(dccPacket.getSender(), "xdcc send #" + dccPacket.getPacketNr());
 			dccDownload = downloadQueue.getDccDownload(dccDownload.getKey());
 			dccDownload.setState(DccDownload.STATE_DOWNLOAD_WAITING);
 		}else{
 			downloadQueue.addToQueue(dccDownload);
-			doPrivmsg(dccPacket.getSender(), "xdcc send #" + dccPacket.getPacketNr());
+			ircconnection.doPrivmsg(dccPacket.getSender(), "xdcc send #" + dccPacket.getPacketNr());
 			NotifyManagerDccDownload.getNotifyManager().notifyNewDccDownload(dccDownload);
 		}
 	}
@@ -202,7 +213,7 @@ public class DccBot extends IRCConnection implements IRCEventListener{
 	@Override
 	public void onPing(String ping) {
 		log(ping);
-		doPong(ping);
+		ircconnection.doPong(ping);
 		
 	}
 
@@ -301,5 +312,21 @@ public class DccBot extends IRCConnection implements IRCEventListener{
 		addr[2] = (byte)((address >>> 8) & 0xFF);
 		addr[3] = (byte)(address & 0xFF);
 		return InetAddress.getByAddress(addr);
+	}
+
+	public void doQuit() {
+		ircconnection.doQuit();		
+	}
+
+	public void close() {
+		ircconnection.close();		
+	}
+
+	public void doJoin(String channelName) {
+		ircconnection.doJoin(channelName);		
+	}
+
+	public void doPart(String channelName) {
+		ircconnection.doPart(channelName);		
 	}
 }
