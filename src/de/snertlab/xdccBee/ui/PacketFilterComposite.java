@@ -93,6 +93,7 @@ public class PacketFilterComposite extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				packetViewer.setFilterIgnoreCase(checkIgnoreCase.getSelection());
+				packetViewer.refresh();
 			}
 		});
 
@@ -104,6 +105,7 @@ public class PacketFilterComposite extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				packetViewer.setFilterRegExp(checkRegExp.getSelection());
+				packetViewer.refresh();
 			}
 		});
 		
