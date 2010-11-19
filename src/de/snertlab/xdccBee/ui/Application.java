@@ -51,7 +51,6 @@ import de.snertlab.xdccBee.controlling.BeeLogger;
 import de.snertlab.xdccBee.irc.IrcServer;
 import de.snertlab.xdccBee.irc.ServerList;
 import de.snertlab.xdccBee.irc.listener.NotifyManagerConnectedState;
-import de.snertlab.xdccBee.irc.listener.NotifyManagerDccBotLogging;
 import de.snertlab.xdccBee.messages.XdccBeeMessages;
 import de.snertlab.xdccBee.settings.ServerSettings;
 import de.snertlab.xdccBee.settings.Settings;
