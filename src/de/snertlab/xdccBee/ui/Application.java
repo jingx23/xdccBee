@@ -50,6 +50,8 @@ import org.eclipse.swt.widgets.TrayItem;
 import de.snertlab.xdccBee.controlling.BeeLogger;
 import de.snertlab.xdccBee.irc.IrcServer;
 import de.snertlab.xdccBee.irc.ServerList;
+import de.snertlab.xdccBee.irc.listener.NotifyManagerConnectedState;
+import de.snertlab.xdccBee.irc.listener.NotifyManagerDccBotLogging;
 import de.snertlab.xdccBee.messages.XdccBeeMessages;
 import de.snertlab.xdccBee.settings.ServerSettings;
 import de.snertlab.xdccBee.settings.Settings;
@@ -256,7 +258,8 @@ public class Application extends ApplicationWindow {
 	 */
 	@Override
 	public boolean close() {
-		//FIXME: NotifyManager bereinigen, da sonst bei ircServer.disconnect versucht wird der Baum zu refreshen was wiederum zu einer WidgetDisposed Meldung fuehrt
+		//TODO: Abstract class NotifyManager to get .clearNotifyList() in all of the NotifyManagers
+		NotifyManagerConnectedState.getNotifyManager().clearNotifyList();
 		List<IrcServer> listIrcServer = ServerList.getListConnectedServer();
 		for (IrcServer ircServer : listIrcServer) {
 			ircServer.disconnect();

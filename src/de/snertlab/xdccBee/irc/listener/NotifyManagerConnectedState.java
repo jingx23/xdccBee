@@ -51,4 +51,8 @@ public class NotifyManagerConnectedState {
 			notifyConnectedState.notifyConnectedState(obj);
 		}
 	}
+
+	public void clearNotifyList() {
+		listNotifier.clear();
+	}
 }
