@@ -256,6 +256,7 @@ public class Application extends ApplicationWindow {
 	 */
 	@Override
 	public boolean close() {
+		//FIXME: NotifyManager bereinigen, da sonst bei ircServer.disconnect versucht wird der Baum zu refreshen was wiederum zu einer WidgetDisposed Meldung fuehrt
 		List<IrcServer> listIrcServer = ServerList.getListConnectedServer();
 		for (IrcServer ircServer : listIrcServer) {
 			ircServer.disconnect();
