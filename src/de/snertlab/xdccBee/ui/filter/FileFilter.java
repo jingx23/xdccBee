@@ -28,73 +28,80 @@ import de.snertlab.xdccBee.irc.DccPacket;
 
 /**
  * @author snert
- *
+ * 
  */
-public class FileFilter extends ViewerFilter{
-	
-	public static final String MODE_ALL		 = "modeAll"; //$NON-NLS-1$
+public class FileFilter extends ViewerFilter {
+
+	public static final String MODE_ALL = "modeAll"; //$NON-NLS-1$
 	public static final String MODE_FILENAME = "modeFilename"; //$NON-NLS-1$
-	public static final String MODE_SERVER   = "modeServer"; //$NON-NLS-1$
-	public static final String MODE_CHANNEL  = "modeChannel"; //$NON-NLS-1$
-	
+	public static final String MODE_SERVER = "modeServer"; //$NON-NLS-1$
+	public static final String MODE_CHANNEL = "modeChannel"; //$NON-NLS-1$
+
 	private String mode;
 	private String hostname;
 	private String channelName;
 	private String fileName;
 	private boolean ignoreCase;
 	private boolean regExp;
-	
-	public FileFilter(){
+
+	public FileFilter() {
 		this.mode = MODE_ALL;
 	}
 
 	@Override
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
 		DccPacket dccPacket = (DccPacket) element;
-		if( MODE_ALL.equals(mode) ){
+		if (MODE_ALL.equals(mode)) {
 			return true;
-		}else if( MODE_SERVER.equals(mode) ){
-			if( dccPacket.getHostname().equals(hostname) ){
+		} else if (MODE_SERVER.equals(mode)) {
+			if (dccPacket.getHostname().equals(hostname)) {
 				return true;
 			}
-		}else if( MODE_CHANNEL.equals(mode) ){
-			if( dccPacket.getChannelName().equals(channelName) ){
+		} else if (MODE_CHANNEL.equals(mode)) {
+			if (dccPacket.getChannelName().equals(channelName)) {
 				return true;
 			}
-		}else if( MODE_FILENAME.equals(mode) ){
+		} else if (MODE_FILENAME.equals(mode)) {
 			String fileNameToSearch = fileName;
-			String dccPacketName    = dccPacket.getName();
-			if(ignoreCase){
+			String dccPacketName = dccPacket.getName();
+			if (ignoreCase) {
 				fileNameToSearch = fileName.toLowerCase();
 				dccPacketName = dccPacketName.toLowerCase();
 			}
-			if(regExp){
-				try{
+			if (regExp) {
+				try {
 					Pattern fileNamePattern = Pattern.compile(fileName);
 					Matcher m = fileNamePattern.matcher(dccPacket.getName());
 					if (m.find()) {
 						return true;
 					}
-				}catch (PatternSyntaxException e) {
-					//ignore
+				} catch (PatternSyntaxException e) {
+					// ignore
 					return false;
 				}
-			}else{
-				return dccPacketName.contains(fileNameToSearch);
+			} else {
+				String[] keywords = fileNameToSearch.split(" ");
+				int matchCount = 0;
+				for (String keyword : keywords) {
+					if (dccPacketName.contains(keyword)) {
+						matchCount++;
+					}
+				}
+				return (matchCount == keywords.length);
 			}
-			
-		}else{
+
+		} else {
 			throw new RuntimeException("Unknown Mode " + mode); //$NON-NLS-1$
 		}
 		return false;
 	}
-		
-	public void setHostname(String hostname){
+
+	public void setHostname(String hostname) {
 		this.mode = MODE_SERVER;
 		this.hostname = hostname;
 	}
-	
-	public void setChannelName(String channelName){
+
+	public void setChannelName(String channelName) {
 		this.mode = MODE_CHANNEL;
 		this.channelName = channelName;
 	}
@@ -103,8 +110,8 @@ public class FileFilter extends ViewerFilter{
 		this.mode = MODE_FILENAME;
 		this.fileName = fileName;
 	}
-	
-	public void setAll(){
+
+	public void setAll() {
 		this.mode = MODE_ALL;
 	}
 
