@@ -93,6 +93,9 @@ public class EditNewIrcServerDialog extends AbstractSaveDialog {
 		txtPort.setText(StringUtils.defaultString(ircServer.getPort()));
 		txtNickname.setText(StringUtils.defaultString(ircServer.getNickname()));
 		btnDebugMode.setSelection(ircServer.isDebug());
+		if (isNew) {
+			btnDebugMode.setSelection(true);
+		}
 		btnAutoconnect.setSelection(ircServer.isAutoconnect());
 		fillTblChannels();
 	}
