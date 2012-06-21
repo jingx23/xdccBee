@@ -13,23 +13,36 @@
 	</target>
 
 	<target name="revision">
+    	<exec executable="git" outputproperty="git.revision" failifexecutionfails="false" errorproperty="">
+    	        <arg value="describe"/>
+    	        <arg value="--tags"/>
+    	        <arg value="--always"/>
+    	        <arg value="HEAD"/>
+    	    </exec>
+    	    <condition property="repository.version" value="${git.revision}" else="unknown">
+    	        <and>
+    	            <isset property="git.revision"/>
+    	            <length string="${git.revision}" trim="yes" length="0" when="greater"/>
+    	        </and>
+    	    </condition>
 	    <propertyfile  file="${versionPropertiesFilename}">
-	            <entry key="build.revision.number" type="int" operation="+" value="1" pattern="0"/>
+	    	<entry key="build.revision.number" type="int" value="${git.revision}" pattern="0"/>
 	    </propertyfile>
 	</target>
 	
 	<target name="patch">
 		    <propertyfile  file="${versionPropertiesFilename}">
 		            <entry key="build.patch.number" type="int" operation="+" value="1" pattern="0"/>
-		    		<entry key="build.revision.number" type="int" value="0" pattern="0"/>
 		    </propertyfile>
-		</target>
+			<antcall target="revision"/>
+	</target>
 
 	<target name="minor">
 	    <propertyfile  file="${versionPropertiesFilename}">
 	            <entry key="build.minor.number" type="int" operation="+" value="1" pattern="0"/>
 	            <entry key="build.patch.number" type="int" value="0" pattern="0"/>
 	    </propertyfile>
+		<antcall target="revision"/>
 	</target>
 
 	<target name="major">
@@ -37,8 +50,8 @@
 	            <entry key="build.major.number" type="int" operation="+" value="1" pattern="0"/>
 	            <entry key="build.minor.number" type="int" value="0" pattern="0"/>
 	    		<entry key="build.patch.number" type="int" value="0" pattern="0"/>
-	            <entry key="build.revision.number" type="int" value="0" pattern="0"/>
 	    </propertyfile>
+	    <antcall target="revision"/>
 	</target>
 
 	<target name="all">
@@ -46,8 +59,8 @@
 	            <entry key="build.major.number" type="int" operation="+" value="1" pattern="0"/>
 	            <entry key="build.minor.number" type="int" operation="+" value="1" pattern="0"/>
 	    		<entry key="build.patch.number" type="int" operation="+" value="1" pattern="0"/>
-	            <entry key="build.revision.number" type="int" operation="+" value="1" pattern="0"/>
 	    </propertyfile>
+	    <antcall target="revision"/>
 	</target>
 
 </project>
