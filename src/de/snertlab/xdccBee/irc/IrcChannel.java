@@ -27,34 +27,34 @@ import org.jdom.Element;
 
 /**
  * @author snert
- *
+ * 
  */
-public class IrcChannel implements IDccPacketList, IConnectedState{
-	
+public class IrcChannel implements IDccPacketList, IConnectedState {
+
 	private IrcServer ircServer;
 	private String channelName;
 	private Map<String, DccPacket> mapDccPackets;
 	private boolean autoconnect;
-	
-	public IrcChannel(){
+
+	public IrcChannel() {
 		this.mapDccPackets = new HashMap<String, DccPacket>();
 	}
 
-	public IrcChannel(IrcServer ircServer){
+	public IrcChannel(IrcServer ircServer) {
 		this();
 		this.ircServer = ircServer;
 	}
-	
-	public IrcChannel(IrcServer ircServer, String channelName){
+
+	public IrcChannel(IrcServer ircServer, String channelName) {
 		this();
-		this.ircServer 	 = ircServer;
+		this.ircServer = ircServer;
 		this.channelName = channelName;
 	}
 
 	public IrcServer getIrcServer() {
 		return ircServer;
 	}
-	
+
 	public void setIrcServer(IrcServer ircServer) {
 		this.ircServer = ircServer;
 	}
@@ -62,32 +62,34 @@ public class IrcChannel implements IDccPacketList, IConnectedState{
 	public String getChannelName() {
 		return channelName;
 	}
-	
+
 	public void setChannelName(String channelName) {
 		this.channelName = channelName;
 	}
-	
-	public Element makeXmlNode(){
+
+	public Element makeXmlNode() {
 		Element nodeChannel = new Element("IRC_CHANNEL"); //$NON-NLS-1$
-		nodeChannel.setAttribute("channelName", StringUtils.defaultString(channelName)); //$NON-NLS-1$
+		nodeChannel.setAttribute(
+				"channelName", StringUtils.defaultString(channelName)); //$NON-NLS-1$
 		return nodeChannel;
 	}
-	
-	public void connect(){
-		if(ircServer.isConnected()){
+
+	public void connect() {
+		if (ircServer.isConnected()) {
 			ircServer.getDccBot().doJoin(channelName);
-		}else{
+		} else {
 			throw new RuntimeException("Server is not connected"); //$NON-NLS-1$
 		}
 	}
-	
-	public void disconnect(){
+
+	public void disconnect() {
 		ircServer.getDccBot().doPart(channelName);
-		//remove precaution also from listchoinedchannels => because if server didnt answer channel in gui is still connected
+		// remove precaution also from listchoinedchannels => because if server
+		// didnt answer channel in gui is still connected
 		ircServer.getDccBot().removeChannelFromJoinedChannelList(channelName);
 	}
 
-	public boolean isConnected(){
+	public boolean isConnected() {
 		return ircServer.getDccBot().isChannelJoined(channelName);
 	}
 
@@ -100,8 +102,8 @@ public class IrcChannel implements IDccPacketList, IConnectedState{
 		return new ArrayList<DccPacket>(mapDccPackets.values());
 	}
 
-	public void dccSendFile(String filePath, DccPacket dccPacket) {
-		ircServer.getDccBot().xdccSend(dccPacket, filePath);
+	public void dccSendFile(DccPacket dccPacket) {
+		ircServer.getDccBot().xdccSend(dccPacket);
 	}
 
 	@Override

@@ -27,11 +27,13 @@ import de.snertlab.xdccBee.ui.ViewMain;
 
 /**
  * @author holgi
- *
+ * 
  */
 public class ActionDownloadFile extends Action {
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.action.Action#getText()
 	 */
 	@Override
@@ -47,10 +49,12 @@ public class ActionDownloadFile extends Action {
 	@Override
 	public void run() {
 		DccPacket dccPacket = getViewMain().getSelectedDccPacket();
-		IrcServer ircServer = Application.getServerSettings().getServerByName(dccPacket.getHostname());
-		ircServer.getChannelByName(dccPacket.getChannelName()).dccSendFile(Application.getSettings().getDownloadFolder()+"/", dccPacket); //$NON-NLS-1$
+		IrcServer ircServer = Application.getServerSettings().getServerByName(
+				dccPacket.getHostname());
+		ircServer.getChannelByName(dccPacket.getChannelName()).dccSendFile(
+				dccPacket); //$NON-NLS-1$
 	}
-	
+
 	private ViewMain getViewMain() {
 		return Application.getWindow().getViewMain();
 	}

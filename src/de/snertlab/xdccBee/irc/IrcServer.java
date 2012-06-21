@@ -28,52 +28,54 @@ import de.snertlab.xdccBee.ui.Application;
 
 /**
  * @author snert
- *
+ * 
  */
-public class IrcServer implements IConnectedState{
-	
+public class IrcServer implements IConnectedState {
+
 	private String hostname;
 	private String port;
 	private String nickname;
 	private Map<String, IrcChannel> mapIrcChannels;
 	private DccBot dccBot;
 	private Thread threadBotConnect;
-	private Map <String, DccPacket> mapDccPackets;
+	private Map<String, DccPacket> mapDccPackets;
 	private boolean isDebug;
 	private boolean autoconnect;
 	private boolean connected;
-	
-	
-	public IrcServer(String hostname, String nickname, String port, String botName, String botVersion){
-		this.hostname 			= hostname;
-		this.nickname 			= nickname;
-		this.port 			 	= port;
+
+	public IrcServer(String hostname, String nickname, String port,
+			String botName, String botVersion) {
+		this.hostname = hostname;
+		this.nickname = nickname;
+		this.port = port;
 		this.mapIrcChannels = new LinkedHashMap<String, IrcChannel>();
 		this.mapDccPackets = new LinkedHashMap<String, DccPacket>();
-		this.dccBot = new DccBot(this, Application.getSettings().getBotName(), Application.getSettings().getBotVersion());
+		this.dccBot = new DccBot(this, Application.getSettings().getBotName(),
+				Application.getSettings().getBotVersion(), Application
+						.getSettings().getDownloadFolder() + "/");
 	}
-		
+
 	public String getHostname() {
 		return hostname;
 	}
-	
+
 	public void setHostname(String hostname) {
 		this.hostname = hostname;
 	}
-	
+
 	public String getNickname() {
 		return nickname;
 	}
 
-	public void setNickname(String nickname){
+	public void setNickname(String nickname) {
 		this.nickname = nickname;
 	}
 
 	public String getPort() {
 		return port;
 	}
-	
-	public void setPort(String port){
+
+	public void setPort(String port) {
 		this.port = port;
 	}
 
@@ -82,13 +84,13 @@ public class IrcServer implements IConnectedState{
 	}
 
 	public void addIrcChannel(IrcChannel newIrcChannel) {
-		if( containsIrcChannel(newIrcChannel.getChannelName()) ){
+		if (containsIrcChannel(newIrcChannel.getChannelName())) {
 			throw new RuntimeException("Channel bereits vorhanden"); //$NON-NLS-1$
 		}
 		newIrcChannel.setIrcServer(this);
-		mapIrcChannels.put(newIrcChannel.getChannelName(), newIrcChannel);	
+		mapIrcChannels.put(newIrcChannel.getChannelName(), newIrcChannel);
 	}
-	
+
 	public boolean containsIrcChannel(String channelName) {
 		return mapIrcChannels.containsKey(channelName);
 	}
@@ -96,16 +98,16 @@ public class IrcServer implements IConnectedState{
 	public void removeIrcChannel(IrcChannel selectedIrcChannel) {
 		mapIrcChannels.remove(selectedIrcChannel.getChannelName());
 	}
-	
-	public void connect(){
-		threadBotConnect = new Thread( new Runnable() {
+
+	public void connect() {
+		threadBotConnect = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
 					dccBot.setNickname(nickname);
 					dccBot.connect();
 				} catch (IOException e) {
-					//TODO: Connection refused
+					// TODO: Connection refused
 					BeeLogger.exception(e);
 					throw new RuntimeException(e);
 				}
@@ -113,47 +115,50 @@ public class IrcServer implements IConnectedState{
 		});
 		threadBotConnect.start();
 	}
-	
-	public DccBot getDccBot(){
+
+	public DccBot getDccBot() {
 		return dccBot;
 	}
 
 	public boolean isConnected() {
-		if(isConnecting()) return false;
+		if (isConnecting())
+			return false;
 		return connected;
 	}
 
-	public void setConnected(boolean connected){
+	public void setConnected(boolean connected) {
 		this.connected = connected;
 	}
-	
+
 	public boolean isConnecting() {
-		if(threadBotConnect == null) return false;
-		return threadBotConnect.isAlive(); 
+		if (threadBotConnect == null)
+			return false;
+		return threadBotConnect.isAlive();
 	}
-	
-	public void disconnect(){
+
+	public void disconnect() {
 		disconnectChannels();
 		dccBot.doQuit();
 		dccBot.close();
 		connected = false;
 	}
-	
-	private void disconnectChannels(){
+
+	private void disconnectChannels() {
 		for (IrcChannel ircChannel : mapIrcChannels.values()) {
-			if(ircChannel.isConnected()){
+			if (ircChannel.isConnected()) {
 				ircChannel.disconnect();
 			}
-		}		
+		}
 	}
-	
-	public void addDccPacket(DccPacket dccPacket){
+
+	public void addDccPacket(DccPacket dccPacket) {
 		mapDccPackets.put(dccPacket.toString(), dccPacket);
 	}
 
 	public IrcChannel getChannelByName(String channel) {
 		for (IrcChannel ircChannel : mapIrcChannels.values()) {
-			if(channel.toUpperCase().equals(ircChannel.getChannelName().toUpperCase())){
+			if (channel.toUpperCase().equals(
+					ircChannel.getChannelName().toUpperCase())) {
 				return ircChannel;
 			}
 		}
@@ -161,7 +166,7 @@ public class IrcServer implements IConnectedState{
 	}
 
 	public List<DccPacket> getListDccPackets() {
-		//		return Collections.unmodifiableList(mapDccPackets);
+		// return Collections.unmodifiableList(mapDccPackets);
 		return new ArrayList<DccPacket>(mapDccPackets.values());
 	}
 
@@ -175,10 +180,13 @@ public class IrcServer implements IConnectedState{
 
 	@Override
 	public boolean equals(Object obj) {
-		if(!(obj instanceof IrcServer)) return false;	
+		if (!(obj instanceof IrcServer))
+			return false;
 		IrcServer ircServer = (IrcServer) obj;
-		if(!getHostname().equals(ircServer.getHostname())) return false;
-		if(!getPort().equals(ircServer.getPort())) return false;
+		if (!getHostname().equals(ircServer.getHostname()))
+			return false;
+		if (!getPort().equals(ircServer.getPort()))
+			return false;
 		return true;
 	}
 

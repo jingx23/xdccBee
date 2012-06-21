@@ -16,12 +16,15 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package de.snertlab.xdccBee.irc;
+
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -38,38 +41,40 @@ import de.snertlab.xdccBee.irc.listener.NotifyManagerDccPacket;
 
 /**
  * @author snert
- *
+ * 
  */
-public class DccBot implements IRCEventListener{
-	
+public class DccBot implements IRCEventListener {
+
 	private static final String DCC_SEND_LEADING = "DCC SEND ";
-	
+
 	public List<String> listChannelsJoined;
 	private IrcServer ircServer;
 	private String nickname;
+	private String downloadDirFilename;
+	private HashMap<String, DccFileTransfer> mapAwaitingDccFileTransferResume;
 
 	private IRCConnection ircconnection;
-	
-	public DccBot(IrcServer ircServer, String botName, String botVersion) {
-		//TODO: botName and botVersion???
+
+	public DccBot(IrcServer ircServer, String botName, String botVersion,
+			String downloadDirFilename) {
+		// TODO: botName and botVersion???
 		this.listChannelsJoined = new ArrayList<String>();
 		this.ircServer = ircServer;
+		this.mapAwaitingDccFileTransferResume = new HashMap<String, DccFileTransfer>();
+		this.downloadDirFilename = downloadDirFilename;
 	}
-	
-	public void setNickname(String nickname){
+
+	public void setNickname(String nickname) {
 		this.nickname = nickname;
 	}
-	
 
 	public void connect() throws IOException {
-		if(ircconnection!=null) ircconnection=null;
-		ircconnection = new IRCConnection(  ircServer.getHostname(), 
-				new int[]{Integer.parseInt(ircServer.getPort())}, 
-				null, 
-				ircServer.getNickname(), 
-				ircServer.getNickname(), 
-				ircServer.getNickname()
-			 );
+		if (ircconnection != null)
+			ircconnection = null;
+		ircconnection = new IRCConnection(ircServer.getHostname(),
+				new int[] { Integer.parseInt(ircServer.getPort()) }, null,
+				ircServer.getNickname(), ircServer.getNickname(),
+				ircServer.getNickname());
 
 		ircconnection.setEncoding("ISO-8859-1");
 		ircconnection.setPong(true);
@@ -77,59 +82,73 @@ public class DccBot implements IRCEventListener{
 		ircconnection.addIRCEventListener(this);
 		ircconnection.connect();
 	}
-	
+
 	public void log(String message) {
-		log( new LogMessage("[" + getLogTime() + "]" + " " + message , LogMessage.LOG_COLOR_DCCBOT_MESSAGE)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		log(new LogMessage(
+				"[" + getLogTime() + "]" + " " + message, LogMessage.LOG_COLOR_DCCBOT_MESSAGE)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
-		
-	
+
 	private void log(LogMessage message) {
-		NotifyManagerDccBotLogging.getNotifyManager().notify(ircServer, message);
+		NotifyManagerDccBotLogging.getNotifyManager()
+				.notify(ircServer, message);
 	}
-	
+
 	protected void onConnect() {
 		ircServer.setConnected(true);
 		List<IrcChannel> listIrcChannels = ircServer.getListChannels();
 		for (IrcChannel ircChannel : listIrcChannels) {
-			if(ircChannel.isAutoconnect()){
-				ircconnection.doJoin(ircChannel.getChannelName());  //TODO: Nicht ganz sauber, aber ircChannel.connect() kann nicht aufgerufen werden
-                									 //da IRC Server threadBotConnect noch laeuft
+			if (ircChannel.isAutoconnect()) {
+				ircconnection.doJoin(ircChannel.getChannelName()); // TODO:
+																	// Nicht
+																	// ganz
+																	// sauber,
+																	// aber
+																	// ircChannel.connect()
+																	// kann
+																	// nicht
+																	// aufgerufen
+																	// werden
+				// da IRC Server threadBotConnect noch laeuft
 
 			}
 		}
 		NotifyManagerConnectedState.getNotifyManager().notify(ircServer);
 	}
-	
-	//TODO: kick oder ban abfangen??
-	
-	public boolean isChannelJoined(String channel){
-		//TODO: Was passiert wenn es den Channel nicht gibt??
-		if( listChannelsJoined.contains(channel.toUpperCase()) ){
+
+	// TODO: kick oder ban abfangen??
+
+	public boolean isChannelJoined(String channel) {
+		// TODO: Was passiert wenn es den Channel nicht gibt??
+		if (listChannelsJoined.contains(channel.toUpperCase())) {
 			return true;
 		}
 		return false;
 	}
-		
-	private String getLogTime(){
+
+	private String getLogTime() {
 		Calendar cal = Calendar.getInstance();
-	    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm"); //$NON-NLS-1$
-	    return sdf.format(cal.getTime());	
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm"); //$NON-NLS-1$
+		return sdf.format(cal.getTime());
 	}
 
-	public void xdccSend(DccPacket dccPacket, String downloadDirFilename) {
+	public void xdccSend(DccPacket dccPacket) {
 		DccDownloadQueue downloadQueue = DccDownloadQueue.getInstance();
-		DccDownload dccDownload = new DccDownload(dccPacket, downloadDirFilename);
-		if( downloadQueue.getDccDownload(dccDownload.getKey()) != null ){
-			ircconnection.doPrivmsg(dccPacket.getSender(), "xdcc send #" + dccPacket.getPacketNr());
+		DccDownload dccDownload = new DccDownload(dccPacket,
+				downloadDirFilename);
+		if (downloadQueue.getDccDownload(dccDownload.getKey()) != null) {
+			ircconnection.doPrivmsg(dccPacket.getSender(), "xdcc send #"
+					+ dccPacket.getPacketNr());
 			dccDownload = downloadQueue.getDccDownload(dccDownload.getKey());
 			dccDownload.setState(DccDownload.STATE_DOWNLOAD_WAITING);
-		}else{
+		} else {
 			downloadQueue.addToQueue(dccDownload);
-			ircconnection.doPrivmsg(dccPacket.getSender(), "xdcc send #" + dccPacket.getPacketNr());
-			NotifyManagerDccDownload.getNotifyManager().notifyNewDccDownload(dccDownload);
+			ircconnection.doPrivmsg(dccPacket.getSender(), "xdcc send #"
+					+ dccPacket.getPacketNr());
+			NotifyManagerDccDownload.getNotifyManager().notifyNewDccDownload(
+					dccDownload);
 		}
 	}
-	
+
 	public IrcServer getIrcServer() {
 		return ircServer;
 	}
@@ -158,55 +177,58 @@ public class DccBot implements IRCEventListener{
 
 	@Override
 	public void onError(int num, String msg) {
-		log(num + " " + msg);	
+		log(num + " " + msg);
 	}
 
 	@Override
 	public void onInvite(String chan, IRCUser user, String passiveNick) {
-		log("onInvite: channel:" + chan + "nick: " + user.getNick() + "passiveNick:" + passiveNick);
+		log("onInvite: channel:" + chan + "nick: " + user.getNick()
+				+ "passiveNick:" + passiveNick);
 	}
 
 	@Override
 	public void onJoin(String chan, IRCUser user) {
 		log("join " + chan + " user: " + user);
-		if( nickname.equals(user.getNick()) ){
+		if (nickname.equals(user.getNick())) {
 			listChannelsJoined.add(chan.toUpperCase());
-			NotifyManagerConnectedState.getNotifyManager().notify(ircServer.getChannelByName(chan));
+			NotifyManagerConnectedState.getNotifyManager().notify(
+					ircServer.getChannelByName(chan));
 		}
 	}
 
 	@Override
 	public void onKick(String chan, IRCUser user, String passiveNick, String msg) {
 		log("onKick" + user.getNick() + " " + msg);
-		
+
 	}
 
 	@Override
 	public void onMode(String chan, IRCUser user, IRCModeParser modeParser) {
-		//nothing		
+		// nothing
 	}
 
 	@Override
 	public void onMode(IRCUser user, String passiveNick, String mode) {
-		log(mode);		
+		log(mode);
 	}
 
 	@Override
 	public void onNick(IRCUser user, String newNick) {
-		log(newNick);		
+		log(newNick);
 	}
 
 	@Override
 	public void onNotice(String target, IRCUser user, String msg) {
-		log(msg);		
+		log(msg);
 	}
 
 	@Override
 	public void onPart(String chan, IRCUser user, String msg) {
 		log(msg);
-		if( nickname.equals(user.getNick()) ){
+		if (nickname.equals(user.getNick())) {
 			removeChannelFromJoinedChannelList(chan);
-			NotifyManagerConnectedState.getNotifyManager().notify(ircServer.getChannelByName(chan));
+			NotifyManagerConnectedState.getNotifyManager().notify(
+					ircServer.getChannelByName(chan));
 		}
 	}
 
@@ -214,35 +236,55 @@ public class DccBot implements IRCEventListener{
 	public void onPing(String ping) {
 		log(ping);
 		ircconnection.doPong(ping);
-		
+
 	}
 
 	@Override
 	public void onPrivmsg(String target, IRCUser user, String msg) {
 		String nick = user.getNick();
 		log(nick + msg);
-		//TODO: Wenn sich ein bot deconnected dann dies in Tabelle anzeigen => onQuit
-		if( DccMessageParser.isDccMessage(msg) ){
-			DccPacket dccPacket = DccMessageParser.buildDccPacket(user.getNick(), msg);
+		// TODO: Wenn sich ein bot deconnected dann dies in Tabelle anzeigen =>
+		// onQuit
+		if (DccMessageParser.isDccMessage(msg)) {
+			DccPacket dccPacket = DccMessageParser.buildDccPacket(
+					user.getNick(), msg);
 			dccPacket.setDccBot(this);
 			IrcChannel ircChannel = ircServer.getChannelByName(target);
 			dccPacket.setIrcChannel(ircChannel);
-			if( ! ircServer.containsPacket(dccPacket) ){
+			if (!ircServer.containsPacket(dccPacket)) {
 				ircServer.addDccPacket(dccPacket);
 				ircChannel.addDccPacket(dccPacket);
-				log(new LogMessage(dccPacket.getName(), LogMessage.LOG_COLOR_DCC_MESSAGE));
-				NotifyManagerDccPacket.getNotifyManager().notifyNewPackage(dccPacket);
+				log(new LogMessage(dccPacket.getName(),
+						LogMessage.LOG_COLOR_DCC_MESSAGE));
+				NotifyManagerDccPacket.getNotifyManager().notifyNewPackage(
+						dccPacket);
 			}
-		}else if(validDccSendMessage(nick, msg)){
+		} else if (validDccSendMessage(nick, msg)) {
 			DccFileTransfer dccFileTransfer = parseDccFileTransfer(nick, msg);
-			DccDownload dccDownload = DccDownloadQueue.getInstance().getDccDownload(dccFileTransfer);
+			if (dccFileTransfer.isResume()
+					&& !mapAwaitingDccFileTransferResume.containsKey(nick)) {
+				mapAwaitingDccFileTransferResume.put(nick, dccFileTransfer);
+				File f = new File(downloadDirFilename
+						+ dccFileTransfer.getFilename());
+				ircconnection.doPrivmsg(nick, "DCC RESUME file.ext "
+						+ dccFileTransfer.getPort() + " " + f.length());
+				return;
+			}
+			// FIXME: NullPointerException if xdcc send was not instantiated by
+			// xdccBee
+			DccDownload dccDownload = DccDownloadQueue.getInstance()
+					.getDccDownload(dccFileTransfer);
+			if (dccDownload == null) {
+				return;
+			}
 			dccDownload.setDccFileTransfer(dccFileTransfer);
 			dccFileTransfer.start(dccDownload.getDownloadDirFilename());
 			dccDownload.start();
-		}else{
-			log(new LogMessage("KEINE DCC MESSAGE: " + msg, LogMessage.LOG_COLOR_NO_DCC_MESSAGE)); //$NON-NLS-1$
-		}		
-		
+		} else {
+			log(new LogMessage(
+					"KEINE DCC MESSAGE: " + msg, LogMessage.LOG_COLOR_NO_DCC_MESSAGE)); //$NON-NLS-1$
+		}
+
 	}
 
 	@Override
@@ -261,72 +303,82 @@ public class DccBot implements IRCEventListener{
 	}
 
 	@Override
-	public void unknown(String prefix, String command, String middle, String trailing) {
+	public void unknown(String prefix, String command, String middle,
+			String trailing) {
 		log("unknown");
 	}
 
 	private DccFileTransfer parseDccFileTransfer(String sender, String msg) {
-	    try {
-		    String tmpfile;
-	    	StringTokenizer st = new StringTokenizer(msg);
-	    	st.nextToken();
-	    	st.nextToken();
-	    	tmpfile = st.nextToken();
-	    	if (tmpfile.charAt(0) == '\"') {
-	    		do {
-	    			tmpfile += " "+ st.nextToken();
-		        } while (tmpfile.charAt(tmpfile.length() - 1) != '\"');
-		        tmpfile = tmpfile.substring(1, tmpfile.length() - 1);
-	    	}
-	    	String tmphost = st.nextToken();
-	    	if (tmphost.charAt(0) == '\"'){
-	    		tmphost = tmphost.substring(1);
-	    	}
-	    	if (tmphost.charAt(tmphost.length() - 1) == '\"'){
-	    		tmphost = tmphost.substring(0, tmphost.length() - 1);
-	    	}
-	    	String xhost = getInetAddress(Long.parseLong(tmphost)).getHostAddress();
-	    	int xport = Integer.parseInt(st.nextToken());
-	    	long xsize = Long.parseLong(st.nextToken());
-	    	DccFileTransfer dccFileTransfer = new DccFileTransfer(xhost, xport, xsize, sender, tmpfile);
-	    	return dccFileTransfer;
-	    } catch (Exception exc) {
-	    	throw new RuntimeException(exc);
-	    }
+		try {
+			String tmpfile;
+			StringTokenizer st = new StringTokenizer(msg);
+			st.nextToken();
+			st.nextToken();
+			tmpfile = st.nextToken();
+			if (tmpfile.charAt(0) == '\"') {
+				do {
+					tmpfile += " " + st.nextToken();
+				} while (tmpfile.charAt(tmpfile.length() - 1) != '\"');
+				tmpfile = tmpfile.substring(1, tmpfile.length() - 1);
+			}
+			String tmphost = st.nextToken();
+			if (tmphost.charAt(0) == '\"') {
+				tmphost = tmphost.substring(1);
+			}
+			if (tmphost.charAt(tmphost.length() - 1) == '\"') {
+				tmphost = tmphost.substring(0, tmphost.length() - 1);
+			}
+			String xhost = getInetAddress(Long.parseLong(tmphost))
+					.getHostAddress();
+			int xport = Integer.parseInt(st.nextToken());
+			long xsize = Long.parseLong(st.nextToken());
+			boolean resume = false;
+			File fTmpFile = new File(downloadDirFilename + tmpfile);
+			if (fTmpFile.exists() && fTmpFile.length() != 0) {
+				resume = true;
+			}
+			DccFileTransfer dccFileTransfer = new DccFileTransfer(xhost, xport,
+					xsize, sender, tmpfile, resume);
+			return dccFileTransfer;
+		} catch (Exception exc) {
+			throw new RuntimeException(exc);
+		}
 	}
-	
-	private boolean validDccSendMessage(String sender, String msg){
-	    if (msg.length() <= DCC_SEND_LEADING.length()){
-	    	return false;
-	    }
-	    if (!msg.substring(0, DCC_SEND_LEADING.length()).equalsIgnoreCase(DCC_SEND_LEADING)){
-	    	return false;	
-	    }
-	    return true;
+
+	private boolean validDccSendMessage(String sender, String msg) {
+		if (msg.length() <= DCC_SEND_LEADING.length()) {
+			return false;
+		}
+		if (!msg.substring(0, DCC_SEND_LEADING.length()).equalsIgnoreCase(
+				DCC_SEND_LEADING)) {
+			return false;
+		}
+		return true;
 	}
-	
-	private static InetAddress getInetAddress(long address) throws UnknownHostException {
+
+	private static InetAddress getInetAddress(long address)
+			throws UnknownHostException {
 		byte[] addr = new byte[4];
-		addr[0] = (byte)((address >>> 24) & 0xFF);
-		addr[1] = (byte)((address >>> 16) & 0xFF);
-		addr[2] = (byte)((address >>> 8) & 0xFF);
-		addr[3] = (byte)(address & 0xFF);
+		addr[0] = (byte) ((address >>> 24) & 0xFF);
+		addr[1] = (byte) ((address >>> 16) & 0xFF);
+		addr[2] = (byte) ((address >>> 8) & 0xFF);
+		addr[3] = (byte) (address & 0xFF);
 		return InetAddress.getByAddress(addr);
 	}
 
 	public void doQuit() {
-		ircconnection.doQuit();		
+		ircconnection.doQuit();
 	}
 
 	public void close() {
-		ircconnection.close();		
+		ircconnection.close();
 	}
 
 	public void doJoin(String channelName) {
-		ircconnection.doJoin(channelName);		
+		ircconnection.doJoin(channelName);
 	}
 
 	public void doPart(String channelName) {
-		ircconnection.doPart(channelName);		
+		ircconnection.doPart(channelName);
 	}
 }

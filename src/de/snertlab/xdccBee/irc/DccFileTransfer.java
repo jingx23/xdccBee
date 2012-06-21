@@ -19,6 +19,7 @@ package de.snertlab.xdccBee.irc;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,13 +43,15 @@ public class DccFileTransfer extends Thread{
     private long progress;
     private String nick;
     private long startTime;
+    private boolean resume;
 
-    public DccFileTransfer(String host, int port, long size, String nick, String filename) throws Exception {
+    public DccFileTransfer(String host, int port, long size, String nick, String filename, boolean resume) throws Exception {
     	this.host = host;
     	this.port = port;
     	this.size = size;
     	this.filename = filename;
     	this.nick = nick;
+    	this.resume = resume;
     	setDaemon(true);
     	setPriority(Thread.MIN_PRIORITY);
     }
@@ -91,7 +94,11 @@ public class DccFileTransfer extends Thread{
             BufferedInputStream input = new BufferedInputStream(s.getInputStream());
             BufferedOutputStream output = new BufferedOutputStream(s.getOutputStream());
             
-            foutput = new BufferedOutputStream(new FileOutputStream(fullFilename));
+            if(resume){
+            	File f = new File(fullFilename);
+            	progress = f.length();
+            }
+            foutput = new BufferedOutputStream(new FileOutputStream(fullFilename, resume));
             
             byte[] inBuffer = new byte[1024];
             byte[] outBuffer = new byte[4];
@@ -161,6 +168,18 @@ public class DccFileTransfer extends Thread{
 			return 0;
 		}
 		return getProgress() / time;
+	}
+
+	public boolean isResume() {
+		return resume;
+	}
+
+	public String getFilename(){
+		return filename;
+	}
+	
+	public int getPort(){
+		return port;
 	}
 
 }
