@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project name="xdccFetcher" basedir=".">
 	<property name="src.dir"     value="src"/>
-	<property name="src.ui.dir"     value="${src.dir}/de/snertlab/xdccFetcher/ui"/>
+	<property name="src.ui.dir"     value="${src.dir}/de/snertlab/xdccBee/ui"/>
 	<property name="versionPropertiesFilename"     value="${src.ui.dir}/version.properties"/>
 	
 	<target name="compile">
