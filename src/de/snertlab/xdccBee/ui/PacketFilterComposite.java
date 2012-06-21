@@ -104,6 +104,8 @@ public class PacketFilterComposite extends Composite {
 				packetViewer.refresh();
 			}
 		});
+		checkIgnoreCase.setSelection(true);
+		packetViewer.setFilterIgnoreCase(checkIgnoreCase.getSelection());
 
 		final Button checkRegExp = new Button(this, SWT.CHECK);
 		checkRegExp.setLayoutData(makeGridDataCheckboxes());
