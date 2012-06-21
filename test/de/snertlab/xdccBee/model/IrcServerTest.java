@@ -27,21 +27,23 @@ import de.snertlab.xdccBee.settings.ServerSettings;
 
 /**
  * @author snert
- *
+ * 
  */
-public class IrcServerTest extends TestCase{
-	
-	public void test1_createServerAndSave(){
-		File config = new File( AppConfig.SETTINGS_FOLDER_PATH + "/" + "ircServer.xml");
+public class IrcServerTest extends TestCase {
+
+	public void test1_createServerAndSave() {
+		File config = new File(AppConfig.SETTINGS_FOLDER_PATH + "/"
+				+ "ircServer.xml");
 		config.delete();
-		IrcServer ircServer = new IrcServer("test", "nickname", "6443", "botName", "botVersion");
+		IrcServer ircServer = new IrcServer("test", "nickname", "6443",
+				"botName", "botVersion");
 		assertEquals("test", ircServer.getHostname());
 		assertEquals(AppConfig.DEFAULT_IRC_PORT, ircServer.getPort());
-		
+
 		IrcChannel ircChannel = new IrcChannel(ircServer);
 		ircChannel.setChannelName("#test");
 		assertEquals("#test", ircChannel.getChannelName());
-		
+
 		ServerSettings.getInstance().addServer(ircServer);
 		ServerSettings.getInstance().saveSettings();
 	}

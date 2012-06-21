@@ -30,53 +30,54 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * @author snert
- *
+ * 
  */
-public abstract class AbstractSaveDialog extends Dialog{
-	
-	public AbstractSaveDialog(Shell parentShell, boolean resizable){
-		super(parentShell);	
-		if(resizable){
-			setShellStyle(SWT.CLOSE | SWT.TITLE | SWT.BORDER | SWT.APPLICATION_MODAL | SWT.RESIZE);
+public abstract class AbstractSaveDialog extends Dialog {
+
+	public AbstractSaveDialog(Shell parentShell, boolean resizable) {
+		super(parentShell);
+		if (resizable) {
+			setShellStyle(SWT.CLOSE | SWT.TITLE | SWT.BORDER
+					| SWT.APPLICATION_MODAL | SWT.RESIZE);
 		}
 	}
-	
+
 	public AbstractSaveDialog(Shell parentShell) {
-		this(parentShell, false);		
+		this(parentShell, false);
 	}
-	
+
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		createButton(parent, IDialogConstants.OK_ID, "Speichern", false);
 		createButton(parent, IDialogConstants.CANCEL_ID, "Abbrechen", true);
 	}
-	
+
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
 		myConfigureShell(newShell);
 	}
-	
+
 	protected abstract void myConfigureShell(Shell newShell);
-	
+
 	protected void buttonPressed(int buttonId) {
-		if(buttonId == IDialogConstants.OK_ID){
+		if (buttonId == IDialogConstants.OK_ID) {
 			String msg = checkFields();
-			if( StringUtils.isEmpty(msg) ){
+			if (StringUtils.isEmpty(msg)) {
 				writeFields();
 				super.buttonPressed(buttonId);
-			}else{
-				MessageDialog.openWarning( getShell(), "Fehler", msg );
+			} else {
+				MessageDialog.openWarning(getShell(), "Fehler", msg);
 			}
-		}else{
+		} else {
 			super.buttonPressed(buttonId);
-		}		
+		}
 	}
-	
+
 	protected abstract String checkFields();
-	
+
 	protected abstract void writeFields();
-	
+
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
@@ -88,9 +89,9 @@ public abstract class AbstractSaveDialog extends Dialog{
 		composite.pack();
 		return composite;
 	}
-	
+
 	protected abstract void makeComponents(Composite parent);
-	
+
 	protected abstract void initFields();
 
 }

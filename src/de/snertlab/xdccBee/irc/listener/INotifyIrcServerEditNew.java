@@ -21,10 +21,10 @@ import de.snertlab.xdccBee.irc.IrcServer;
 
 /**
  * @author snert
- *
+ * 
  */
 public interface INotifyIrcServerEditNew {
 
 	void notifyIrcServerEditNew(IrcServer ircServer);
-	
+
 }

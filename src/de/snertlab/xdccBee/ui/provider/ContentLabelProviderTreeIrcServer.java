@@ -31,17 +31,17 @@ import de.snertlab.xdccBee.ui.Images;
 
 /**
  * @author snert
- *
+ * 
  */
-public class ContentLabelProviderTreeIrcServer implements ITreeContentProvider, ILabelProvider{
-	
-	
+public class ContentLabelProviderTreeIrcServer implements ITreeContentProvider,
+		ILabelProvider {
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object[] getChildren(Object arg0) {
-		if(arg0 instanceof List<?>){
+		if (arg0 instanceof List<?>) {
 			return ((List<IrcServer>) arg0).toArray();
-		}else if(arg0 instanceof IrcServer){
+		} else if (arg0 instanceof IrcServer) {
 			return ((IrcServer) arg0).getListChannels().toArray();
 		}
 		return null;
@@ -54,8 +54,9 @@ public class ContentLabelProviderTreeIrcServer implements ITreeContentProvider, 
 
 	@Override
 	public boolean hasChildren(Object arg0) {
-		if(arg0 instanceof IrcServer){
-			if( ! ((IrcServer) arg0).getListChannels().isEmpty() ) return true;
+		if (arg0 instanceof IrcServer) {
+			if (!((IrcServer) arg0).getListChannels().isEmpty())
+				return true;
 		}
 		return false;
 	}
@@ -68,22 +69,22 @@ public class ContentLabelProviderTreeIrcServer implements ITreeContentProvider, 
 
 	@Override
 	public void dispose() {
-		//nothing
+		// nothing
 	}
 
 	@Override
 	public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
-		//nothing
+		// nothing
 	}
 
 	@Override
 	public Image getImage(Object arg0) {
 		boolean isConnected = false;
-		if(arg0 instanceof IrcServer){
+		if (arg0 instanceof IrcServer) {
 			isConnected = ((IrcServer) arg0).isConnected();
-		}else if(arg0 instanceof IrcChannel){
+		} else if (arg0 instanceof IrcChannel) {
 			isConnected = ((IrcChannel) arg0).isConnected();
-		}else{
+		} else {
 			throw new RuntimeException("Undefined instance"); //$NON-NLS-1$
 		}
 		return isConnected ? Images.TREE_CONNECTED : Images.TREE_DISCONNECTED;
@@ -91,28 +92,28 @@ public class ContentLabelProviderTreeIrcServer implements ITreeContentProvider, 
 
 	@Override
 	public String getText(Object arg0) {
-		if(arg0 instanceof IrcServer){
-			return ((IrcServer)arg0).getHostname();
-		}else if(arg0 instanceof IrcChannel){
-			return ((IrcChannel)arg0).getChannelName();
+		if (arg0 instanceof IrcServer) {
+			return ((IrcServer) arg0).getHostname();
+		} else if (arg0 instanceof IrcChannel) {
+			return ((IrcChannel) arg0).getChannelName();
 		}
 		return null;
 	}
 
 	@Override
 	public void addListener(ILabelProviderListener arg0) {
-		//nothing
+		// nothing
 	}
 
 	@Override
 	public boolean isLabelProperty(Object arg0, String arg1) {
-		//nothing
+		// nothing
 		return false;
 	}
 
 	@Override
 	public void removeListener(ILabelProviderListener arg0) {
-		//nothing
+		// nothing
 	}
 
 }

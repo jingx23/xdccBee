@@ -29,16 +29,16 @@ import de.snertlab.xdccBee.ui.dialog.EditNewIrcChannelDialog;
 
 /**
  * @author snert
- *
+ * 
  */
 public class ActionEditIrcChannel extends Action {
-	
-public static final String ID="de.snertlab.xdccBee.ui.actions.actionEditIrcServer"; //$NON-NLS-1$
-	
+
+	public static final String ID = "de.snertlab.xdccBee.ui.actions.actionEditIrcServer"; //$NON-NLS-1$
+
 	private Shell parentShell;
 	private IrcChannel ircChannel;
-	
-	public ActionEditIrcChannel(Shell parentShell, IrcChannel ircChannel){
+
+	public ActionEditIrcChannel(Shell parentShell, IrcChannel ircChannel) {
 		super(XdccBeeMessages.getString("ActionEditIrcChannel_NAME")); //$NON-NLS-1$
 		this.parentShell = parentShell;
 		this.ircChannel = ircChannel;
@@ -47,18 +47,20 @@ public static final String ID="de.snertlab.xdccBee.ui.actions.actionEditIrcServe
 
 	@Override
 	public void run() {
-		EditNewIrcChannelDialog editNewIrcServerDialog = new EditNewIrcChannelDialog(parentShell, ircChannel, false);
+		EditNewIrcChannelDialog editNewIrcServerDialog = new EditNewIrcChannelDialog(
+				parentShell, ircChannel, false);
 		int ret = editNewIrcServerDialog.open();
-		if(Window.OK == ret){
+		if (Window.OK == ret) {
 			Application.getServerSettings().saveSettings();
-			if(ircChannel.isAutoconnect()){
-				if(! ircChannel.getIrcServer().isConnected()){
+			if (ircChannel.isAutoconnect()) {
+				if (!ircChannel.getIrcServer().isConnected()) {
 					ircChannel.getIrcServer().connect();
-				}else{
+				} else {
 					ircChannel.connect();
 				}
 			}
-			NotifyManagerIrcServerEditNew.getNotifyManager().notify(ircChannel.getIrcServer());
+			NotifyManagerIrcServerEditNew.getNotifyManager().notify(
+					ircChannel.getIrcServer());
 		}
 	}
 

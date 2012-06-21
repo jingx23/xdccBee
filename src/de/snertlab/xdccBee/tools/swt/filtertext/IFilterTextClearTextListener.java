@@ -19,7 +19,7 @@ package de.snertlab.xdccBee.tools.swt.filtertext;
 
 /**
  * @author snert
- *
+ * 
  */
 public interface IFilterTextClearTextListener {
 

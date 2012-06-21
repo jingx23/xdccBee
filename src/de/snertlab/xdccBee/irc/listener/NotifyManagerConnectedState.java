@@ -24,29 +24,29 @@ import de.snertlab.xdccBee.irc.IConnectedState;
 
 /**
  * @author snert
- *
+ * 
  */
 public class NotifyManagerConnectedState {
-	
+
 	private static NotifyManagerConnectedState notifyManager;
 	private List<INotifyConnectedState> listNotifier;
-	
-	public static NotifyManagerConnectedState getNotifyManager(){
-		if(notifyManager==null){
+
+	public static NotifyManagerConnectedState getNotifyManager() {
+		if (notifyManager == null) {
 			notifyManager = new NotifyManagerConnectedState();
 		}
 		return notifyManager;
 	}
-	
+
 	public NotifyManagerConnectedState() {
 		this.listNotifier = new ArrayList<INotifyConnectedState>();
 	}
-	
-	public void register(INotifyConnectedState notifyConnectedState){
+
+	public void register(INotifyConnectedState notifyConnectedState) {
 		listNotifier.add(notifyConnectedState);
 	}
-	
-	public void notify(IConnectedState obj){
+
+	public void notify(IConnectedState obj) {
 		for (INotifyConnectedState notifyConnectedState : listNotifier) {
 			notifyConnectedState.notifyConnectedState(obj);
 		}

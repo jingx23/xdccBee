@@ -21,25 +21,26 @@ import java.io.File;
 
 /**
  * @author snert
- *
+ * 
  */
 public class AppConfig {
 
 	public static final String USERHOME = System.getProperty("user.home"); //$NON-NLS-1$
-	public static final String SETTINGS_FOLDER_PATH = USERHOME + "/" + ".xdccBee"; //$NON-NLS-1$ //$NON-NLS-2$
+	public static final String SETTINGS_FOLDER_PATH = USERHOME
+			+ "/" + ".xdccBee"; //$NON-NLS-1$ //$NON-NLS-2$
 	public static final String DEFAULT_IRC_PORT = "6667"; //$NON-NLS-1$
 	public static final int MOUSE_BUTTON_RIGHT = 3;
-	
-	static{
+
+	static {
 		File settingsFolder = new File(AppConfig.SETTINGS_FOLDER_PATH);
-		if( ! settingsFolder.exists() ){
+		if (!settingsFolder.exists()) {
 			settingsFolder.mkdir();
 		}
-		settingsFolder=null;
+		settingsFolder = null;
 	}
-	
-	private AppConfig(){
-		//prevent instantion
+
+	private AppConfig() {
+		// prevent instantion
 	}
-	
+
 }

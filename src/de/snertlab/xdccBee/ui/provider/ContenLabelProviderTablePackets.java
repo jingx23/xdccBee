@@ -43,27 +43,34 @@ import de.snertlab.xdccBee.tools.AutoResizeTableLayout;
 
 /**
  * @author snert
- *
+ * 
  */
-public class ContenLabelProviderTablePackets implements IStructuredContentProvider, ITableLabelProvider {
-	
-	private static final String COLUMN_NAME_SIZE = XdccBeeMessages.getString("ContenLabelProviderTablePackets_COL_SIZE"); //$NON-NLS-1$
-	private static final String COLUMN_NAME_NAME = XdccBeeMessages.getString("ContenLabelProviderTablePackets_COL_NAME"); //$NON-NLS-1$
-	private static final String COLUMN_NAME_PACKETNR = XdccBeeMessages.getString("ContenLabelProviderTablePackets_COL_PACKETNR"); //$NON-NLS-1$
-	private static final String COLUMN_NAME_SENDER = XdccBeeMessages.getString("ContenLabelProviderTablePackets_COL_SENDER"); //$NON-NLS-1$
-	private static final String COLUMN_NAME_CHANNEL = XdccBeeMessages.getString("ContenLabelProviderTablePackets_COL_CHANNEL"); //$NON-NLS-1$
-	private static final String COLUMN_NAME_SERVER = XdccBeeMessages.getString("ContenLabelProviderTablePackets_COL_SERVER"); //$NON-NLS-1$
-	
+public class ContenLabelProviderTablePackets implements
+		IStructuredContentProvider, ITableLabelProvider {
+
+	private static final String COLUMN_NAME_SIZE = XdccBeeMessages
+			.getString("ContenLabelProviderTablePackets_COL_SIZE"); //$NON-NLS-1$
+	private static final String COLUMN_NAME_NAME = XdccBeeMessages
+			.getString("ContenLabelProviderTablePackets_COL_NAME"); //$NON-NLS-1$
+	private static final String COLUMN_NAME_PACKETNR = XdccBeeMessages
+			.getString("ContenLabelProviderTablePackets_COL_PACKETNR"); //$NON-NLS-1$
+	private static final String COLUMN_NAME_SENDER = XdccBeeMessages
+			.getString("ContenLabelProviderTablePackets_COL_SENDER"); //$NON-NLS-1$
+	private static final String COLUMN_NAME_CHANNEL = XdccBeeMessages
+			.getString("ContenLabelProviderTablePackets_COL_CHANNEL"); //$NON-NLS-1$
+	private static final String COLUMN_NAME_SERVER = XdccBeeMessages
+			.getString("ContenLabelProviderTablePackets_COL_SERVER"); //$NON-NLS-1$
+
 	private TableViewer tableViewer;
 	private Table table;
 	private Map<String, DccPacket> mapDccPackets;
-	
+
 	public ContenLabelProviderTablePackets(TableViewer tableViewer) {
 		this.mapDccPackets = new HashMap<String, DccPacket>();
-		this.tableViewer = tableViewer; 
+		this.tableViewer = tableViewer;
 		this.table = tableViewer.getTable();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object[] getElements(Object arg0) {
@@ -74,8 +81,9 @@ public class ContenLabelProviderTablePackets implements IStructuredContentProvid
 		return mapDccPackets.values().toArray();
 	}
 
-	public void makeColumns(){
-		MyTableColumnSorterListener myTableColumnSorterListener = new MyTableColumnSorterListener(tableViewer, false);
+	public void makeColumns() {
+		MyTableColumnSorterListener myTableColumnSorterListener = new MyTableColumnSorterListener(
+				tableViewer, false);
 		makeColumn(COLUMN_NAME_SENDER, myTableColumnSorterListener);
 		makeColumn(COLUMN_NAME_PACKETNR, myTableColumnSorterListener);
 		makeColumn(COLUMN_NAME_NAME, myTableColumnSorterListener);
@@ -83,30 +91,38 @@ public class ContenLabelProviderTablePackets implements IStructuredContentProvid
 		makeColumn(COLUMN_NAME_CHANNEL, myTableColumnSorterListener);
 		makeColumn(COLUMN_NAME_SERVER, myTableColumnSorterListener);
 		AutoResizeTableLayout autoTableLayout = new AutoResizeTableLayout(table);
-		autoTableLayout.addColumnData(new ColumnWeightData(10)); //Get 15% of space
-		autoTableLayout.addColumnData(new ColumnWeightData(10)); //Get 10% of space
-		autoTableLayout.addColumnData(new ColumnWeightData(45)); //Get 55% of space
-		autoTableLayout.addColumnData(new ColumnWeightData(5)); //Get 10% of space
-		autoTableLayout.addColumnData(new ColumnWeightData(15)); //Get 10% of space
-		autoTableLayout.addColumnData(new ColumnWeightData(15)); //Get 10% of space
+		autoTableLayout.addColumnData(new ColumnWeightData(10)); // Get 15% of
+																	// space
+		autoTableLayout.addColumnData(new ColumnWeightData(10)); // Get 10% of
+																	// space
+		autoTableLayout.addColumnData(new ColumnWeightData(45)); // Get 55% of
+																	// space
+		autoTableLayout.addColumnData(new ColumnWeightData(5)); // Get 10% of
+																// space
+		autoTableLayout.addColumnData(new ColumnWeightData(15)); // Get 10% of
+																	// space
+		autoTableLayout.addColumnData(new ColumnWeightData(15)); // Get 10% of
+																	// space
 	}
-	
-	private void makeColumn(String name, AbstractTableColumnSorterListener tableColumnSorter){
+
+	private void makeColumn(String name,
+			AbstractTableColumnSorterListener tableColumnSorter) {
 		TableColumn col = new TableColumn(table, SWT.NONE);
-//		col.setAlignment(alignment);		
+		// col.setAlignment(alignment);
 		col.setText(name);
 		col.setToolTipText(name);
-		if( tableColumnSorter != null ){
-			col.addListener(SWT.Selection, tableColumnSorter);	
+		if (tableColumnSorter != null) {
+			col.addListener(SWT.Selection, tableColumnSorter);
 		}
 	}
-	
-	public AbstractTableColumnSorterListener getSortListener(){
+
+	public AbstractTableColumnSorterListener getSortListener() {
 		Listener[] listener = table.getColumn(0).getListeners(SWT.Selection);
-		if( listener.length <=0 ) return null;
+		if (listener.length <= 0)
+			return null;
 		return (AbstractTableColumnSorterListener) listener[0];
 	}
-	
+
 	@Override
 	public void dispose() {
 	}
@@ -124,20 +140,20 @@ public class ContenLabelProviderTablePackets implements IStructuredContentProvid
 	public String getColumnText(Object arg0, int arg1) {
 		DccPacket packet = (DccPacket) arg0;
 		switch (arg1) {
-			case 0:
-				return " " + packet.getSender(); //$NON-NLS-1$
-			case 1:
-				return " #" + packet.getPacketNr(); //$NON-NLS-1$
-			case 2:
-				return " " + packet.getName(); //$NON-NLS-1$
-			case 3:
-				return " " + packet.getSize(); //$NON-NLS-1$
-			case 4:
-				return " " + packet.getChannelName(); //$NON-NLS-1$
-			case 5:
-				return " " + packet.getHostname(); //$NON-NLS-1$
-			default:
-				throw new RuntimeException("columnIndex: " + arg1 + " not defined"); //$NON-NLS-1$ //$NON-NLS-2$
+		case 0:
+			return " " + packet.getSender(); //$NON-NLS-1$
+		case 1:
+			return " #" + packet.getPacketNr(); //$NON-NLS-1$
+		case 2:
+			return " " + packet.getName(); //$NON-NLS-1$
+		case 3:
+			return " " + packet.getSize(); //$NON-NLS-1$
+		case 4:
+			return " " + packet.getChannelName(); //$NON-NLS-1$
+		case 5:
+			return " " + packet.getHostname(); //$NON-NLS-1$
+		default:
+			throw new RuntimeException("columnIndex: " + arg1 + " not defined"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 
@@ -151,24 +167,27 @@ public class ContenLabelProviderTablePackets implements IStructuredContentProvid
 	}
 
 	@Override
-	public void removeListener(ILabelProviderListener arg0) {		
+	public void removeListener(ILabelProviderListener arg0) {
 	}
-	
-	class MyTableColumnSorterListener extends AbstractTableColumnSorterListener{
 
-		public MyTableColumnSorterListener(TableViewer tblViewer, boolean isMultipleColumnSort) {
+	class MyTableColumnSorterListener extends AbstractTableColumnSorterListener {
+
+		public MyTableColumnSorterListener(TableViewer tblViewer,
+				boolean isMultipleColumnSort) {
 			super(tblViewer, isMultipleColumnSort);
 		}
 
 		@Override
-		protected AbstractTableColumnSorter getTableColumnSorterAbstract(LinkedHashMap<String, Integer> mapColumnsToSort) {
+		protected AbstractTableColumnSorter getTableColumnSorterAbstract(
+				LinkedHashMap<String, Integer> mapColumnsToSort) {
 			return new MyTableColumnSorter(mapColumnsToSort);
 		}
 
 	}
-	
-	class MyTableColumnSorter extends AbstractTableColumnSorter{
-		public MyTableColumnSorter(LinkedHashMap<String, Integer> mapColumnsToSort) {
+
+	class MyTableColumnSorter extends AbstractTableColumnSorter {
+		public MyTableColumnSorter(
+				LinkedHashMap<String, Integer> mapColumnsToSort) {
 			super(mapColumnsToSort);
 		}
 
@@ -180,33 +199,38 @@ public class ContenLabelProviderTablePackets implements IStructuredContentProvid
 			for (Entry<String, Integer> entry : mapColumnsToSort.entrySet()) {
 				String column = entry.getKey();
 				int direction = entry.getValue();
-				int i=0; i++;
-				//TODO: Sortierung noch pruefen
-				if(COLUMN_NAME_SENDER.equals(column)){
-					returnValue = kunde1.getSender().compareTo(kunde2.getSender());
-				}else if(COLUMN_NAME_PACKETNR.equals(column)){
-					if( kunde1.getPacketNr() > kunde2.getPacketNr() ){
+				int i = 0;
+				i++;
+				// TODO: Sortierung noch pruefen
+				if (COLUMN_NAME_SENDER.equals(column)) {
+					returnValue = kunde1.getSender().compareTo(
+							kunde2.getSender());
+				} else if (COLUMN_NAME_PACKETNR.equals(column)) {
+					if (kunde1.getPacketNr() > kunde2.getPacketNr()) {
 						returnValue = 1;
-					}else if( kunde1.getPacketNr() < kunde2.getPacketNr() ){
+					} else if (kunde1.getPacketNr() < kunde2.getPacketNr()) {
 						returnValue = -1;
-					}else{
+					} else {
 						returnValue = 0;
 					}
-				}else if(COLUMN_NAME_NAME.equals(column)){
+				} else if (COLUMN_NAME_NAME.equals(column)) {
 					returnValue = kunde1.getName().compareTo(kunde2.getName());
-				}else if(COLUMN_NAME_SIZE.equals(column)){
+				} else if (COLUMN_NAME_SIZE.equals(column)) {
 					returnValue = kunde1.getSize().compareTo(kunde2.getSize());
-				}else if(COLUMN_NAME_CHANNEL.equals(column)){
-					returnValue = kunde1.getChannelName().compareTo(kunde2.getChannelName());
-				}else if(COLUMN_NAME_SERVER.equals(column)){
-					returnValue = kunde1.getHostname().compareTo(kunde2.getHostname());
-				}else{
+				} else if (COLUMN_NAME_CHANNEL.equals(column)) {
+					returnValue = kunde1.getChannelName().compareTo(
+							kunde2.getChannelName());
+				} else if (COLUMN_NAME_SERVER.equals(column)) {
+					returnValue = kunde1.getHostname().compareTo(
+							kunde2.getHostname());
+				} else {
 					throw new RuntimeException("Column not defined " + column); //$NON-NLS-1$
 				}
 				if (direction == SWT.DOWN) {
 					returnValue = returnValue * -1;
 				}
-				if(returnValue!=0) break;
+				if (returnValue != 0)
+					break;
 			}
 			return returnValue;
 		}

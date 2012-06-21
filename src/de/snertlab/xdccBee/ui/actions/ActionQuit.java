@@ -26,30 +26,30 @@ import de.snertlab.xdccBee.ui.Application;
 
 /**
  * @author snert
- *
+ * 
  */
 public class ActionQuit extends Action {
-	
-	public static final String ID="de.snertlab.xdccBee.ui.actions.actionQuit"; //$NON-NLS-1$
+
+	public static final String ID = "de.snertlab.xdccBee.ui.actions.actionQuit"; //$NON-NLS-1$
 	private boolean doDisplayDispose;
-	
-	public ActionQuit(boolean doDisplayDispose){
+
+	public ActionQuit(boolean doDisplayDispose) {
 		this.doDisplayDispose = doDisplayDispose;
 		setText(XdccBeeMessages.getString("ActionQuit_NAME")); //$NON-NLS-1$
 	}
 
 	@Override
 	public void run() {
-		Point location 	= Display.getCurrent().getActiveShell().getLocation();
-		Point size 		= Display.getCurrent().getActiveShell().getSize();
+		Point location = Display.getCurrent().getActiveShell().getLocation();
+		Point size = Display.getCurrent().getActiveShell().getSize();
 		Application.getSettings().setMainWindowPosition(location);
 		Application.getSettings().setMainWindowSize(size);
 		Application.getSettings().saveSettings();
-		if(doDisplayDispose){
+		if (doDisplayDispose) {
 			Display.getCurrent().dispose();
 		}
 	}
-	
+
 	@Override
 	public String getId() {
 		return ID;

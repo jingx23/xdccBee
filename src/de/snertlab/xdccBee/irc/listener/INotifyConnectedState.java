@@ -21,10 +21,10 @@ import de.snertlab.xdccBee.irc.IConnectedState;
 
 /**
  * @author snert
- *
+ * 
  */
 public interface INotifyConnectedState {
-	
+
 	void notifyConnectedState(IConnectedState obj);
-	
+
 }

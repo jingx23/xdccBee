@@ -25,15 +25,15 @@ import de.snertlab.xdccBee.ui.dialog.AboutDialog;
 
 /**
  * @author snert
- *
+ * 
  */
 public class ActionAbout extends Action {
-	
-	public static final String ID="de.snertlab.xdccBee.ui.actions.actionAbout"; //$NON-NLS-1$
-	
+
+	public static final String ID = "de.snertlab.xdccBee.ui.actions.actionAbout"; //$NON-NLS-1$
+
 	private Shell parentShell;
-	
-	public ActionAbout(Shell parentShell){
+
+	public ActionAbout(Shell parentShell) {
 		super(XdccBeeMessages.getString("ActionAbout_NAME")); //$NON-NLS-1$
 		this.parentShell = parentShell;
 	}
@@ -42,7 +42,7 @@ public class ActionAbout extends Action {
 	public void run() {
 		new AboutDialog(parentShell).open();
 	}
-	
+
 	@Override
 	public String getId() {
 		return ID;

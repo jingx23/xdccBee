@@ -24,32 +24,32 @@ import de.snertlab.xdccBee.irc.DccPacket;
 
 /**
  * @author snert
- *
+ * 
  */
 public class NotifyManagerDccPacket {
-	
+
 	private static NotifyManagerDccPacket notifyManager;
 	private List<INotifyDccPacket> listNotifier;
-	
-	public static NotifyManagerDccPacket getNotifyManager(){
-		if(notifyManager==null){
+
+	public static NotifyManagerDccPacket getNotifyManager() {
+		if (notifyManager == null) {
 			notifyManager = new NotifyManagerDccPacket();
 		}
 		return notifyManager;
 	}
-	
+
 	public NotifyManagerDccPacket() {
 		this.listNotifier = new ArrayList<INotifyDccPacket>();
 	}
-	
-	public void register(INotifyDccPacket notifyDccPacket){
+
+	public void register(INotifyDccPacket notifyDccPacket) {
 		listNotifier.add(notifyDccPacket);
 	}
-	
-	public void notifyNewPackage(DccPacket dccPacket){
+
+	public void notifyNewPackage(DccPacket dccPacket) {
 		for (INotifyDccPacket notifyDccPacket : listNotifier) {
 			notifyDccPacket.notifyDccPacket(dccPacket);
 		}
 	}
-	
+
 }

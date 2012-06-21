@@ -30,16 +30,16 @@ import de.snertlab.xdccBee.ui.dialog.EditNewIrcChannelDialog;
 
 /**
  * @author snert
- *
+ * 
  */
 public class ActionNewIrcChannelContextMenu extends Action {
-	
-public static final String ID="de.snertlab.xdccBee.ui.actions.actionNewIrcChannelContextMenu"; //$NON-NLS-1$
-	
+
+	public static final String ID = "de.snertlab.xdccBee.ui.actions.actionNewIrcChannelContextMenu"; //$NON-NLS-1$
+
 	private Shell parentShell;
 	private IrcServer ircServer;
-	
-	public ActionNewIrcChannelContextMenu(Shell parentShell, IrcServer ircServer){
+
+	public ActionNewIrcChannelContextMenu(Shell parentShell, IrcServer ircServer) {
 		super(XdccBeeMessages.getString("ActionNewIrcChannelContextMenu_NAME")); //$NON-NLS-1$
 		this.parentShell = parentShell;
 		this.ircServer = ircServer;
@@ -49,15 +49,16 @@ public static final String ID="de.snertlab.xdccBee.ui.actions.actionNewIrcChanne
 	@Override
 	public void run() {
 		IrcChannel newIrcChannel = new IrcChannel(ircServer);
-		EditNewIrcChannelDialog editNewIrcServerDialog = new EditNewIrcChannelDialog(parentShell, newIrcChannel, true);
+		EditNewIrcChannelDialog editNewIrcServerDialog = new EditNewIrcChannelDialog(
+				parentShell, newIrcChannel, true);
 		int ret = editNewIrcServerDialog.open();
-		if(Window.OK == ret){
+		if (Window.OK == ret) {
 			ircServer.addIrcChannel(newIrcChannel);
 			Application.getServerSettings().saveSettings();
-			if(newIrcChannel.isAutoconnect()){
-				if(! ircServer.isConnected()){
+			if (newIrcChannel.isAutoconnect()) {
+				if (!ircServer.isConnected()) {
 					ircServer.connect();
-				}else{
+				} else {
 					newIrcChannel.connect();
 				}
 			}

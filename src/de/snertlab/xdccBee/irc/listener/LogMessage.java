@@ -21,24 +21,24 @@ import org.eclipse.swt.SWT;
 
 /**
  * @author holgi
- *
+ * 
  */
 public class LogMessage {
 	public static int LOG_COLOR_DCCBOT_MESSAGE = SWT.COLOR_BLACK;
 	public static int LOG_COLOR_DCC_MESSAGE = SWT.COLOR_GREEN;
 	public static int LOG_COLOR_NO_DCC_MESSAGE = SWT.COLOR_RED;
-	
+
 	public String getLogText() {
 		return logText;
 	}
-	
+
 	public int getLogColor() {
 		return logType;
 	}
 
 	private String logText;
 	private int logType;
-	
+
 	public LogMessage(String logText, int messageType) {
 		this.logText = logText;
 		this.logType = messageType;

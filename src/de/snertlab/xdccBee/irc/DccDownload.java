@@ -19,27 +19,26 @@ package de.snertlab.xdccBee.irc;
 
 import de.snertlab.xdccBee.ui.TableItemDownload;
 
-
 /**
  * @author holgi
- *
+ * 
  */
 
 public class DccDownload {
-	
+
 	public static String STATE_DOWNLOAD_FINISHED = "finished";
-	public static String STATE_DOWNLOAD_WAITING  = "waiting";
+	public static String STATE_DOWNLOAD_WAITING = "waiting";
 	public static String STATE_DOWNLOAD_DOWNLOAD = "downloading";
-	public static String STATE_DOWNLOAD_ABORT    = "abort";
-	
+	public static String STATE_DOWNLOAD_ABORT = "abort";
+
 	private DccPacket dccPacket;
 	private DccFileTransfer dccFileTransfer;
 	private String downloadDirFilename;
 	private TableItemDownload tableItemDownload;
 	private MyTableItemDownloadThread downloadThread;
 	private String state;
-	
-	public DccDownload(DccPacket dccPacket, String downloadDirFilename){
+
+	public DccDownload(DccPacket dccPacket, String downloadDirFilename) {
 		this.dccPacket = dccPacket;
 		this.downloadDirFilename = downloadDirFilename;
 		setState(STATE_DOWNLOAD_WAITING);
@@ -48,18 +47,21 @@ public class DccDownload {
 	public String getKey() {
 		return dccPacket.toString();
 	}
-	
-	public void setDccFileTransfer(DccFileTransfer dccFileTransfer){
+
+	public void setDccFileTransfer(DccFileTransfer dccFileTransfer) {
 		this.dccFileTransfer = dccFileTransfer;
 	}
-	
-	public DccFileTransfer getDccFileTransfer(){
+
+	public DccFileTransfer getDccFileTransfer() {
 		return dccFileTransfer;
 	}
-	
+
 	public boolean matchDccFileTransfer(DccFileTransfer dccFileTransfer) {
-		//assumes that package comes from sender in order, so when you request 2 packages 1 comes first and 2 comes second else packages will be saved under wrong name
-		if( dccPacket.getSender().equals(dccFileTransfer.getNick()) && state.equals(STATE_DOWNLOAD_WAITING) ){
+		// assumes that package comes from sender in order, so when you request
+		// 2 packages 1 comes first and 2 comes second else packages will be
+		// saved under wrong name
+		if (dccPacket.getSender().equals(dccFileTransfer.getNick())
+				&& state.equals(STATE_DOWNLOAD_WAITING)) {
 			return true;
 		}
 		return false;
@@ -68,16 +70,16 @@ public class DccDownload {
 	public DccPacket getDccPacket() {
 		return dccPacket;
 	}
-	
-	public String getDownloadDirFilename(){
+
+	public String getDownloadDirFilename() {
 		return downloadDirFilename;
 	}
 
 	public void setTableItemDownload(TableItemDownload tableItemDownload) {
 		this.tableItemDownload = tableItemDownload;
 	}
-	
-	public void start(){
+
+	public void start() {
 		downloadThread = new MyTableItemDownloadThread(this);
 		downloadThread.start();
 	}
@@ -86,34 +88,38 @@ public class DccDownload {
 	 * 
 	 */
 	public void stop() {
-		if(downloadThread==null){
+		if (downloadThread == null) {
 			setState(STATE_DOWNLOAD_ABORT);
-		}else{
+		} else {
 			downloadThread.stopMe();
 		}
 	}
-	
+
 	private class MyTableItemDownloadThread extends Thread {
-		
+
 		private boolean stop;
 		private String state;
 		private DccDownload dccDownload;
-		
-		public MyTableItemDownloadThread(DccDownload dccDownload){
+
+		public MyTableItemDownloadThread(DccDownload dccDownload) {
 			this.dccDownload = dccDownload;
 		}
-		
+
 		@Override
 		public void run() {
-			while((int)dccFileTransfer.getProgress()<dccFileTransfer.getSize()){
-				if(stop)break;
-				tableItemDownload.getDisplay().asyncExec( new Runnable() {
+			while ((int) dccFileTransfer.getProgress() < dccFileTransfer
+					.getSize()) {
+				if (stop)
+					break;
+				tableItemDownload.getDisplay().asyncExec(new Runnable() {
 					public void run() {
-						if(stop) return;
+						if (stop)
+							return;
 						dccDownload.setState(STATE_DOWNLOAD_DOWNLOAD);
-						tableItemDownload.updateFileTransferDisplay(dccFileTransfer);
+						tableItemDownload
+								.updateFileTransferDisplay(dccFileTransfer);
 					}
-				});						
+				});
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
@@ -121,10 +127,10 @@ public class DccDownload {
 				}
 			}
 			state = STATE_DOWNLOAD_FINISHED;
-			if(stop){
+			if (stop) {
 				state = STATE_DOWNLOAD_ABORT;
 			}
-			tableItemDownload.getDisplay().asyncExec( new Runnable() {
+			tableItemDownload.getDisplay().asyncExec(new Runnable() {
 				@Override
 				public void run() {
 					dccDownload.setState(state);
@@ -132,19 +138,19 @@ public class DccDownload {
 				}
 			});
 		}
-		
-		public void stopMe(){
+
+		public void stopMe() {
 			stop = true;
 		}
 	}
-	
-	public String getState(){
+
+	public String getState() {
 		return state;
 	}
-	
-	public void setState(String state){
+
+	public void setState(String state) {
 		this.state = state;
-		if(tableItemDownload != null) {
+		if (tableItemDownload != null) {
 			tableItemDownload.refreshState();
 		}
 	}

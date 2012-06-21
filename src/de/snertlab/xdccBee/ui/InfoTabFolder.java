@@ -45,7 +45,7 @@ import de.snertlab.xdccBee.messages.XdccBeeMessages;
 
 /**
  * @author holgi
- *
+ * 
  */
 public class InfoTabFolder extends CTabFolder implements INotifyDccBotLogging {
 
@@ -53,17 +53,25 @@ public class InfoTabFolder extends CTabFolder implements INotifyDccBotLogging {
 
 	public InfoTabFolder(Composite parent, int style) {
 		super(parent, style);
-		List<IrcServer> listIrcServers = Application.getServerSettings().getListServer();
+		List<IrcServer> listIrcServers = Application.getServerSettings()
+				.getListServer();
 		NotifyManagerDccBotLogging.getNotifyManager().register(this);
 		for (IrcServer ircServer : listIrcServers) {
-			if(ircServer.isDebug()){
+			if (ircServer.isDebug()) {
 				CTabItem tabItemDebugWindow = new CTabItem(this, SWT.NONE);
-				tabItemDebugWindow.setText( MessageFormat.format(XdccBeeMessages.getString("InfoTabFolder_TAB_DEBUG"), new Object[]{ ircServer.getHostname() } ) ); //$NON-NLS-1$
+				tabItemDebugWindow
+						.setText(MessageFormat.format(
+								XdccBeeMessages
+										.getString("InfoTabFolder_TAB_DEBUG"), new Object[] { ircServer.getHostname() })); //$NON-NLS-1$
 				Composite compDebug = new Composite(this, SWT.NONE);
 				compDebug.setLayout(new GridLayout());
-				compDebug.setLayoutData( new GridData(SWT.FILL, SWT.FILL, true, true) );
-				StyledText txtDebug = new StyledText(compDebug, SWT.BORDER | SWT.MULTI | SWT.READ_ONLY | SWT.V_SCROLL | SWT.H_SCROLL);
-				txtDebug.setLayoutData( new GridData(SWT.FILL, SWT.FILL, true, true) );
+				compDebug.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+						true));
+				StyledText txtDebug = new StyledText(compDebug, SWT.BORDER
+						| SWT.MULTI | SWT.READ_ONLY | SWT.V_SCROLL
+						| SWT.H_SCROLL);
+				txtDebug.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+						true));
 				tabItemDebugWindow.setControl(compDebug);
 				makeTxtDebugContextMenu(txtDebug);
 				mapDebuggingTabs.put(ircServer, txtDebug);
@@ -72,38 +80,45 @@ public class InfoTabFolder extends CTabFolder implements INotifyDccBotLogging {
 	}
 
 	public void writeLog(IrcServer ircServer, final LogMessage log) {
-		final StyledText txtDebug2 = (StyledText)mapDebuggingTabs.get(ircServer);
-		if(txtDebug2==null || txtDebug2.isDisposed()) return;
-		txtDebug2.getDisplay().asyncExec( new Runnable() {
+		final StyledText txtDebug2 = (StyledText) mapDebuggingTabs
+				.get(ircServer);
+		if (txtDebug2 == null || txtDebug2.isDisposed())
+			return;
+		txtDebug2.getDisplay().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				if(txtDebug2.isDisposed()) return;
-				Color logColor = txtDebug2.getShell().getDisplay().getSystemColor(log.getLogColor());
+				if (txtDebug2.isDisposed())
+					return;
+				Color logColor = txtDebug2.getShell().getDisplay()
+						.getSystemColor(log.getLogColor());
 				int startIndex = txtDebug2.getText().length();
 				int length = log.getLogText().length();
-				txtDebug2.append(log.getLogText()+"\n");  //$NON-NLS-1$
+				txtDebug2.append(log.getLogText() + "\n"); //$NON-NLS-1$
 				txtDebug2.setTopIndex(txtDebug2.getLineCount());
-				txtDebug2.setStyleRange(new StyleRange(startIndex,length, logColor, null));
+				txtDebug2.setStyleRange(new StyleRange(startIndex, length,
+						logColor, null));
 			}
 		});
 	}
+
 	@Override
-	public void notifyDccBotLogging(final IrcServer ircServer, final LogMessage log) {
+	public void notifyDccBotLogging(final IrcServer ircServer,
+			final LogMessage log) {
 		writeLog(ircServer, log);
 	}
-	
-	public void makeTxtDebugContextMenu(final StyledText txtDebug){
+
+	public void makeTxtDebugContextMenu(final StyledText txtDebug) {
 		Menu mnuDebugTxt = new Menu(txtDebug);
 		txtDebug.setMenu(mnuDebugTxt);
 
 		final MenuItem mntmClearText = new MenuItem(mnuDebugTxt, SWT.CASCADE);
 		mntmClearText.setText(XdccBeeMessages.getString("DEBUG_CLEAR_TEXT")); //$NON-NLS-1$
-		mntmClearText.addSelectionListener( new SelectionAdapter() {
+		mntmClearText.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				txtDebug.setText("");
 			}
 		});
 	}
-	
+
 }

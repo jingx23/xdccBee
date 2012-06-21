@@ -21,10 +21,12 @@ import java.util.List;
 
 /**
  * @author snert
- *
+ * 
  */
 public interface IDccPacketList {
 	List<DccPacket> getListDccPackets();
+
 	void addDccPacket(DccPacket dccPacket);
+
 	boolean containsDccPacket(DccPacket dccPacket);
 }

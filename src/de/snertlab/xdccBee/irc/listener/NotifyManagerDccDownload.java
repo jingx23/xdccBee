@@ -24,32 +24,32 @@ import de.snertlab.xdccBee.irc.DccDownload;
 
 /**
  * @author snert
- *
+ * 
  */
 public class NotifyManagerDccDownload {
-	
+
 	private static NotifyManagerDccDownload notifyManager;
 	private List<INotifyDccDownload> listNotifier;
-	
-	public static NotifyManagerDccDownload getNotifyManager(){
-		if(notifyManager==null){
+
+	public static NotifyManagerDccDownload getNotifyManager() {
+		if (notifyManager == null) {
 			notifyManager = new NotifyManagerDccDownload();
 		}
 		return notifyManager;
 	}
-	
+
 	public NotifyManagerDccDownload() {
 		this.listNotifier = new ArrayList<INotifyDccDownload>();
 	}
-	
-	public void register(INotifyDccDownload notifyDccDownload){
+
+	public void register(INotifyDccDownload notifyDccDownload) {
 		listNotifier.add(notifyDccDownload);
 	}
-	
-	public void notifyNewDccDownload(DccDownload dccDownload){
+
+	public void notifyNewDccDownload(DccDownload dccDownload) {
 		for (INotifyDccDownload notifyDccDownload : listNotifier) {
 			notifyDccDownload.notifyNewDccDownload(dccDownload);
 		}
 	}
-	
+
 }

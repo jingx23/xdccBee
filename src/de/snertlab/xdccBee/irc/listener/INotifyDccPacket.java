@@ -19,13 +19,12 @@ package de.snertlab.xdccBee.irc.listener;
 
 import de.snertlab.xdccBee.irc.DccPacket;
 
-
 /**
  * @author snert
- *
+ * 
  */
 public interface INotifyDccPacket {
 
 	void notifyDccPacket(DccPacket dccPacket);
-	
+
 }

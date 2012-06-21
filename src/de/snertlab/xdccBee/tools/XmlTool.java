@@ -21,11 +21,11 @@ import org.jdom.Element;
 
 /**
  * @author snert
- *
+ * 
  */
 public class XmlTool {
-	
-	public static Element addChildNode(Element nodeParent, String childNodeName){
+
+	public static Element addChildNode(Element nodeParent, String childNodeName) {
 		Element nodeChild = new Element(childNodeName);
 		nodeParent.addContent(nodeChild);
 		return nodeChild;

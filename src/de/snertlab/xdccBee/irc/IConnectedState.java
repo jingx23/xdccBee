@@ -19,10 +19,10 @@ package de.snertlab.xdccBee.irc;
 
 /**
  * @author snert
- *
+ * 
  */
 public interface IConnectedState {
-	
+
 	boolean isConnected();
-	
+
 }

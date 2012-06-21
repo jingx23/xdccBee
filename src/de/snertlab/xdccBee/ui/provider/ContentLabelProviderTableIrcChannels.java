@@ -35,16 +35,17 @@ import de.snertlab.xdccBee.tools.AutoResizeTableLayout;
 
 /**
  * @author snert
- *
+ * 
  */
-public class ContentLabelProviderTableIrcChannels implements IStructuredContentProvider, ITableLabelProvider {
+public class ContentLabelProviderTableIrcChannels implements
+		IStructuredContentProvider, ITableLabelProvider {
 
 	private Table table;
-	
+
 	public ContentLabelProviderTableIrcChannels(Table table) {
 		this.table = table;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Object[] getElements(Object arg0) {
@@ -52,18 +53,19 @@ public class ContentLabelProviderTableIrcChannels implements IStructuredContentP
 		return listIrcChannels.toArray();
 	}
 
-	public void makeColumns(){
-		makeColumn(XdccBeeMessages.getString("ContentLabelProviderTableIrcChannels_COL_NAME")); //$NON-NLS-1$
+	public void makeColumns() {
+		makeColumn(XdccBeeMessages
+				.getString("ContentLabelProviderTableIrcChannels_COL_NAME")); //$NON-NLS-1$
 		AutoResizeTableLayout autoTableLayout = new AutoResizeTableLayout(table);
 		autoTableLayout.addColumnData(new ColumnWeightData(1));
 	}
-	
-	private void makeColumn(String name){
+
+	private void makeColumn(String name) {
 		TableColumn col = new TableColumn(table, SWT.NONE);
-//		col.setAlignment(alignment);		
+		// col.setAlignment(alignment);
 		col.setText(name);
 	}
-	
+
 	@Override
 	public void dispose() {
 	}
@@ -81,10 +83,10 @@ public class ContentLabelProviderTableIrcChannels implements IStructuredContentP
 	public String getColumnText(Object arg0, int arg1) {
 		IrcChannel ircChannel = (IrcChannel) arg0;
 		switch (arg1) {
-			case 0:
-				return " " + ircChannel.getChannelName(); //$NON-NLS-1$
-			default:
-				throw new RuntimeException("columnIndex: " + arg1 + " not defined"); //$NON-NLS-1$ //$NON-NLS-2$
+		case 0:
+			return " " + ircChannel.getChannelName(); //$NON-NLS-1$
+		default:
+			throw new RuntimeException("columnIndex: " + arg1 + " not defined"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 
@@ -98,6 +100,6 @@ public class ContentLabelProviderTableIrcChannels implements IStructuredContentP
 	}
 
 	@Override
-	public void removeListener(ILabelProviderListener arg0) {		
+	public void removeListener(ILabelProviderListener arg0) {
 	}
 }

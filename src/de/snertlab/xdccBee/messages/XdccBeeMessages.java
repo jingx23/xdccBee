@@ -24,7 +24,7 @@ public class XdccBeeMessages {
 
 	private static final String BUNDLE_NAME_DE = "de.snertlab.xdccBee.messages.messages_de"; //$NON-NLS-1$
 	private static final String BUNDLE_NAME_EN = "de.snertlab.xdccBee.messages.messages_en"; //$NON-NLS-1$
-	
+
 	private static ResourceBundle loadedResourceBundle;
 
 	private XdccBeeMessages() {
@@ -37,19 +37,19 @@ public class XdccBeeMessages {
 			return '!' + key + '!';
 		}
 	}
-	
+
 	private static ResourceBundle getResourceBundle() {
-		if (loadedResourceBundle==null) {
+		if (loadedResourceBundle == null) {
 			String language = System.getProperty("user.language");
 			String bundleToLoad = null;
-			if(language.equals("de")){
+			if (language.equals("de")) {
 				bundleToLoad = BUNDLE_NAME_DE;
-			}else{
+			} else {
 				bundleToLoad = BUNDLE_NAME_EN;
 			}
 			loadedResourceBundle = ResourceBundle.getBundle(bundleToLoad);
 		}
 		return loadedResourceBundle;
 	}
-	
+
 }

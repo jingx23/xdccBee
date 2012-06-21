@@ -24,15 +24,16 @@ import org.eclipse.jface.viewers.ViewerSorter;
 
 /**
  * @author snert
- *
+ * 
  */
 public abstract class AbstractTableColumnSorter extends ViewerSorter {
 	protected LinkedHashMap<String, Integer> mapColumnsToSort;
-	
-	public AbstractTableColumnSorter(LinkedHashMap<String, Integer> mapColumnsToSort){
+
+	public AbstractTableColumnSorter(
+			LinkedHashMap<String, Integer> mapColumnsToSort) {
 		this.mapColumnsToSort = mapColumnsToSort;
 	}
-	
+
 	public abstract int compare(Viewer viewer, Object e1, Object e2);
-		
+
 }

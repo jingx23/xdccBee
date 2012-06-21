@@ -37,17 +37,18 @@ import de.snertlab.xdccBee.ui.provider.ContenLabelProviderTablePackets;
 
 /**
  * @author holgi
- *
+ * 
  */
 public class PacketViewer extends TableViewer implements INotifyDccPacket {
 
 	private FileFilter fileFilter = new FileFilter();
-	
+
 	public PacketViewer(Composite parent, int style) {
 		super(parent, style);
 		NotifyManagerDccPacket.getNotifyManager().register(this);
 		Table tblPackets = getTable();
-		ContenLabelProviderTablePackets contenLabelProviderTablePackets = new ContenLabelProviderTablePackets(this);
+		ContenLabelProviderTablePackets contenLabelProviderTablePackets = new ContenLabelProviderTablePackets(
+				this);
 		setContentProvider(contenLabelProviderTablePackets);
 		setLabelProvider(contenLabelProviderTablePackets);
 		tblPackets.setHeaderVisible(true);
@@ -56,42 +57,42 @@ public class PacketViewer extends TableViewer implements INotifyDccPacket {
 		setInput(new ArrayList<DccPacket>());
 		new PacketViewerMenu(this);
 		addFilter(fileFilter);
-		addDoubleClickListener( new IDoubleClickListener() {			
+		addDoubleClickListener(new IDoubleClickListener() {
 			@Override
 			public void doubleClick(DoubleClickEvent arg0) {
 				new ActionDownloadFile().run();
 			}
 		});
 	}
-	
+
 	public DccPacket getSelectedDccPacket() {
 		IStructuredSelection selectedItem = (IStructuredSelection) getSelection();
-		return (DccPacket)selectedItem.getFirstElement();
+		return (DccPacket) selectedItem.getFirstElement();
 	}
 
 	public void setFileNameFilterText(String filterText) {
 		fileFilter.setFileName(filterText);
 		refresh();
 	}
-	
-	public void setFilterIrcChannel(IrcChannel ircChannel){
+
+	public void setFilterIrcChannel(IrcChannel ircChannel) {
 		fileFilter.setChannelName(ircChannel.getChannelName());
 		refresh();
 	}
-	
-	public void setFilterIrcServer(IrcServer ircServer){
+
+	public void setFilterIrcServer(IrcServer ircServer) {
 		fileFilter.setHostname(ircServer.getHostname());
 		refresh();
 	}
-	
-	public void setFilterAll(){
+
+	public void setFilterAll() {
 		fileFilter.setAll();
 		refresh();
 	}
-	
+
 	@Override
 	public void notifyDccPacket(final DccPacket dccPacket) {
-		getTable().getDisplay().asyncExec( new Runnable() {			
+		getTable().getDisplay().asyncExec(new Runnable() {
 			@Override
 			public void run() {
 				add(dccPacket);
@@ -99,10 +100,11 @@ public class PacketViewer extends TableViewer implements INotifyDccPacket {
 			}
 		});
 	}
-	
+
 	@Override
 	public void add(Object element) {
-		((ContenLabelProviderTablePackets) getContentProvider()).add((DccPacket)element);
+		((ContenLabelProviderTablePackets) getContentProvider())
+				.add((DccPacket) element);
 	}
 
 	public void setFilterIgnoreCase(boolean ignoreCase) {

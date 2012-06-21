@@ -24,18 +24,19 @@ import de.snertlab.xdccBee.ui.Application;
 
 /**
  * @author holgi
- *
+ * 
  */
 public class ServerList {
-	public static boolean isAnyServerConnected(){
-		return ! getListConnectedServer().isEmpty();
+	public static boolean isAnyServerConnected() {
+		return !getListConnectedServer().isEmpty();
 	}
 
 	public static List<IrcServer> getListConnectedServer() {
 		List<IrcServer> listConnectedServer = new ArrayList<IrcServer>();
-		List<IrcServer> listAlleServer = Application.getServerSettings().getListServer();
+		List<IrcServer> listAlleServer = Application.getServerSettings()
+				.getListServer();
 		for (IrcServer ircServer : listAlleServer) {
-			if(ircServer.isConnected()){
+			if (ircServer.isConnected()) {
 				listConnectedServer.add(ircServer);
 			}
 		}

@@ -39,23 +39,26 @@ import de.snertlab.xdccBee.tools.swt.filtertext.IFilterTextClearTextListener;
 
 /**
  * @author holgi
- *
+ * 
  */
 public class PacketFilterComposite extends Composite {
-	
+
 	private Text txtFilter;
 
-	public PacketFilterComposite(Composite parent, FormData formData, final PacketViewer packetViewer) {
+	public PacketFilterComposite(Composite parent, FormData formData,
+			final PacketViewer packetViewer) {
 		super(parent, SWT.NONE);
 		setLayoutData(formData);
 		Layout layout = new GridLayout(4, false);
 		setLayout(layout);
-		GridData gridDataCompControls = new GridData(SWT.FILL, SWT.FILL, true, false);
+		GridData gridDataCompControls = new GridData(SWT.FILL, SWT.FILL, true,
+				false);
 		gridDataCompControls.verticalIndent = -5;
-		
-		if( Application.isMac() ){
-			txtFilter = new Text(this, SWT.SEARCH | SWT.ICON_CANCEL | SWT.ICON_SEARCH);
-			txtFilter.setLayoutData( gridDataCompControls );		
+
+		if (Application.isMac()) {
+			txtFilter = new Text(this, SWT.SEARCH | SWT.ICON_CANCEL
+					| SWT.ICON_SEARCH);
+			txtFilter.setLayoutData(gridDataCompControls);
 			Listener listener = new Listener() {
 				public void handleEvent(Event event) {
 					if (event.detail == SWT.ICON_CANCEL) {
@@ -64,28 +67,33 @@ public class PacketFilterComposite extends Composite {
 				}
 			};
 			txtFilter.addListener(SWT.DefaultSelection, listener);
-		}else{
-			FilterTextComposite filterTextComposite = new FilterTextComposite(this);
+		} else {
+			FilterTextComposite filterTextComposite = new FilterTextComposite(
+					this);
 			filterTextComposite.setLayoutData(gridDataCompControls);
 			txtFilter = filterTextComposite.getFilterControl();
-			filterTextComposite.addFilterTextClearTextListener( new IFilterTextClearTextListener() {
-				@Override
-				public void clearText() {
-					packetViewer.setFileNameFilterText("");				}
-			});
+			filterTextComposite
+					.addFilterTextClearTextListener(new IFilterTextClearTextListener() {
+						@Override
+						public void clearText() {
+							packetViewer.setFileNameFilterText("");
+						}
+					});
 		}
-		txtFilter.setMessage(XdccBeeMessages.getString("FileFilterComposite_FILTER_DUMMY_TEXT")); //$NON-NLS-1$
-		txtFilter.addKeyListener(new KeyListener() {		
+		txtFilter.setMessage(XdccBeeMessages
+				.getString("FileFilterComposite_FILTER_DUMMY_TEXT")); //$NON-NLS-1$
+		txtFilter.addKeyListener(new KeyListener() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				packetViewer.setFileNameFilterText(txtFilter.getText());
 			}
+
 			@Override
 			public void keyPressed(KeyEvent e) {
 				// Do Nothing
 			}
 		});
-		
+
 		final Button checkIgnoreCase = new Button(this, SWT.CHECK);
 		checkIgnoreCase.setLayoutData(makeGridDataCheckboxes());
 		checkIgnoreCase.setText("Ignore case");
@@ -97,7 +105,6 @@ public class PacketFilterComposite extends Composite {
 			}
 		});
 
-		
 		final Button checkRegExp = new Button(this, SWT.CHECK);
 		checkRegExp.setLayoutData(makeGridDataCheckboxes());
 		checkRegExp.setText("Regular expression");
@@ -108,17 +115,19 @@ public class PacketFilterComposite extends Composite {
 				packetViewer.refresh();
 			}
 		});
-		
-		Label lblSpacer = new Label(this, SWT.NONE); //Spacer
-		GridData gridDataSpacer = new GridData(SWT.FILL, SWT.CENTER, true, false);
+
+		Label lblSpacer = new Label(this, SWT.NONE); // Spacer
+		GridData gridDataSpacer = new GridData(SWT.FILL, SWT.CENTER, true,
+				false);
 		lblSpacer.setLayoutData(gridDataSpacer);
-		
+
 	}
-	
-	private GridData makeGridDataCheckboxes(){
-		GridData gridDataCheckbox = new GridData(SWT.LEFT, SWT.CENTER, false, false);
+
+	private GridData makeGridDataCheckboxes() {
+		GridData gridDataCheckbox = new GridData(SWT.LEFT, SWT.CENTER, false,
+				false);
 		gridDataCheckbox.verticalIndent = -5;
 		return gridDataCheckbox;
 	}
-	
+
 }

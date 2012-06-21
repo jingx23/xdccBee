@@ -25,15 +25,15 @@ import de.snertlab.xdccBee.ui.Application;
 
 /**
  * @author snert
- *
+ * 
  */
 public class ActionRemoveIrcChannel extends Action {
-	
-public static final String ID="de.snertlab.xdccBee.ui.actions.actionRemoveIrcChannel"; //$NON-NLS-1$
-	
+
+	public static final String ID = "de.snertlab.xdccBee.ui.actions.actionRemoveIrcChannel"; //$NON-NLS-1$
+
 	private IrcChannel selectedIrcChannel;
-	
-	public ActionRemoveIrcChannel(IrcChannel selectedIrcChannel){
+
+	public ActionRemoveIrcChannel(IrcChannel selectedIrcChannel) {
 		super(XdccBeeMessages.getString("ActionRemoveIrcChannel_NAME")); //$NON-NLS-1$
 		this.selectedIrcChannel = selectedIrcChannel;
 		setId(ID);

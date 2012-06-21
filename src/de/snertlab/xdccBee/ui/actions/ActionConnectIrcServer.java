@@ -24,15 +24,15 @@ import de.snertlab.xdccBee.messages.XdccBeeMessages;
 
 /**
  * @author snert
- *
+ * 
  */
 public class ActionConnectIrcServer extends Action {
-	
-public static final String ID="de.snertlab.xdccBee.ui.actions.actionConnectIrcServer"; //$NON-NLS-1$
-	
+
+	public static final String ID = "de.snertlab.xdccBee.ui.actions.actionConnectIrcServer"; //$NON-NLS-1$
+
 	private IrcServer ircServer;
-	
-	public ActionConnectIrcServer(IrcServer ircServer){
+
+	public ActionConnectIrcServer(IrcServer ircServer) {
 		super(XdccBeeMessages.getString("ActionConnectIrcServer_NAME")); //$NON-NLS-1$
 		this.ircServer = ircServer;
 		setId(ID);

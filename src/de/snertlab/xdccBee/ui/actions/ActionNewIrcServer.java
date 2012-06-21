@@ -30,15 +30,15 @@ import de.snertlab.xdccBee.ui.dialog.EditNewIrcServerDialog;
 
 /**
  * @author snert
- *
+ * 
  */
 public class ActionNewIrcServer extends Action {
-	
-public static final String ID="de.snertlab.xdccBee.ui.actions.actionNewIrcServer"; //$NON-NLS-1$
-	
+
+	public static final String ID = "de.snertlab.xdccBee.ui.actions.actionNewIrcServer"; //$NON-NLS-1$
+
 	private Shell parentShell;
-	
-	public ActionNewIrcServer(Shell parentShell){
+
+	public ActionNewIrcServer(Shell parentShell) {
 		super(XdccBeeMessages.getString("ActionNewIrcServer_NAME")); //$NON-NLS-1$
 		this.parentShell = parentShell;
 		setId(ID);
@@ -46,16 +46,21 @@ public static final String ID="de.snertlab.xdccBee.ui.actions.actionNewIrcServer
 
 	@Override
 	public void run() {
-		IrcServer newIrcServer = new IrcServer("", Application.getSettings().getStandardNickname(), AppConfig.DEFAULT_IRC_PORT, Application.getSettings().getBotName(), Application.getSettings().getBotVersion());
-		EditNewIrcServerDialog editNewIrcServerDialog = new EditNewIrcServerDialog(parentShell, newIrcServer, true);
+		IrcServer newIrcServer = new IrcServer("", Application.getSettings()
+				.getStandardNickname(), AppConfig.DEFAULT_IRC_PORT, Application
+				.getSettings().getBotName(), Application.getSettings()
+				.getBotVersion());
+		EditNewIrcServerDialog editNewIrcServerDialog = new EditNewIrcServerDialog(
+				parentShell, newIrcServer, true);
 		int ret = editNewIrcServerDialog.open();
-		if(Window.OK == ret){
+		if (Window.OK == ret) {
 			Application.getServerSettings().addServer(newIrcServer);
 			Application.getServerSettings().saveSettings();
-			if(newIrcServer.isAutoconnect()){
+			if (newIrcServer.isAutoconnect()) {
 				newIrcServer.connect();
 			}
-			NotifyManagerIrcServerEditNew.getNotifyManager().notify(newIrcServer);
+			NotifyManagerIrcServerEditNew.getNotifyManager().notify(
+					newIrcServer);
 		}
 	}
 

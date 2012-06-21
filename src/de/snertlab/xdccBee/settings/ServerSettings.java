@@ -41,61 +41,73 @@ import de.snertlab.xdccBee.ui.Application;
 
 /**
  * @author snert
- *
+ * 
  */
 public class ServerSettings {
 	private static ServerSettings serverSettings;
-	
-	private static final String SETTINGS_FILENAME = AppConfig.SETTINGS_FOLDER_PATH + "/" + "ircServer.xml";  //$NON-NLS-1$ //$NON-NLS-2$
 
-	private Map<String, IrcServer> mapIrcServer; //FIXME: Nicht hostname als Key verwenden, da dieser sich aendern kann (zb Datum als key)
-	
-	public static ServerSettings getInstance(){
-		if(serverSettings==null){
+	private static final String SETTINGS_FILENAME = AppConfig.SETTINGS_FOLDER_PATH
+			+ "/" + "ircServer.xml"; //$NON-NLS-1$ //$NON-NLS-2$
+
+	private Map<String, IrcServer> mapIrcServer; // FIXME: Nicht hostname als
+													// Key verwenden, da dieser
+													// sich aendern kann (zb
+													// Datum als key)
+
+	public static ServerSettings getInstance() {
+		if (serverSettings == null) {
 			serverSettings = new ServerSettings();
 		}
 		return serverSettings;
 	}
-	
-	public ServerSettings(){
+
+	public ServerSettings() {
 		this.mapIrcServer = new LinkedHashMap<String, IrcServer>();
 		Document docSettings = makeSettingsFile();
 		fillMapIrcServer(docSettings);
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	private void fillMapIrcServer(Document docSettings){
-		Element nodeServer = docSettings.getRootElement().getChild("IRC_SERVER"); //$NON-NLS-1$
+	private void fillMapIrcServer(Document docSettings) {
+		Element nodeServer = docSettings.getRootElement()
+				.getChild("IRC_SERVER"); //$NON-NLS-1$
 		List<Element> listChildren = (List<Element>) nodeServer.getChildren();
 		for (Element child : listChildren) {
-			IrcServer ircServer = new IrcServer(child.getAttributeValue("hostname"),  //$NON-NLS-1$
-												child.getAttributeValue("nickname"),  //$NON-NLS-1$
-												child.getAttributeValue("port"), //$NON-NLS-1$
-												Application.getSettings().getBotName(),
-												Application.getSettings().getBotVersion()
-											   );
-			ircServer.setDebug( child.getAttributeValue("isDebug").equals("1") ? true : false ); //$NON-NLS-1$ //$NON-NLS-2$
-			ircServer.setAutoconnect( child.getAttributeValue("isAutoconnect").equals("1") ? true : false ); //$NON-NLS-1$ //$NON-NLS-2$
-			List<Element> listChildrenServer = (List<Element>) child.getChildren();
+			IrcServer ircServer = new IrcServer(
+					child.getAttributeValue("hostname"), //$NON-NLS-1$
+					child.getAttributeValue("nickname"), //$NON-NLS-1$
+					child.getAttributeValue("port"), //$NON-NLS-1$
+					Application.getSettings().getBotName(), Application
+							.getSettings().getBotVersion());
+			ircServer
+					.setDebug(child.getAttributeValue("isDebug").equals("1") ? true : false); //$NON-NLS-1$ //$NON-NLS-2$
+			ircServer
+					.setAutoconnect(child
+							.getAttributeValue("isAutoconnect").equals("1") ? true : false); //$NON-NLS-1$ //$NON-NLS-2$
+			List<Element> listChildrenServer = (List<Element>) child
+					.getChildren();
 			for (Element childChannel : listChildrenServer) {
 				IrcChannel ircChannel = new IrcChannel(ircServer);
-				ircChannel.setChannelName(childChannel.getAttributeValue("channelName")); //$NON-NLS-1$
-				ircChannel.setAutoconnect( childChannel.getAttributeValue("isAutoconnect").equals("1") ? true : false ); //$NON-NLS-1$ //$NON-NLS-2$
+				ircChannel.setChannelName(childChannel
+						.getAttributeValue("channelName")); //$NON-NLS-1$
+				ircChannel.setAutoconnect(childChannel.getAttributeValue(
+						"isAutoconnect").equals("1") ? true : false); //$NON-NLS-1$ //$NON-NLS-2$
 				ircServer.addIrcChannel(ircChannel);
 			}
 			mapIrcServer.put(ircServer.getHostname(), ircServer);
 		}
 	}
-	
-	private Document makeSettingsFile(){
+
+	private Document makeSettingsFile() {
 		File settingsFile = new File(SETTINGS_FILENAME);
-		if(! settingsFile.exists() ){
+		if (!settingsFile.exists()) {
 			Document doc = saveSettings();
 			return doc;
-		}else{
+		} else {
 			try {
 				SAXBuilder builder = new SAXBuilder();
-				Document anotherDocument = builder.build(new File(settingsFile.getPath()));
+				Document anotherDocument = builder.build(new File(settingsFile
+						.getPath()));
 				return anotherDocument;
 			} catch (JDOMException e) {
 				throw new RuntimeException(e);
@@ -104,23 +116,33 @@ public class ServerSettings {
 			}
 		}
 	}
-	
-	private Document buildSettingXml(){
+
+	private Document buildSettingXml() {
 		Document doc = new Document();
 		Element nodeRoot = new Element("ROOT"); //$NON-NLS-1$
 		doc.setRootElement(nodeRoot);
 		Element nodeIrcServer = XmlTool.addChildNode(nodeRoot, "IRC_SERVER"); //$NON-NLS-1$
 		for (IrcServer ircServer : mapIrcServer.values()) {
 			Element nodeServer = new Element("IRC_SERVER"); //$NON-NLS-1$
-			nodeServer.setAttribute("hostname", StringUtils.defaultString(ircServer.getHostname())); //$NON-NLS-1$
-			nodeServer.setAttribute("nickname", StringUtils.defaultString(ircServer.getNickname())); //$NON-NLS-1$
-			nodeServer.setAttribute("port", StringUtils.defaultString(ircServer.getPort())); //$NON-NLS-1$
+			nodeServer
+					.setAttribute(
+							"hostname", StringUtils.defaultString(ircServer.getHostname())); //$NON-NLS-1$
+			nodeServer
+					.setAttribute(
+							"nickname", StringUtils.defaultString(ircServer.getNickname())); //$NON-NLS-1$
+			nodeServer.setAttribute(
+					"port", StringUtils.defaultString(ircServer.getPort())); //$NON-NLS-1$
 			nodeServer.setAttribute("isDebug", ircServer.isDebug() ? "1" : "0"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-			nodeServer.setAttribute("isAutoconnect", ircServer.isAutoconnect() ? "1" : "0"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			nodeServer.setAttribute(
+					"isAutoconnect", ircServer.isAutoconnect() ? "1" : "0"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			for (IrcChannel ircChannel : ircServer.getListChannels()) {
 				Element nodeChannel = new Element("IRC_CHANNEL"); //$NON-NLS-1$
-				nodeChannel.setAttribute("channelName", StringUtils.defaultString(ircChannel.getChannelName())); //$NON-NLS-1$
-				nodeChannel.setAttribute("isAutoconnect", ircChannel.isAutoconnect() ? "1" : "0"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				nodeChannel
+						.setAttribute(
+								"channelName", StringUtils.defaultString(ircChannel.getChannelName())); //$NON-NLS-1$
+				nodeChannel
+						.setAttribute(
+								"isAutoconnect", ircChannel.isAutoconnect() ? "1" : "0"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				nodeServer.addContent(nodeChannel);
 			}
 			nodeIrcServer.addContent(nodeServer);
@@ -128,20 +150,21 @@ public class ServerSettings {
 		return doc;
 	}
 
-	public Document saveSettings(){
-		try{
+	public Document saveSettings() {
+		try {
 			File settingsFile = new File(SETTINGS_FILENAME);
 			Document doc = buildSettingXml();
 			XMLOutputter xmlOut = new XMLOutputter();
-			xmlOut.output(doc, new BufferedOutputStream(new FileOutputStream(settingsFile)));
+			xmlOut.output(doc, new BufferedOutputStream(new FileOutputStream(
+					settingsFile)));
 			return doc;
-		}catch(IOException e){
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	public void addServer(IrcServer ircServer) {
-		if(mapIrcServer.containsKey(ircServer.getHostname())){
+		if (mapIrcServer.containsKey(ircServer.getHostname())) {
 			throw new RuntimeException("Irc Server bereits vorhanden"); //$NON-NLS-1$
 		}
 		mapIrcServer.put(ircServer.getHostname(), ircServer);
@@ -167,7 +190,7 @@ public class ServerSettings {
 		List<IrcChannel> listAllChannels = new ArrayList<IrcChannel>();
 		List<IrcServer> listAllServer = getListServer();
 		for (IrcServer ircServer : listAllServer) {
-			listAllChannels.addAll(ircServer.getListChannels());		
+			listAllChannels.addAll(ircServer.getListChannels());
 		}
 		return listAllChannels;
 	}

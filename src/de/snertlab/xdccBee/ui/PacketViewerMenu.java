@@ -24,25 +24,25 @@ import org.eclipse.swt.events.MouseEvent;
 
 import de.snertlab.xdccBee.ui.actions.ActionDownloadFile;
 
-
 public class PacketViewerMenu {
-	public PacketViewerMenu (final PacketViewer packetViewer) {
+	public PacketViewerMenu(final PacketViewer packetViewer) {
 		MenuManager contextMenu = new MenuManager();
 		final Action downloadAction = new ActionDownloadFile();
 		downloadAction.setEnabled(false);
 		contextMenu.add(downloadAction);
-		packetViewer.getControl().setMenu(contextMenu.createContextMenu(packetViewer.getControl()));
-		packetViewer.getTable().addMouseListener( new MouseAdapter() {
+		packetViewer.getControl().setMenu(
+				contextMenu.createContextMenu(packetViewer.getControl()));
+		packetViewer.getTable().addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				if(e.button == 3){
-					if(packetViewer.getSelectedDccPacket() == null) {
+				if (e.button == 3) {
+					if (packetViewer.getSelectedDccPacket() == null) {
 						downloadAction.setEnabled(false);
 					} else {
 						downloadAction.setEnabled(true);
-					}					
+					}
 				}
 			}
 		});
-	}	
+	}
 }

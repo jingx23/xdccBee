@@ -22,46 +22,46 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-
 /**
  * @author snert
- *
+ * 
  */
 public class DccDownloadQueue {
-	
+
 	private static DccDownloadQueue dccDownloadQueue;
 	private HashMap<String, DccDownload> mapDownloadQueue;
-	
-	public static DccDownloadQueue getInstance(){
-		if(dccDownloadQueue==null){
+
+	public static DccDownloadQueue getInstance() {
+		if (dccDownloadQueue == null) {
 			dccDownloadQueue = new DccDownloadQueue();
 		}
 		return dccDownloadQueue;
 	}
-	
-	public DccDownloadQueue(){
+
+	public DccDownloadQueue() {
 		this.mapDownloadQueue = new HashMap<String, DccDownload>();
 	}
-	
-	public void addToQueue(DccDownload dccDownload){
+
+	public void addToQueue(DccDownload dccDownload) {
 		mapDownloadQueue.put(dccDownload.getKey(), dccDownload);
 	}
-	
-	public List<DccDownload> getListDccDownloadsImmutable(){
-		return Collections.unmodifiableList( new ArrayList<DccDownload>( mapDownloadQueue.values() ) );
+
+	public List<DccDownload> getListDccDownloadsImmutable() {
+		return Collections.unmodifiableList(new ArrayList<DccDownload>(
+				mapDownloadQueue.values()));
 	}
 
 	public DccDownload getDccDownload(DccFileTransfer dccFileTransfer) {
 		List<DccDownload> listDccDownloads = getListDccDownloadsImmutable();
 		for (DccDownload dccDownload : listDccDownloads) {
-			if( dccDownload.matchDccFileTransfer(dccFileTransfer) ){
+			if (dccDownload.matchDccFileTransfer(dccFileTransfer)) {
 				return dccDownload;
 			}
 		}
 		return null;
 	}
-	
-	public boolean containsDccDownload(DccDownload dccDownload){
+
+	public boolean containsDccDownload(DccDownload dccDownload) {
 		return mapDownloadQueue.containsKey(dccDownload.getKey());
 	}
 

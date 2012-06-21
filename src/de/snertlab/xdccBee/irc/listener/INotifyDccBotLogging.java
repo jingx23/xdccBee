@@ -19,13 +19,12 @@ package de.snertlab.xdccBee.irc.listener;
 
 import de.snertlab.xdccBee.irc.IrcServer;
 
-
 /**
  * @author snert
- *
+ * 
  */
 public interface INotifyDccBotLogging {
 
 	void notifyDccBotLogging(IrcServer ircServer, LogMessage log);
-	
+
 }

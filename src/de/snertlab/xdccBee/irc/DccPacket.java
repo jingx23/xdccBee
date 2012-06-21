@@ -17,10 +17,9 @@
  */
 package de.snertlab.xdccBee.irc;
 
-
 /**
  * @author snert
- *
+ * 
  */
 public class DccPacket {
 	DccBot dccBot;
@@ -29,6 +28,7 @@ public class DccPacket {
 	private String size;
 	private String sender;
 	private IrcChannel ircChannel;
+
 	public DccPacket() {
 	}
 
@@ -37,6 +37,7 @@ public class DccPacket {
 		this.name = name;
 		this.size = size;
 	}
+
 	public DccBot getDccBot() {
 		return dccBot;
 	}
@@ -48,18 +49,18 @@ public class DccPacket {
 	public int getPacketNr() {
 		return packetNr;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
-	
+
 	public String getSize() {
 		return size;
 	}
-	
+
 	public String getSender() {
 		return sender;
-	}	
+	}
 
 	public void setPacketNr(int packetNr) {
 		this.packetNr = packetNr;
@@ -75,9 +76,9 @@ public class DccPacket {
 
 	public void setSender(String sender) {
 		this.sender = sender;
-	}	
+	}
 
-	public String toString(){
+	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append(packetNr);
 		sb.append(name);
@@ -95,7 +96,7 @@ public class DccPacket {
 	public void setIrcChannel(IrcChannel ircChannel) {
 		this.ircChannel = ircChannel;
 	}
-	
+
 	public String getHostname() {
 		return getIrcServer().getHostname();
 	}
@@ -107,7 +108,7 @@ public class DccPacket {
 	public IrcChannel getIrcChannel() {
 		return ircChannel;
 	}
-	
+
 	public void setChannel(IrcChannel ircChannel) {
 		this.ircChannel = ircChannel;
 	}

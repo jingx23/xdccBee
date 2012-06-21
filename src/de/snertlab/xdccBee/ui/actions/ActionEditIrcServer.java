@@ -29,16 +29,16 @@ import de.snertlab.xdccBee.ui.dialog.EditNewIrcServerDialog;
 
 /**
  * @author snert
- *
+ * 
  */
 public class ActionEditIrcServer extends Action {
-	
-public static final String ID="de.snertlab.xdccBee.ui.actions.actionEditIrcServer"; //$NON-NLS-1$
-	
+
+	public static final String ID = "de.snertlab.xdccBee.ui.actions.actionEditIrcServer"; //$NON-NLS-1$
+
 	private Shell parentShell;
 	private IrcServer ircServer;
-	
-	public ActionEditIrcServer(Shell parentShell, IrcServer ircServer){
+
+	public ActionEditIrcServer(Shell parentShell, IrcServer ircServer) {
 		super(XdccBeeMessages.getString("ActionEditIrcServer_NAME")); //$NON-NLS-1$
 		this.parentShell = parentShell;
 		this.ircServer = ircServer;
@@ -47,11 +47,12 @@ public static final String ID="de.snertlab.xdccBee.ui.actions.actionEditIrcServe
 
 	@Override
 	public void run() {
-		EditNewIrcServerDialog editNewIrcServerDialog = new EditNewIrcServerDialog(parentShell, ircServer, false);
+		EditNewIrcServerDialog editNewIrcServerDialog = new EditNewIrcServerDialog(
+				parentShell, ircServer, false);
 		int ret = editNewIrcServerDialog.open();
-		if(Window.OK == ret){
+		if (Window.OK == ret) {
 			Application.getServerSettings().saveSettings();
-			if(ircServer.isAutoconnect() && ! ircServer.isConnected()){
+			if (ircServer.isAutoconnect() && !ircServer.isConnected()) {
 				ircServer.connect();
 			}
 			NotifyManagerIrcServerEditNew.getNotifyManager().notify(ircServer);

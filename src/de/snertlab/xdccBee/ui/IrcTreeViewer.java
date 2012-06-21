@@ -27,9 +27,9 @@ import de.snertlab.xdccBee.ui.provider.ContentLabelProviderTreeIrcServer;
 
 /**
  * @author holgi
- *
+ * 
  */
-public class IrcTreeViewer extends TreeViewer implements INotifyConnectedState{
+public class IrcTreeViewer extends TreeViewer implements INotifyConnectedState {
 
 	/**
 	 * @param parent
@@ -38,7 +38,7 @@ public class IrcTreeViewer extends TreeViewer implements INotifyConnectedState{
 	public IrcTreeViewer(Composite parent, int style) {
 		super(parent, style);
 		NotifyManagerConnectedState.getNotifyManager().register(this);
-		ContentLabelProviderTreeIrcServer contentLabelProviderTreeIrcServer = new ContentLabelProviderTreeIrcServer(); 
+		ContentLabelProviderTreeIrcServer contentLabelProviderTreeIrcServer = new ContentLabelProviderTreeIrcServer();
 		setContentProvider(contentLabelProviderTreeIrcServer);
 		setLabelProvider(contentLabelProviderTreeIrcServer);
 		setInput(Application.getServerSettings().getListServer());
@@ -47,7 +47,7 @@ public class IrcTreeViewer extends TreeViewer implements INotifyConnectedState{
 
 	@Override
 	public void notifyConnectedState(final IConnectedState obj) {
-		this.getTree().getDisplay().asyncExec( new Runnable() {
+		this.getTree().getDisplay().asyncExec(new Runnable() {
 			@Override
 			public void run() {
 				refresh(obj);

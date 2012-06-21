@@ -21,33 +21,27 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 
-public class MyMessageDialog extends MessageDialog{
+public class MyMessageDialog extends MessageDialog {
 
-	public MyMessageDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
-		super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType, dialogButtonLabels, defaultIndex);
+	public MyMessageDialog(Shell parentShell, String dialogTitle,
+			Image dialogTitleImage, String dialogMessage, int dialogImageType,
+			String[] dialogButtonLabels, int defaultIndex) {
+		super(parentShell, dialogTitle, dialogTitleImage, dialogMessage,
+				dialogImageType, dialogButtonLabels, defaultIndex);
 	}
-	
-	
+
 	public static boolean openConfirm(Shell parent, String title, String message) {
-		MessageDialog dialog = new MessageDialog( parent, 
-        										  title, 
-        										  null, 
-									              message, QUESTION,
-									              new String[]{"Ja", "Nein"},  //$NON-NLS-1$ //$NON-NLS-2$
-								              0
-								            );
+		MessageDialog dialog = new MessageDialog(parent, title, null, message,
+				QUESTION, new String[] { "Ja", "Nein" }, //$NON-NLS-1$ //$NON-NLS-2$
+				0);
 		// ok is the default
 		return dialog.open() == 0;
 	}
-	
+
 	public static int openConfirm3Btn(Shell parent, String title, String message) {
-		MessageDialog dialog = new MessageDialog( parent, 
-        										  title, 
-        										  null, 
-									              message, QUESTION,
-									              new String[]{"Ja", "Nein", "Abbrechen"},  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-								              0
-								            );
+		MessageDialog dialog = new MessageDialog(parent, title, null, message,
+				QUESTION, new String[] { "Ja", "Nein", "Abbrechen" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				0);
 		// ok is the default
 		return dialog.open();
 	}

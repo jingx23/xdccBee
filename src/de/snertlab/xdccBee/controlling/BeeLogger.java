@@ -31,63 +31,65 @@ import de.snertlab.xdccBee.AppConfig;
 
 /**
  * @author snert
- *
+ * 
  */
 public final class BeeLogger {
-	
+
 	private static Logger LOGGER;
 	public static final String LOGGER_NAME = "XdccBee";
 	private static ConsoleHandler console;
 	private static String logpath;
-	
-	public static Logger getLogger(){
-		if(LOGGER==null){
+
+	public static Logger getLogger() {
+		if (LOGGER == null) {
 			LOGGER = Logger.getLogger(LOGGER_NAME);
-            final Formatter formatter = new SimpleFormatter();
-            LOGGER.setUseParentHandlers(false);
+			final Formatter formatter = new SimpleFormatter();
+			LOGGER.setUseParentHandlers(false);
 
-            console = new ConsoleHandler();
-            console.setLevel(Level.ALL);
-            console.setFormatter(formatter);
-            LOGGER.addHandler(console);
+			console = new ConsoleHandler();
+			console.setLevel(Level.ALL);
+			console.setFormatter(formatter);
+			LOGGER.addHandler(console);
 
-            LOGGER.setLevel(Level.ALL); //TODO: setLevel to log in file only errors and info
+			LOGGER.setLevel(Level.ALL); // TODO: setLevel to log in file only
+										// errors and info
 
-            try {
-                logpath = AppConfig.SETTINGS_FOLDER_PATH + "/xdccBee.log";
-                FileHandler filehandler = new FileHandler(logpath);
-                filehandler.setFormatter(formatter);
-                LOGGER.addHandler(filehandler);
-            } catch (SecurityException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+			try {
+				logpath = AppConfig.SETTINGS_FOLDER_PATH + "/xdccBee.log";
+				FileHandler filehandler = new FileHandler(logpath);
+				filehandler.setFormatter(formatter);
+				LOGGER.addHandler(filehandler);
+			} catch (SecurityException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 
 		}
 		return LOGGER;
 	}
-	
+
 	public static void removeConsoleHandler() {
-        if (console != null) {
-            getLogger().removeHandler(console);
-        }
-        System.err.println("Removed Consolehandler. Start with -debug to see console output");
-    }
-	
+		if (console != null) {
+			getLogger().removeHandler(console);
+		}
+		System.err
+				.println("Removed Consolehandler. Start with -debug to see console output");
+	}
+
 	public static void exception(final Level level, final Throwable e) {
 		getLogger().log(level, level.getName() + " Exception occurred", e);
 	}
-	
+
 	public static void exception(final Throwable e) {
-        exception(Level.SEVERE, e);
-    }
-	
+		exception(Level.SEVERE, e);
+	}
+
 	public static String getStackTrace(final Throwable thrown) {
 		final StringWriter sw = new StringWriter();
 		final PrintWriter pw = new PrintWriter(sw);
 		thrown.printStackTrace(pw);
 		pw.close();
 		return sw.toString();
-	 }
+	}
 }

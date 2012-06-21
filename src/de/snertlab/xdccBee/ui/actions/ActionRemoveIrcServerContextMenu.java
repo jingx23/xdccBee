@@ -26,16 +26,17 @@ import de.snertlab.xdccBee.ui.Application;
 
 /**
  * @author snert
- *
+ * 
  */
 public class ActionRemoveIrcServerContextMenu extends Action {
-	
-public static final String ID="de.snertlab.xdccBee.ui.actions.actionRemoveIrcChannelContextMenu"; //$NON-NLS-1$
-	
+
+	public static final String ID = "de.snertlab.xdccBee.ui.actions.actionRemoveIrcChannelContextMenu"; //$NON-NLS-1$
+
 	private IrcServer selectedIrcServer;
-	
-	public ActionRemoveIrcServerContextMenu(IrcServer selectedIrcServer){
-		super(XdccBeeMessages.getString("ActionRemoveIrcServerContextMenu_NAME")); //$NON-NLS-1$
+
+	public ActionRemoveIrcServerContextMenu(IrcServer selectedIrcServer) {
+		super(XdccBeeMessages
+				.getString("ActionRemoveIrcServerContextMenu_NAME")); //$NON-NLS-1$
 		this.selectedIrcServer = selectedIrcServer;
 		setId(ID);
 	}

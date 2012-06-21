@@ -28,16 +28,16 @@ import de.snertlab.xdccBee.ui.dialog.EditNewIrcChannelDialog;
 
 /**
  * @author snert
- *
+ * 
  */
 public class ActionNewIrcChannel extends Action {
-	
-public static final String ID="de.snertlab.xdccBee.ui.actions.actionNewIrcChannel"; //$NON-NLS-1$
-	
+
+	public static final String ID = "de.snertlab.xdccBee.ui.actions.actionNewIrcChannel"; //$NON-NLS-1$
+
 	private Shell parentShell;
 	private IrcServer ircServer;
-	
-	public ActionNewIrcChannel(Shell parentShell, IrcServer ircServer){
+
+	public ActionNewIrcChannel(Shell parentShell, IrcServer ircServer) {
 		super(XdccBeeMessages.getString("ActionNewIrcChannel_NAME")); //$NON-NLS-1$
 		this.parentShell = parentShell;
 		this.ircServer = ircServer;
@@ -47,9 +47,10 @@ public static final String ID="de.snertlab.xdccBee.ui.actions.actionNewIrcChanne
 	@Override
 	public void run() {
 		IrcChannel newIrcChannel = new IrcChannel(ircServer);
-		EditNewIrcChannelDialog editNewIrcServerDialog = new EditNewIrcChannelDialog(parentShell, newIrcChannel, true);
+		EditNewIrcChannelDialog editNewIrcServerDialog = new EditNewIrcChannelDialog(
+				parentShell, newIrcChannel, true);
 		int ret = editNewIrcServerDialog.open();
-		if(Window.OK == ret){
+		if (Window.OK == ret) {
 			ircServer.addIrcChannel(newIrcChannel);
 		}
 	}

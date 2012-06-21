@@ -24,32 +24,32 @@ import de.snertlab.xdccBee.irc.IrcServer;
 
 /**
  * @author snert
- *
+ * 
  */
 public class NotifyManagerIrcServerEditNew {
-	
+
 	private static NotifyManagerIrcServerEditNew notifyManager;
 	private List<INotifyIrcServerEditNew> listNotifier;
-	
-	public static NotifyManagerIrcServerEditNew getNotifyManager(){
-		if(notifyManager==null){
+
+	public static NotifyManagerIrcServerEditNew getNotifyManager() {
+		if (notifyManager == null) {
 			notifyManager = new NotifyManagerIrcServerEditNew();
 		}
 		return notifyManager;
 	}
-	
+
 	public NotifyManagerIrcServerEditNew() {
 		this.listNotifier = new ArrayList<INotifyIrcServerEditNew>();
 	}
-	
-	public void register(INotifyIrcServerEditNew notifyIrcServer){
+
+	public void register(INotifyIrcServerEditNew notifyIrcServer) {
 		listNotifier.add(notifyIrcServer);
 	}
-	
-	public void notify(IrcServer ircServer){
+
+	public void notify(IrcServer ircServer) {
 		for (INotifyIrcServerEditNew notifyIrcServer : listNotifier) {
 			notifyIrcServer.notifyIrcServerEditNew(ircServer);
 		}
 	}
-	
+
 }

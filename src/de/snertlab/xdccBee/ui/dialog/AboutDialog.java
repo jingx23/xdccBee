@@ -31,17 +31,17 @@ import de.snertlab.xdccBee.ui.Application;
 
 /**
  * @author snert
- *
+ * 
  */
-public class AboutDialog extends Dialog{
+public class AboutDialog extends Dialog {
 
 	public AboutDialog(Shell parentShell) {
 		super(parentShell);
 	}
-	
+
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
-		//no Buttons
+		// no Buttons
 	}
 
 	protected Control createDialogArea(Composite parent) {
@@ -52,8 +52,8 @@ public class AboutDialog extends Dialog{
 		makeComponents(composite);
 		composite.pack();
 		return composite;
-	}                 
-	
+	}
+
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
@@ -61,24 +61,26 @@ public class AboutDialog extends Dialog{
 		newShell.setSize(200, 200);
 		Application.placeDialogInCenter(getParentShell(), newShell);
 	}
-	
-	private void makeComponents(Composite parent){
+
+	private void makeComponents(Composite parent) {
 		Composite comp = new Composite(parent, SWT.NONE);
-		comp.setLayout( new GridLayout() );
+		comp.setLayout(new GridLayout());
 		comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		
+
 		Label lblAppName = new Label(comp, SWT.NONE);
 		lblAppName.setText(XdccBeeMessages.getString("Application_TITLE"));
 		GridData a = new GridData(SWT.CENTER, SWT.CENTER, true, false);
 		a.verticalIndent = 40;
 		lblAppName.setLayoutData(a);
-		
+
 		Label lblVersion = new Label(comp, SWT.NONE);
-		lblVersion.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
+		lblVersion.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false,
+				false));
 		lblVersion.setText(Application.VERSION_STRING);
-		
+
 		Label lblAuthor = new Label(comp, SWT.NONE);
-		lblAuthor.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
+		lblAuthor.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false,
+				false));
 		lblAuthor.setText(XdccBeeMessages.getString("AboutDialog_COPYRIGHT")); //$NON-NLS-1$
 	}
 

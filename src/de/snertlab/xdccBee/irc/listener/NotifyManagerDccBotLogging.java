@@ -24,32 +24,32 @@ import de.snertlab.xdccBee.irc.IrcServer;
 
 /**
  * @author snert
- *
+ * 
  */
 public class NotifyManagerDccBotLogging {
-	
+
 	private static NotifyManagerDccBotLogging notifyManager;
 	private List<INotifyDccBotLogging> listNotifier;
-	
-	public static NotifyManagerDccBotLogging getNotifyManager(){
-		if(notifyManager==null){
+
+	public static NotifyManagerDccBotLogging getNotifyManager() {
+		if (notifyManager == null) {
 			notifyManager = new NotifyManagerDccBotLogging();
 		}
 		return notifyManager;
 	}
-	
+
 	public NotifyManagerDccBotLogging() {
 		this.listNotifier = new ArrayList<INotifyDccBotLogging>();
 	}
-	
-	public void register(INotifyDccBotLogging notifyDccBotLogging){
+
+	public void register(INotifyDccBotLogging notifyDccBotLogging) {
 		listNotifier.add(notifyDccBotLogging);
 	}
-	
-	public void notify(IrcServer ircServer, LogMessage log){
+
+	public void notify(IrcServer ircServer, LogMessage log) {
 		for (INotifyDccBotLogging notifyDccBotLogging : listNotifier) {
 			notifyDccBotLogging.notifyDccBotLogging(ircServer, log);
 		}
 	}
-	
+
 }

@@ -27,15 +27,15 @@ import de.snertlab.xdccBee.ui.dialog.SettingsDialog;
 
 /**
  * @author snert
- *
+ * 
  */
 public class ActionPreferences extends Action {
-	
-	public static final String ID="de.snertlab.xdccBee.ui.actions.actionPreferences"; //$NON-NLS-1$
-	
+
+	public static final String ID = "de.snertlab.xdccBee.ui.actions.actionPreferences"; //$NON-NLS-1$
+
 	private Shell parentShell;
-	
-	public ActionPreferences(Shell parentShell){
+
+	public ActionPreferences(Shell parentShell) {
 		super(XdccBeeMessages.getString("ActionPreferences_NAME")); //$NON-NLS-1$
 		this.parentShell = parentShell;
 	}
@@ -44,11 +44,11 @@ public class ActionPreferences extends Action {
 	public void run() {
 		SettingsDialog settingsDialog = new SettingsDialog(parentShell);
 		int ret = settingsDialog.open();
-		if(Window.OK == ret){
+		if (Window.OK == ret) {
 			Application.getSettings().saveSettings();
 		}
 	}
-	
+
 	@Override
 	public String getId() {
 		return ID;
