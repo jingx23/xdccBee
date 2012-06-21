@@ -43,7 +43,7 @@
 			  <jarfileset dir="deploy" includes="xdccBee.jar"/>
               <jarfileset dir="lib/commons" includes="commons-io-1.4.jar"/>
               <jarfileset dir="lib/commons" includes="commons-lang-2.4.jar"/>
-			  <jarfileset dir="lib/pircbot" includes="pircbot.jar"/>
+			  <jarfileset dir="lib/ircLib" includes="irclib.jar"/>
               <jarfileset dir="lib/jdom" includes="jdom.jar"/>
               <jarfileset dir="lib/jFace" includes="org.eclipse.core.commands_3.5.0.I20090525-2000.jar"/>
               <jarfileset dir="lib/jFace" includes="org.eclipse.core.runtime_3.5.0.v20090525.jar"/>
@@ -67,7 +67,7 @@
 	</path>
 	
 	<target name="compile" description="compile the source" depends="init">
-			<javac srcdir="${src}" destdir="${build}" classpathref="dist.classpath" source="1.6" debug="on"/>
+			<javac srcdir="${src}" includeantruntime="false" destdir="${build}" classpathref="dist.classpath" source="1.6" debug="on"/>
 			<copy file="${src}/de/snertlab/xdccBee/ui/version.properties" todir="${build}/de/snertlab/xdccBee/ui/"/>
 			<copy file="${src}/de/snertlab/xdccBee/messages/messages_de.properties" todir="${build}/de/snertlab/xdccBee/messages/"/>
 			<copy todir="${build}/de/snertlab/xdccBee/ui/images">
@@ -82,7 +82,7 @@
 		<jar destfile="deploy/xdccBee.jar">
 	       	<manifest>
 	            <attribute name="Main-Class" value="de.snertlab.xdccBee.ui.Application"/>
-	        	<attribute name="Class-Path" value="./ commons-io-1.4.jar commons-lang-2.4.jar jdom.jar org.eclipse.core.commands_3.5.0.I20090525-2000.jar org.eclipse.core.runtime_3.5.0.v20090525.jar org.eclipse.equinox.common_3.5.1.R35x_v20090807-1100.jar org.eclipse.jface_3.5.1.M20090826-0800.jar org.eclipse.jface.text_3.5.1.r351_v20090708-0800.jar org.eclipse.osgi_3.5.1.R35x_v20090827.jar org.eclipse.text_3.5.0.v20090513-2000.jar swt.jar pircbot.jar"/>
+	        	<attribute name="Class-Path" value="./ commons-io-1.4.jar commons-lang-2.4.jar jdom.jar org.eclipse.core.commands_3.5.0.I20090525-2000.jar org.eclipse.core.runtime_3.5.0.v20090525.jar org.eclipse.equinox.common_3.5.1.R35x_v20090807-1100.jar org.eclipse.jface_3.5.1.M20090826-0800.jar org.eclipse.jface.text_3.5.1.r351_v20090708-0800.jar org.eclipse.osgi_3.5.1.R35x_v20090827.jar org.eclipse.text_3.5.0.v20090513-2000.jar swt.jar irclib.jar"/>
 	        </manifest>
 	    	<fileset dir="${build}"/>
 	    </jar>
@@ -96,13 +96,13 @@
                 <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
                 <attribute name="Rsrc-Main-Class" value="de.snertlab.xdccBee.ui.Application"/>
                 <attribute name="Class-Path" value="."/>
-                <attribute name="Rsrc-Class-Path" value="./ commons-io-1.4.jar commons-lang-2.4.jar jdom.jar org.eclipse.core.commands_3.5.0.I20090525-2000.jar org.eclipse.core.runtime_3.5.0.v20090525.jar org.eclipse.equinox.common_3.5.1.R35x_v20090807-1100.jar org.eclipse.jface_3.5.1.M20090826-0800.jar org.eclipse.jface.text_3.5.1.r351_v20090708-0800.jar org.eclipse.osgi_3.5.1.R35x_v20090827.jar org.eclipse.text_3.5.0.v20090513-2000.jar swt.jar pircbot.jar"/>
+                <attribute name="Rsrc-Class-Path" value="./ commons-io-1.4.jar commons-lang-2.4.jar jdom.jar org.eclipse.core.commands_3.5.0.I20090525-2000.jar org.eclipse.core.runtime_3.5.0.v20090525.jar org.eclipse.equinox.common_3.5.1.R35x_v20090807-1100.jar org.eclipse.jface_3.5.1.M20090826-0800.jar org.eclipse.jface.text_3.5.1.r351_v20090708-0800.jar org.eclipse.osgi_3.5.1.R35x_v20090827.jar org.eclipse.text_3.5.0.v20090513-2000.jar swt.jar irclib.jar"/>
             </manifest>
             <zipfileset src="deploy/jarInJarLoader/jar-in-jar-loader.zip"/>
             <zipfileset dir="lib/commons" includes="commons-io-1.4.jar"/>
             <zipfileset dir="lib/commons" includes="commons-lang-2.4.jar"/>
             <zipfileset dir="lib/jdom" includes="jdom.jar"/>
-        	<zipfileset dir="lib/pircbot" includes="pircbot.jar"/>
+        	<zipfileset dir="lib/ircLib" includes="irclib.jar"/>
             <zipfileset dir="lib/jFace" includes="org.eclipse.core.commands_3.5.0.I20090525-2000.jar"/>
             <zipfileset dir="lib/jFace" includes="org.eclipse.core.runtime_3.5.0.v20090525.jar"/>
             <zipfileset dir="lib/jFace" includes="org.eclipse.equinox.common_3.5.1.R35x_v20090807-1100.jar"/>
