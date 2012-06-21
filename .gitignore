@@ -4,3 +4,5 @@ hs_err_*
 build/**/*
 ./build
 bin/**/*
+
+deploy/dist/linux32.zip

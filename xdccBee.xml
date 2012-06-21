@@ -28,6 +28,10 @@
 			<param name="jarName" value="xdccBee_win64.jar"/>
 			<param name="swtJar" value="lib/swt/windows/64bit"/>
 		</antcall>
+		<antcall target="makeCompleteJar">
+			<param name="jarName" value="xdccBee_linux32.jar"/>
+			<param name="swtJar" value="lib/swt/linux/32bit"/>
+		</antcall>
 		<antcall target="exe">
 			<param name="jarName" value="xdccBee_win64.jar"/>
 			<param name="exeName" value="xdccBee_win64.exe"/>
@@ -198,6 +202,10 @@
 		    <fileset dir="${deploy.dir}" includes="xdccBee_win64.exe"/>
 		</zip>
 	
+		<zip destfile="${deploy.dir}/linux32.zip">
+		    <fileset dir="${deploy.dir}" includes="xdccBee_linux32.jar"/>
+		</zip>
+		
 		<zip destfile="${deploy.dir}/macosx64.zip">
 			<zipfileset dir="${deploy.dir}/xdccBee64.app" excludes="Contents/MacOS/JavaApplicationStub" prefix="xdccBee64.app"/>
 			<zipfileset dir="${deploy.dir}/xdccBee64.app" includes="Contents/MacOS/JavaApplicationStub" prefix="xdccBee64.app" filemode="755"/>
