@@ -6,3 +6,4 @@ build/**/*
 bin/**/*
 
 deploy/dist/linux32.zip
+src/de/snertlab/xdccBee/ui/version.properties

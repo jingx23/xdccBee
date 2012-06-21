@@ -5,7 +5,7 @@
 	<property name="versionPropertiesFilename"     value="${src.ui.dir}/version.properties"/>
 	
 	<target name="compile">
-	   <antcall target="revision"></antcall>
+		<antcall target="revision"></antcall>
 	</target>
 
 	<target name="dist">
@@ -13,6 +13,7 @@
 	</target>
 
 	<target name="revision">
+		<antcall target="do-create-empty-version"/>
     	<exec executable="git" outputproperty="git.revision" failifexecutionfails="false" errorproperty="">
     	        <arg value="describe"/>
     	        <arg value="--tags"/>
@@ -31,13 +32,15 @@
 	</target>
 	
 	<target name="patch">
-		    <propertyfile  file="${versionPropertiesFilename}">
-		            <entry key="build.patch.number" type="int" operation="+" value="1" pattern="0"/>
-		    </propertyfile>
-			<antcall target="revision"/>
+		<antcall target="do-create-empty-version"/>
+	    <propertyfile  file="${versionPropertiesFilename}">
+	            <entry key="build.patch.number" type="int" operation="+" value="1" pattern="0"/>
+	    </propertyfile>
+		<antcall target="revision"/>
 	</target>
 
 	<target name="minor">
+		<antcall target="do-create-empty-version"/>
 	    <propertyfile  file="${versionPropertiesFilename}">
 	            <entry key="build.minor.number" type="int" operation="+" value="1" pattern="0"/>
 	            <entry key="build.patch.number" type="int" value="0" pattern="0"/>
@@ -46,6 +49,7 @@
 	</target>
 
 	<target name="major">
+		<antcall target="do-create-empty-version"/>
 	    <propertyfile  file="${versionPropertiesFilename}">
 	            <entry key="build.major.number" type="int" operation="+" value="1" pattern="0"/>
 	            <entry key="build.minor.number" type="int" value="0" pattern="0"/>
@@ -55,6 +59,7 @@
 	</target>
 
 	<target name="all">
+		<antcall target="do-create-empty-version"/>
 	    <propertyfile  file="${versionPropertiesFilename}">
 	            <entry key="build.major.number" type="int" operation="+" value="1" pattern="0"/>
 	            <entry key="build.minor.number" type="int" operation="+" value="1" pattern="0"/>
@@ -63,4 +68,23 @@
 	    <antcall target="revision"/>
 	</target>
 
+	<target name="do-create-empty-version">
+		<condition property="versionFileNotExist">
+	      <not>
+	      	<resourceexists>
+	      	  <file file="${versionPropertiesFilename}"/>
+	      	</resourceexists>
+	      </not>
+		</condition>
+		<antcall target="xx"/>
+	</target>
+	
+	<target name="xx" if="versionFileNotExist">
+	    <propertyfile  file="${versionPropertiesFilename}">
+	        <entry key="build.major.number" type="int" value="0" pattern="0"/>
+	        <entry key="build.minor.number" type="int" value="0" pattern="0"/>
+			<entry key="build.patch.number" type="int" value="0" pattern="0"/>
+	    	<entry key="build.revision.number" type="int" value="0" pattern="0"/>
+		</propertyfile>		    			
+	</target>
 </project>

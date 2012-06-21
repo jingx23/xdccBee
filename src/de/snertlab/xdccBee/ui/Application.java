@@ -255,15 +255,20 @@ public class Application extends ApplicationWindow {
 	}
 
 	private static String readVersionNrFromProperties() {
-		Properties prop = loadVersionProperties();
-		String version = ""; //$NON-NLS-1$
-		String major = (String) prop.get("build.major.number"); //$NON-NLS-1$
-		String minor = (String) prop.get("build.minor.number"); //$NON-NLS-1$
-		String patch = (String) prop.get("build.patch.number"); //$NON-NLS-1$
-		String revision = (String) prop.get("build.revision.number"); //$NON-NLS-1$
+		try {
+			Properties prop = loadVersionProperties();
+			String version = ""; //$NON-NLS-1$
+			String major = (String) prop.get("build.major.number"); //$NON-NLS-1$
+			String minor = (String) prop.get("build.minor.number"); //$NON-NLS-1$
+			String patch = (String) prop.get("build.patch.number"); //$NON-NLS-1$
+			String revision = (String) prop.get("build.revision.number"); //$NON-NLS-1$
 
-		version = "Version " + major + "." + minor + "." + patch + " Build(" + revision + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-		return version;
+			version = "Version " + major + "." + minor + "." + patch + " Build(" + revision + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+			return version;
+		} catch (Exception e) {
+			logger.info("no version file found");
+			return "NO_VERSION_FILE";
+		}
 	}
 
 	private static Properties loadVersionProperties() {
