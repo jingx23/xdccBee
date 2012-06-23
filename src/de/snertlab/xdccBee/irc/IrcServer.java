@@ -49,7 +49,16 @@ public class IrcServer implements IConnectedState {
 
 	public IrcServer(String hostname, String nickname, String port,
 			String botName, String botVersion) {
-		this.id = (new Date().getTime() + Math.random()) + "";
+		this(null, hostname, nickname, port, botName, botVersion);
+	}
+
+	public IrcServer(String id, String hostname, String nickname, String port,
+			String botName, String botVersion) {
+		if (id == null) {
+			this.id = (new Date().getTime() + Math.random()) + "";
+		} else {
+			this.id = id;
+		}
 		this.hostname = hostname;
 		this.nickname = nickname;
 		this.port = port;

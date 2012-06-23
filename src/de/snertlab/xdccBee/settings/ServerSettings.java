@@ -49,10 +49,7 @@ public class ServerSettings {
 	private static final String SETTINGS_FILENAME = AppConfig.SETTINGS_FOLDER_PATH
 			+ "/" + "ircServer.xml"; //$NON-NLS-1$ //$NON-NLS-2$
 
-	private Map<String, IrcServer> mapIrcServer; // FIXME: Nicht hostname als
-													// Key verwenden, da dieser
-													// sich aendern kann (zb
-													// Datum als key)
+	private Map<String, IrcServer> mapIrcServer;
 
 	public static ServerSettings getInstance() {
 		if (serverSettings == null) {
@@ -73,7 +70,7 @@ public class ServerSettings {
 				.getChild("IRC_SERVER"); //$NON-NLS-1$
 		List<Element> listChildren = (List<Element>) nodeServer.getChildren();
 		for (Element child : listChildren) {
-			IrcServer ircServer = new IrcServer(
+			IrcServer ircServer = new IrcServer(child.getAttributeValue("id"),
 					child.getAttributeValue("hostname"), //$NON-NLS-1$
 					child.getAttributeValue("nickname"), //$NON-NLS-1$
 					child.getAttributeValue("port"), //$NON-NLS-1$
@@ -94,7 +91,7 @@ public class ServerSettings {
 						"isAutoconnect").equals("1") ? true : false); //$NON-NLS-1$ //$NON-NLS-2$
 				ircServer.addIrcChannel(ircChannel);
 			}
-			mapIrcServer.put(ircServer.getHostname(), ircServer);
+			mapIrcServer.put(ircServer.getId(), ircServer);
 		}
 	}
 
@@ -124,6 +121,8 @@ public class ServerSettings {
 		Element nodeIrcServer = XmlTool.addChildNode(nodeRoot, "IRC_SERVER"); //$NON-NLS-1$
 		for (IrcServer ircServer : mapIrcServer.values()) {
 			Element nodeServer = new Element("IRC_SERVER"); //$NON-NLS-1$
+			nodeServer.setAttribute(
+					"id", StringUtils.defaultString(ircServer.getId())); //$NON-NLS-1$
 			nodeServer
 					.setAttribute(
 							"hostname", StringUtils.defaultString(ircServer.getHostname())); //$NON-NLS-1$
@@ -164,10 +163,10 @@ public class ServerSettings {
 	}
 
 	public void addServer(IrcServer ircServer) {
-		if (mapIrcServer.containsKey(ircServer.getHostname())) {
+		if (getServerByName(ircServer.getHostname()) != null) {
 			throw new RuntimeException("Irc Server bereits vorhanden"); //$NON-NLS-1$
 		}
-		mapIrcServer.put(ircServer.getHostname(), ircServer);
+		mapIrcServer.put(ircServer.getId(), ircServer);
 	}
 
 	public List<IrcServer> getListServer() {
@@ -175,7 +174,7 @@ public class ServerSettings {
 	}
 
 	public void removeServer(IrcServer ircServer) {
-		mapIrcServer.remove(ircServer.getHostname());
+		mapIrcServer.remove(ircServer.getId());
 	}
 
 	public void removeIrcChannel(IrcChannel ircChannel) {
@@ -183,7 +182,12 @@ public class ServerSettings {
 	}
 
 	public IrcServer getServerByName(String hostname) {
-		return mapIrcServer.get(hostname);
+		for (IrcServer ircServer : getListServer()) {
+			if (StringUtils.contains(hostname, ircServer.getHostname())) {
+				return ircServer;
+			}
+		}
+		return null;
 	}
 
 	public List<IrcChannel> getListAllChannels() {
