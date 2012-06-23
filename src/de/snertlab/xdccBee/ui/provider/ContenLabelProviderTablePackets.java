@@ -199,8 +199,6 @@ public class ContenLabelProviderTablePackets implements
 			for (Entry<String, Integer> entry : mapColumnsToSort.entrySet()) {
 				String column = entry.getKey();
 				int direction = entry.getValue();
-				int i = 0;
-				i++;
 				// TODO: Sortierung noch pruefen
 				if (COLUMN_NAME_SENDER.equals(column)) {
 					returnValue = kunde1.getSender().compareTo(
@@ -216,6 +214,8 @@ public class ContenLabelProviderTablePackets implements
 				} else if (COLUMN_NAME_NAME.equals(column)) {
 					returnValue = kunde1.getName().compareTo(kunde2.getName());
 				} else if (COLUMN_NAME_SIZE.equals(column)) {
+					// FIXME: Size sort doesn´t work => example 96M compare to
+					// 960M
 					returnValue = kunde1.getSize().compareTo(kunde2.getSize());
 				} else if (COLUMN_NAME_CHANNEL.equals(column)) {
 					returnValue = kunde1.getChannelName().compareTo(
