@@ -55,7 +55,8 @@ public class ActionEditIrcServer extends Action {
 			if (ircServer.isAutoconnect() && !ircServer.isConnected()) {
 				ircServer.connect();
 			}
-			NotifyManagerIrcServerEditNew.getNotifyManager().notify(ircServer);
+			NotifyManagerIrcServerEditNew.getNotifyManager().notify(ircServer,
+					false);
 		}
 	}
 

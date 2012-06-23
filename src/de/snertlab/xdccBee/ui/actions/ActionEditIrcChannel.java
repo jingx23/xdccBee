@@ -60,7 +60,7 @@ public class ActionEditIrcChannel extends Action {
 				}
 			}
 			NotifyManagerIrcServerEditNew.getNotifyManager().notify(
-					ircChannel.getIrcServer());
+					ircChannel.getIrcServer(), false);
 		}
 	}
 

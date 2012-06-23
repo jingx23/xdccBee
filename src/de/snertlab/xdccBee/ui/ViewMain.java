@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
@@ -123,14 +122,6 @@ public class ViewMain implements INotifyIrcServerEditNew {
 
 		infoTabFolder = new InfoTabFolder(comp, SWT.BORDER);
 		infoTabFolder.setLayoutData(data4);
-
-		CTabItem tabItemQueue = new CTabItem(infoTabFolder, SWT.NONE);
-		tabItemQueue.setText(XdccBeeMessages
-				.getString("ViewMain_TAB_DOWNLOADS")); //$NON-NLS-1$
-		Composite compQueueView = new QueueView(infoTabFolder);
-		tabItemQueue.setControl(compQueueView);
-		if (infoTabFolder.getItemCount() != 0)
-			infoTabFolder.setSelection(0);
 
 	}
 
@@ -411,10 +402,11 @@ public class ViewMain implements INotifyIrcServerEditNew {
 	}
 
 	@Override
-	public void notifyIrcServerEditNew(IrcServer ircServer) {
+	public void notifyIrcServerEditNew(IrcServer ircServer, boolean deleted) {
 		Object[] expandedElements = ircTreeViewer.getExpandedElements();
 		ircTreeViewer.setInput(Application.getServerSettings().getListServer());
 		ircTreeViewer.setExpandedElements(expandedElements);
+		infoTabFolder.refreshTabForIrcServer(ircServer);
 	}
 
 }

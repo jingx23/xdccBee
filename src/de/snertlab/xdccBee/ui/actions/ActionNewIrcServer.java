@@ -60,7 +60,7 @@ public class ActionNewIrcServer extends Action {
 				newIrcServer.connect();
 			}
 			NotifyManagerIrcServerEditNew.getNotifyManager().notify(
-					newIrcServer);
+					newIrcServer, false);
 		}
 	}
 

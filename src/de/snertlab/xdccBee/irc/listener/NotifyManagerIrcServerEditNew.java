@@ -46,9 +46,9 @@ public class NotifyManagerIrcServerEditNew {
 		listNotifier.add(notifyIrcServer);
 	}
 
-	public void notify(IrcServer ircServer) {
+	public void notify(IrcServer ircServer, boolean deleted) {
 		for (INotifyIrcServerEditNew notifyIrcServer : listNotifier) {
-			notifyIrcServer.notifyIrcServerEditNew(ircServer);
+			notifyIrcServer.notifyIrcServerEditNew(ircServer, deleted);
 		}
 	}
 

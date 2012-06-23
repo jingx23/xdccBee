@@ -48,7 +48,7 @@ import de.snertlab.xdccBee.messages.XdccBeeMessages;
  * 
  */
 public class InfoTabFolder extends CTabFolder implements INotifyDccBotLogging {
-
+	private static final String KEY_TAB_DATA_IRC_SERVER = "IRC_SERVER";
 	private Map<IrcServer, Widget> mapDebuggingTabs = new HashMap<IrcServer, Widget>();
 
 	public InfoTabFolder(Composite parent, int style) {
@@ -56,27 +56,46 @@ public class InfoTabFolder extends CTabFolder implements INotifyDccBotLogging {
 		List<IrcServer> listIrcServers = Application.getServerSettings()
 				.getListServer();
 		NotifyManagerDccBotLogging.getNotifyManager().register(this);
+
 		for (IrcServer ircServer : listIrcServers) {
 			if (ircServer.isDebug()) {
-				CTabItem tabItemDebugWindow = new CTabItem(this, SWT.NONE);
-				tabItemDebugWindow
-						.setText(MessageFormat.format(
-								XdccBeeMessages
-										.getString("InfoTabFolder_TAB_DEBUG"), new Object[] { ircServer.getHostname() })); //$NON-NLS-1$
-				Composite compDebug = new Composite(this, SWT.NONE);
-				compDebug.setLayout(new GridLayout());
-				compDebug.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-						true));
-				StyledText txtDebug = new StyledText(compDebug, SWT.BORDER
-						| SWT.MULTI | SWT.READ_ONLY | SWT.V_SCROLL
-						| SWT.H_SCROLL);
-				txtDebug.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-						true));
-				tabItemDebugWindow.setControl(compDebug);
-				makeTxtDebugContextMenu(txtDebug);
-				mapDebuggingTabs.put(ircServer, txtDebug);
+				buildDebugTab(ircServer);
 			}
 		}
+
+		CTabItem tabItemQueue = new CTabItem(this, SWT.NONE);
+		tabItemQueue.setText(XdccBeeMessages
+				.getString("ViewMain_TAB_DOWNLOADS")); //$NON-NLS-1$
+		Composite compQueueView = new QueueView(this);
+		tabItemQueue.setControl(compQueueView);
+		if (this.getItemCount() != 0) {
+			this.setSelection(0);
+		}
+
+	}
+
+	private void buildDebugTab(IrcServer ircServer) {
+		CTabItem tabItemDebugWindow = null;
+		if (this.getItemCount() == 0) {
+			tabItemDebugWindow = new CTabItem(this, SWT.NONE);
+		} else {
+			// place tabs before download tab
+			tabItemDebugWindow = new CTabItem(this, SWT.NONE,
+					this.getItemCount() - 1);
+		}
+		tabItemDebugWindow
+				.setText(MessageFormat.format(
+						XdccBeeMessages.getString("InfoTabFolder_TAB_DEBUG"), new Object[] { ircServer.getHostname() })); //$NON-NLS-1$
+		Composite compDebug = new Composite(this, SWT.NONE);
+		compDebug.setLayout(new GridLayout());
+		compDebug.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		StyledText txtDebug = new StyledText(compDebug, SWT.BORDER | SWT.MULTI
+				| SWT.READ_ONLY | SWT.V_SCROLL | SWT.H_SCROLL);
+		txtDebug.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		tabItemDebugWindow.setControl(compDebug);
+		makeTxtDebugContextMenu(txtDebug);
+		tabItemDebugWindow.setData(KEY_TAB_DATA_IRC_SERVER, ircServer);
+		mapDebuggingTabs.put(ircServer, txtDebug);
 	}
 
 	public void writeLog(IrcServer ircServer, final LogMessage log) {
@@ -121,4 +140,21 @@ public class InfoTabFolder extends CTabFolder implements INotifyDccBotLogging {
 		});
 	}
 
+	public void refreshTabForIrcServer(IrcServer ircServer) {
+		if (ircServer.isDebug() && !mapDebuggingTabs.containsKey(ircServer)) {
+			buildDebugTab(ircServer);
+		} else if (!ircServer.isDebug()
+				&& mapDebuggingTabs.containsKey(ircServer)) {
+			CTabItem tabItemToRemove = null;
+			for (CTabItem tabItem : this.getItems()) {
+				if (tabItem.getData(KEY_TAB_DATA_IRC_SERVER) != null
+						&& ircServer.equals((IrcServer) tabItem
+								.getData(KEY_TAB_DATA_IRC_SERVER))) {
+					tabItemToRemove = tabItem;
+				}
+			}
+			tabItemToRemove.dispose();
+			mapDebuggingTabs.remove(ircServer);
+		}
+	}
 }

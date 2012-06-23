@@ -46,7 +46,7 @@ public class ActionRemoveIrcChannelContextMenu extends Action {
 		Application.getServerSettings().removeIrcChannel(selectedIrcChannel);
 		Application.getServerSettings().saveSettings();
 		NotifyManagerIrcServerEditNew.getNotifyManager().notify(
-				selectedIrcChannel.getIrcServer());
+				selectedIrcChannel.getIrcServer(), false);
 	}
 
 }

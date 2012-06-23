@@ -25,6 +25,6 @@ import de.snertlab.xdccBee.irc.IrcServer;
  */
 public interface INotifyIrcServerEditNew {
 
-	void notifyIrcServerEditNew(IrcServer ircServer);
+	void notifyIrcServerEditNew(IrcServer ircServer, boolean deleted);
 
 }

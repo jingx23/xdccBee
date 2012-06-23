@@ -43,9 +43,11 @@ public class ActionRemoveIrcServerContextMenu extends Action {
 
 	@Override
 	public void run() {
+		selectedIrcServer.setDebug(false);
 		Application.getServerSettings().removeServer(selectedIrcServer);
 		Application.getServerSettings().saveSettings();
-		NotifyManagerIrcServerEditNew.getNotifyManager().notify(null);
+		NotifyManagerIrcServerEditNew.getNotifyManager().notify(
+				selectedIrcServer, true);
 	}
 
 }

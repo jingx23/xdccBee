@@ -62,7 +62,8 @@ public class ActionNewIrcChannelContextMenu extends Action {
 					newIrcChannel.connect();
 				}
 			}
-			NotifyManagerIrcServerEditNew.getNotifyManager().notify(ircServer);
+			NotifyManagerIrcServerEditNew.getNotifyManager().notify(ircServer,
+					false);
 		}
 	}
 
