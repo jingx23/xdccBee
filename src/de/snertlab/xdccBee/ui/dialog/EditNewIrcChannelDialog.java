@@ -125,7 +125,11 @@ public class EditNewIrcChannelDialog extends AbstractSaveDialog {
 
 	@Override
 	protected void writeFields() {
-		ircChannel.setChannelName(txtChannelName.getText());
+		String channel = txtChannelName.getText();
+		if (!channel.startsWith("#")) {
+			channel = "#" + channel;
+		}
+		ircChannel.setChannelName(channel);
 		ircChannel.setAutoconnect(btnAutoconnect.getSelection());
 	}
 
