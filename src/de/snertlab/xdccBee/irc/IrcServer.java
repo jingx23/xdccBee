@@ -19,9 +19,12 @@ package de.snertlab.xdccBee.irc;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
 
 import de.snertlab.xdccBee.controlling.BeeLogger;
 import de.snertlab.xdccBee.ui.Application;
@@ -32,6 +35,7 @@ import de.snertlab.xdccBee.ui.Application;
  */
 public class IrcServer implements IConnectedState {
 
+	private String id;
 	private String hostname;
 	private String port;
 	private String nickname;
@@ -45,6 +49,7 @@ public class IrcServer implements IConnectedState {
 
 	public IrcServer(String hostname, String nickname, String port,
 			String botName, String botVersion) {
+		this.id = (new Date().getTime() + Math.random()) + "";
 		this.hostname = hostname;
 		this.nickname = nickname;
 		this.port = port;
@@ -53,6 +58,10 @@ public class IrcServer implements IConnectedState {
 		this.dccBot = new DccBot(this, Application.getSettings().getBotName(),
 				Application.getSettings().getBotVersion(), Application
 						.getSettings().getDownloadFolder() + "/");
+	}
+
+	public String getId() {
+		return id;
 	}
 
 	public String getHostname() {
@@ -183,16 +192,15 @@ public class IrcServer implements IConnectedState {
 		if (!(obj instanceof IrcServer))
 			return false;
 		IrcServer ircServer = (IrcServer) obj;
-		if (!getHostname().equals(ircServer.getHostname()))
+		if (!StringUtils.equals(id, ircServer.id)) {
 			return false;
-		if (!getPort().equals(ircServer.getPort()))
-			return false;
+		}
 		return true;
 	}
 
 	@Override
 	public int hashCode() {
-		return getHostname().hashCode() + getPort().hashCode();
+		return id.hashCode();
 	}
 
 	public void setAutoconnect(boolean autoconnect) {

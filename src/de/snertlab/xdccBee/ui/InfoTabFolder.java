@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -155,6 +156,18 @@ public class InfoTabFolder extends CTabFolder implements INotifyDccBotLogging {
 			}
 			tabItemToRemove.dispose();
 			mapDebuggingTabs.remove(ircServer);
+		} else {
+			// check if irc server renamed
+			for (CTabItem tabItem : this.getItems()) {
+				if (tabItem.getData(KEY_TAB_DATA_IRC_SERVER) != null
+						&& ircServer.equals((IrcServer) tabItem
+								.getData(KEY_TAB_DATA_IRC_SERVER))) {
+					if (!StringUtils.equals(tabItem.getText(),
+							ircServer.getHostname())) {
+						tabItem.setText(ircServer.getHostname());
+					}
+				}
+			}
 		}
 	}
 }
