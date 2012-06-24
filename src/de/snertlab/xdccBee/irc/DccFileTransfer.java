@@ -41,6 +41,7 @@ public class DccFileTransfer extends Thread {
 	private String filename;
 	private String fullFilename;
 	private long progress;
+	private long fileSizeOnResume;
 	private String nick;
 	private long startTime;
 	private boolean resume;
@@ -100,6 +101,7 @@ public class DccFileTransfer extends Thread {
 			if (resume) {
 				File f = new File(fullFilename);
 				progress = f.length();
+				fileSizeOnResume = progress;
 			}
 			foutput = new BufferedOutputStream(new FileOutputStream(
 					fullFilename, resume));
@@ -169,6 +171,9 @@ public class DccFileTransfer extends Thread {
 		long time = (System.currentTimeMillis() - startTime) / 1000;
 		if (time <= 0) {
 			return 0;
+		}
+		if (resume) {
+			return (getProgress() - fileSizeOnResume) / time;
 		}
 		return getProgress() / time;
 	}
