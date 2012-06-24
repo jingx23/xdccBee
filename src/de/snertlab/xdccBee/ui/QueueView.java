@@ -26,6 +26,8 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
@@ -97,6 +99,18 @@ public class QueueView extends Composite implements INotifyDccDownload {
 		Menu mnuIrcServer = new Menu(tblViewerDownloadQueue.getTable());
 		tblViewerDownloadQueue.getTable().setMenu(mnuIrcServer);
 
+		final MenuItem mntmResumeDownload = new MenuItem(mnuIrcServer,
+				SWT.CASCADE);
+		mntmResumeDownload.setText(XdccBeeMessages
+				.getString("TABLE_DOWNLOADS_MNTM_RESUME_DOWNLOAD"));
+		mntmResumeDownload.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				getSelectedDccDownload().getDccPacket().getDccBot()
+						.xdccSend(getSelectedDccDownload().getDccPacket());
+			}
+		});
+
 		final MenuItem mntmAbortDownload = new MenuItem(mnuIrcServer,
 				SWT.CASCADE);
 		mntmAbortDownload.setText(XdccBeeMessages
@@ -108,6 +122,23 @@ public class QueueView extends Composite implements INotifyDccDownload {
 			}
 		});
 
+		mnuIrcServer.addListener(SWT.Show, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				if (getSelectedDccDownload() == null) {
+					mntmAbortDownload.setEnabled(false);
+					mntmResumeDownload.setEnabled(false);
+				} else {
+					mntmAbortDownload.setEnabled(true);
+					if (DccDownload.STATE_DOWNLOAD_ABORT
+							.equals(getSelectedDccDownload().getState())) {
+						mntmResumeDownload.setEnabled(true);
+					} else {
+						mntmResumeDownload.setEnabled(false);
+					}
+				}
+			}
+		});
 	}
 
 	private DccDownload getSelectedDccDownload() {
