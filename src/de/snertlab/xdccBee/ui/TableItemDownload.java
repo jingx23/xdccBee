@@ -72,10 +72,9 @@ public class TableItemDownload {
 	}
 
 	public void updateFileTransferDisplay(DccFileTransfer dccFileTransfer) {
-		// FIXME: Long to int conversion is not right => could end in an
-		// negative int value
-		bar.setMaximum(((Long) dccFileTransfer.getSize()).intValue());
-		bar.setSelection(((Long) dccFileTransfer.getProgress()).intValue());
+		bar.setMaximum(100);
+		bar.setSelection((int) (100 * dccFileTransfer.getProgress() / dccFileTransfer
+				.getSize()));
 		itemDownload.setText(3, bytesToKb(dccFileTransfer.getTransferRate())
 				+ " KB/s");
 		itemDownload.setText(4, getEstimateTime(dccFileTransfer));
